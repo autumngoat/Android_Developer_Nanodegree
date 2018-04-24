@@ -1,63 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView  xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <FrameLayout
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:context="com.udacity.sandwichclub.DetailActivity">
+        tools:context="com.udacity.sandwichclub.DetailActivity"
+        android:orientation="vertical">
 
         <ImageView
             android:id="@+id/image_iv"
-            android:layout_width="match_parent"
             android:layout_height="200dp"
+            android:layout_width="match_parent"
             android:adjustViewBounds="true"
             android:contentDescription="@string/sandwich_picture_content_description"
-            android:scaleType="centerCrop" />
+            android:scaleType="centerCrop"/>
 
-        <TextView
-            android:id="@+id/origin_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <TextView
+        <android.support.constraint.Guideline
+            android:id="@+id/guideline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/detail_also_known_as_label"
-            android:textStyle="bold" />
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.5"/>
 
+        <!-- Labels -->
         <TextView
+            android:id="@+id/description_label_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/detail_ingredients_label"
-            android:textStyle="bold" />
+            android:text="@string/detail_description_label"
+            android:textStyle="bold"
+            app:layout_constraintRight_toLeftOf="@id/guideline"
+            app:layout_constraintTop_toBottomOf="@id/image_iv"/>
 
         <TextView
+            android:id="@+id/origin_label_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/detail_place_of_origin_label"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            app:layout_constraintRight_toLeftOf="@id/guideline"
+            app:layout_constraintTop_toBottomOf="@id/description_label_tv"/>
 
+        <TextView
+            android:id="@+id/also_known_label_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/detail_also_known_as_label"
+            android:textStyle="bold"
+            app:layout_constraintRight_toLeftOf="@id/guideline"
+            app:layout_constraintTop_toBottomOf="@id/origin_label_tv"/>
+
+        <TextView
+            android:id="@+id/ingredients_label_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/detail_ingredients_label"
+            android:textStyle="bold"
+            app:layout_constraintRight_toLeftOf="@id/guideline"
+            app:layout_constraintTop_toBottomOf="@id/also_known_label_tv"/>
+
+        <!-- Values -->
         <TextView
             android:id="@+id/description_tv"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            tools:text="@string/detail_description_label"
+            app:layout_constraintLeft_toRightOf="@id/guideline"
+            app:layout_constraintBottom_toBottomOf="@id/description_label_tv"/>
 
         <TextView
             android:id="@+id/ingredients_tv"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            tools:text="@string/detail_ingredients_label"
+            app:layout_constraintLeft_toRightOf="@id/guideline"
+            app:layout_constraintBottom_toBottomOf="@id/ingredients_label_tv"/>
 
         <TextView
             android:id="@+id/also_known_tv"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            tools:text="@string/detail_also_known_as_label"
+            app:layout_constraintLeft_toRightOf="@id/guideline"
+            app:layout_constraintBottom_toBottomOf="@id/also_known_label_tv"/>
 
         <TextView
+            android:id="@+id/origin_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/detail_description_label"
-            android:textStyle="bold" />
-    </FrameLayout>
+            tools:text="@string/detail_place_of_origin_label"
+            app:layout_constraintLeft_toRightOf="@id/guideline"
+            app:layout_constraintBottom_toBottomOf="@id/origin_label_tv"/>
+    </android.support.constraint.ConstraintLayout>
 </ScrollView>
