@@ -27,65 +27,45 @@
 
         <!-- Labels -->
         <TextView
-            android:id="@+id/description_label_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/detail_description_label"
-            android:textStyle="bold"
-            app:layout_constraintRight_toLeftOf="@id/guideline"
-            app:layout_constraintTop_toBottomOf="@id/image_iv"/>
-
-        <TextView
-            android:id="@+id/origin_label_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/detail_place_of_origin_label"
-            android:textStyle="bold"
-            app:layout_constraintRight_toLeftOf="@id/guideline"
-            app:layout_constraintTop_toBottomOf="@id/description_label_tv"/>
-
-        <TextView
-            android:id="@+id/also_known_label_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/detail_also_known_as_label"
             android:textStyle="bold"
             app:layout_constraintRight_toLeftOf="@id/guideline"
-            app:layout_constraintTop_toBottomOf="@id/origin_label_tv"/>
+            app:layout_constraintTop_toTopOf="@id/also_known_tv"/>
 
         <TextView
-            android:id="@+id/ingredients_label_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/detail_place_of_origin_label"
+            android:textStyle="bold"
+            app:layout_constraintRight_toLeftOf="@id/guideline"
+            app:layout_constraintTop_toTopOf="@id/origin_tv"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/detail_description_label"
+            android:textStyle="bold"
+            app:layout_constraintRight_toLeftOf="@id/guideline"
+            app:layout_constraintTop_toTopOf="@id/description_tv"/>
+
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/detail_ingredients_label"
             android:textStyle="bold"
             app:layout_constraintRight_toLeftOf="@id/guideline"
-            app:layout_constraintTop_toBottomOf="@id/also_known_label_tv"/>
+            app:layout_constraintTop_toTopOf="@id/ingredients_tv"/>
 
         <!-- Values -->
-        <TextView
-            android:id="@+id/description_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="@string/detail_description_label"
-            app:layout_constraintLeft_toRightOf="@id/guideline"
-            app:layout_constraintBottom_toBottomOf="@id/description_label_tv"/>
-
-        <TextView
-            android:id="@+id/ingredients_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="@string/detail_ingredients_label"
-            app:layout_constraintLeft_toRightOf="@id/guideline"
-            app:layout_constraintBottom_toBottomOf="@id/ingredients_label_tv"/>
-
         <TextView
             android:id="@+id/also_known_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:text="@string/detail_also_known_as_label"
             app:layout_constraintLeft_toRightOf="@id/guideline"
-            app:layout_constraintBottom_toBottomOf="@id/also_known_label_tv"/>
+            app:layout_constraintTop_toBottomOf="@id/image_iv"/>
 
         <TextView
             android:id="@+id/origin_tv"
@@ -93,6 +73,22 @@
             android:layout_height="wrap_content"
             tools:text="@string/detail_place_of_origin_label"
             app:layout_constraintLeft_toRightOf="@id/guideline"
-            app:layout_constraintBottom_toBottomOf="@id/origin_label_tv"/>
+            app:layout_constraintTop_toBottomOf="@id/also_known_tv"/>
+
+        <TextView
+            android:id="@+id/description_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="@string/detail_description_label"
+            app:layout_constraintLeft_toRightOf="@id/guideline"
+            app:layout_constraintTop_toBottomOf="@id/origin_tv"/>
+
+        <TextView
+            android:id="@+id/ingredients_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="@string/detail_ingredients_label"
+            app:layout_constraintLeft_toRightOf="@id/guideline"
+            app:layout_constraintTop_toBottomOf="@id/description_tv"/>
     </android.support.constraint.ConstraintLayout>
 </ScrollView>
