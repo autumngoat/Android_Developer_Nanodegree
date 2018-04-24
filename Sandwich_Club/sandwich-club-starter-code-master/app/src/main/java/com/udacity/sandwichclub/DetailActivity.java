@@ -70,13 +70,21 @@ public class DetailActivity extends AppCompatActivity {
         originTv.setText(sandwich.getPlaceOfOrigin());
 
         List<String> aliases = sandwich.getAlsoKnownAs();
-        for(String alias : aliases){
-            akaTv.append(alias + "\n");
+        for(int i=0; i<aliases.size(); i++){
+            if(i+1 < aliases.size()){
+                akaTv.append(aliases.get(i) + "\n");
+            } else {
+                akaTv.append(aliases.get(i));
+            }
         }
 
         List<String> ingredients = sandwich.getIngredients();
-        for(String ingredient : ingredients){
-            ingredientsTv.append(ingredient + "\n");
+        for(int i=0; i<ingredients.size(); i++){
+            if(i+1 < ingredients.size()){
+                ingredientsTv.append(ingredients.get(i) + "\n");
+            } else {
+                ingredientsTv.append(ingredients.get(i));
+            }
         }
     }
 }
