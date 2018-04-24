@@ -56,8 +56,12 @@ import com.squareup.picasso.Picasso;
 import com.udacity.sandwichclub.model.Sandwich;
 import com.udacity.sandwichclub.utils.JsonUtils;
 
-import java.util.ArrayList;
 import java.util.List;
+
+/**
+ * Provides the details of each sandwich list item with an image
+ * and a few texts explaining the sandwich.
+ */
 
 public class DetailActivity extends AppCompatActivity {
 

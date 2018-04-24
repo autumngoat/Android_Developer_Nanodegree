@@ -47,6 +47,11 @@ package com.udacity.sandwichclub.model;
 
 import java.util.List;
 
+/**
+ * Provides an data model to represent a Sandwich object to hold JSON parsed
+ * data.
+ */
+
 public class Sandwich {
 
     private String mainName;
@@ -62,6 +67,16 @@ public class Sandwich {
     public Sandwich() {
     }
 
+    /**
+     * Constructor to build a complete Sandwich object.
+     *
+     * @param mainName - actual name of the sandwich
+     * @param alsoKnownAs - list of alias(es) of the sandwich
+     * @param placeOfOrigin - originator of the sandwich
+     * @param description - large text about the sandwich
+     * @param image - wikipedia supplied picture of the sandwich
+     * @param ingredients - list of componenets that make up the sandwich
+     */
     public Sandwich(String mainName, List<String> alsoKnownAs, String placeOfOrigin, String description, String image, List<String> ingredients) {
         this.mainName = mainName;
         this.alsoKnownAs = alsoKnownAs;

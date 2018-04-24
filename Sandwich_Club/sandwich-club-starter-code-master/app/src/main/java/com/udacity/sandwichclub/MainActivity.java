@@ -53,6 +53,11 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+/**
+ * Displays the main page of the Sandwich Club app as a list of
+ * sandwiches and handles the launch of the DetailActivity.
+ */
+
 public class MainActivity extends AppCompatActivity {
 
     @Override

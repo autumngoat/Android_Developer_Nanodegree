@@ -55,9 +55,16 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+/**
+ * Provides methods to parse JSON and load parsed data into data model(s).
+ */
+
 public class JsonUtils {
     private static final String TAG = JsonUtils.class.getSimpleName();
 
+    /**
+     * Parses the JSON string and loads the contents into a Sandwich object.
+     */
     public static Sandwich parseSandwichJson(String json) {
         Sandwich breadMiddleBread = new Sandwich();
         ArrayList<String> aliases = new ArrayList<>();
