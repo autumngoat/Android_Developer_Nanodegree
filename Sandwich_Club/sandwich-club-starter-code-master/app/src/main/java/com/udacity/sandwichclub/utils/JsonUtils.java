@@ -20,14 +20,17 @@ public class JsonUtils {
 
         try{
             JSONObject sandwich = new JSONObject(json);
+            JSONObject names = sandwich.getJSONObject("name");
 
-            String name = sandwich.getString("mainName");
+            String mainName = names.getString("mainName");
 
-            JSONArray akaArray = sandwich.getJSONArray("alsoKnownAs");
+            JSONArray akaArray = names.getJSONArray("alsoKnownAs");
             for(int i=0; i<akaArray.length(); i++){
                 String alias = akaArray.getString(i);
                 aliases.add(alias);
             }
+
+            String origin = sandwich.getString("placeOfOrigin");
 
             String description = sandwich.getString("description");
 
@@ -39,11 +42,7 @@ public class JsonUtils {
                 ingredients.add(ingredient);
             }
 
-            breadMiddleBread.setMainName(name);
-            breadMiddleBread.setAlsoKnownAs(aliases);
-            breadMiddleBread.setDescription(description);
-            breadMiddleBread.setImage(image);
-            breadMiddleBread.setIngredients(ingredients);
+            breadMiddleBread = new Sandwich(mainName, aliases, origin, description, image, ingredients);
         } catch (JSONException e){
             Log.e("TAG", "Problem parsing the sandwich JSON " + e);
         }
