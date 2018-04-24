@@ -27,34 +27,26 @@
 
         <!-- Labels -->
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/Labels"
             android:text="@string/detail_also_known_as_label"
-            android:textStyle="bold"
             app:layout_constraintRight_toLeftOf="@id/guideline"
             app:layout_constraintTop_toTopOf="@id/also_known_tv"/>
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/Labels"
             android:text="@string/detail_place_of_origin_label"
-            android:textStyle="bold"
             app:layout_constraintRight_toLeftOf="@id/guideline"
             app:layout_constraintTop_toTopOf="@id/origin_tv"/>
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/Labels"
             android:text="@string/detail_description_label"
-            android:textStyle="bold"
             app:layout_constraintRight_toLeftOf="@id/guideline"
             app:layout_constraintTop_toTopOf="@id/description_tv"/>
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/Labels"
             android:text="@string/detail_ingredients_label"
-            android:textStyle="bold"
             app:layout_constraintRight_toLeftOf="@id/guideline"
             app:layout_constraintTop_toTopOf="@id/ingredients_tv"/>
 
