@@ -1,86 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView  xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:context="com.udacity.sandwichclub.DetailActivity"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        tools:context="com.udacity.sandwichclub.DetailActivity">
 
         <ImageView
             android:id="@+id/image_iv"
-            android:layout_height="200dp"
             android:layout_width="match_parent"
+            android:layout_height="200dp"
             android:adjustViewBounds="true"
             android:contentDescription="@string/sandwich_picture_content_description"
-            android:scaleType="centerCrop"/>
+            android:scaleType="centerCrop" />
 
         <android.support.constraint.Guideline
             android:id="@+id/guideline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.5"/>
+            app:layout_constraintGuide_percent="0.5" />
 
         <!-- Labels -->
         <TextView
             style="@style/Labels"
             android:text="@string/detail_also_known_as_label"
             app:layout_constraintRight_toLeftOf="@id/guideline"
-            app:layout_constraintTop_toTopOf="@id/also_known_tv"/>
+            app:layout_constraintTop_toTopOf="@id/also_known_tv" />
 
         <TextView
             style="@style/Labels"
             android:text="@string/detail_place_of_origin_label"
             app:layout_constraintRight_toLeftOf="@id/guideline"
-            app:layout_constraintTop_toTopOf="@id/origin_tv"/>
+            app:layout_constraintTop_toTopOf="@id/origin_tv" />
 
         <TextView
             style="@style/Labels"
             android:text="@string/detail_description_label"
             app:layout_constraintRight_toLeftOf="@id/guideline"
-            app:layout_constraintTop_toTopOf="@id/description_tv"/>
+            app:layout_constraintTop_toTopOf="@id/description_tv" />
 
         <TextView
             style="@style/Labels"
             android:text="@string/detail_ingredients_label"
             app:layout_constraintRight_toLeftOf="@id/guideline"
-            app:layout_constraintTop_toTopOf="@id/ingredients_tv"/>
+            app:layout_constraintTop_toTopOf="@id/ingredients_tv" />
 
         <!-- Values -->
         <TextView
             android:id="@+id/also_known_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="@string/detail_also_known_as_label"
             app:layout_constraintLeft_toRightOf="@id/guideline"
-            app:layout_constraintTop_toBottomOf="@id/image_iv"/>
+            app:layout_constraintTop_toBottomOf="@id/image_iv"
+            tools:text="@string/detail_also_known_as_label" />
 
         <TextView
             android:id="@+id/origin_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="@string/detail_place_of_origin_label"
             app:layout_constraintLeft_toRightOf="@id/guideline"
-            app:layout_constraintTop_toBottomOf="@id/also_known_tv"/>
+            app:layout_constraintTop_toBottomOf="@id/also_known_tv"
+            tools:text="@string/detail_place_of_origin_label" />
 
         <TextView
             android:id="@+id/description_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="@string/detail_description_label"
             app:layout_constraintLeft_toRightOf="@id/guideline"
-            app:layout_constraintTop_toBottomOf="@id/origin_tv"/>
+            app:layout_constraintTop_toBottomOf="@id/origin_tv"
+            tools:text="@string/detail_description_label" />
 
         <TextView
             android:id="@+id/ingredients_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="@string/detail_ingredients_label"
             app:layout_constraintLeft_toRightOf="@id/guideline"
-            app:layout_constraintTop_toBottomOf="@id/description_tv"/>
+            app:layout_constraintTop_toBottomOf="@id/description_tv"
+            tools:text="@string/detail_ingredients_label" />
     </android.support.constraint.ConstraintLayout>
 </ScrollView>
