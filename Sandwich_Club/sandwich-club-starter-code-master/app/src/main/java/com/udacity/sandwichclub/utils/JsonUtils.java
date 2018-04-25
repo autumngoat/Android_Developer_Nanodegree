@@ -55,12 +55,22 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import javax.crypto.spec.DESedeKeySpec;
+
 /**
  * Provides methods to parse JSON and load parsed data into data model(s).
  */
 
 public class JsonUtils {
     private static final String TAG = JsonUtils.class.getSimpleName();
+
+    private static final String KEY_NAME = "name";
+    private static final String KEY_MAIN_NAME = "mainName";
+    private static final String KEY_ALSO_KNOWN_AS = "alsoKnownAs";
+    private static final String KEY_PLACE_OF_ORIGIN = "placeOfOrigin";
+    private static final String KEY_DESCRIPTION = "description";
+    private static final String KEY_IMAGE = "image";
+    private static final String KEY_INGREDIENTS = "ingredients";
 
     /**
      * Parses the JSON string and loads the contents into a Sandwich object.
@@ -72,23 +82,23 @@ public class JsonUtils {
 
         try {
             JSONObject sandwich = new JSONObject(json);
-            JSONObject names = sandwich.getJSONObject("name");
+            JSONObject names = sandwich.getJSONObject(KEY_NAME);
 
-            String mainName = names.getString("mainName");
+            String mainName = names.getString(KEY_MAIN_NAME);
 
-            JSONArray akaArray = names.getJSONArray("alsoKnownAs");
+            JSONArray akaArray = names.getJSONArray(KEY_ALSO_KNOWN_AS);
             for (int i = 0; i < akaArray.length(); i++) {
                 String alias = akaArray.getString(i);
                 aliases.add(alias);
             }
 
-            String origin = sandwich.getString("placeOfOrigin");
+            String origin = sandwich.getString(KEY_PLACE_OF_ORIGIN);
 
-            String description = sandwich.getString("description");
+            String description = sandwich.getString(KEY_DESCRIPTION);
 
-            String image = sandwich.getString("image");
+            String image = sandwich.getString(KEY_IMAGE);
 
-            JSONArray ingredientsArray = sandwich.getJSONArray("ingredients");
+            JSONArray ingredientsArray = sandwich.getJSONArray(KEY_INGREDIENTS);
             for (int i = 0; i < ingredientsArray.length(); i++) {
                 String ingredient = ingredientsArray.getString(i);
                 ingredients.add(ingredient);
