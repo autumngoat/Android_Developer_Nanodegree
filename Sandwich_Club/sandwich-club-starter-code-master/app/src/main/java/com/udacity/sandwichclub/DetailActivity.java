@@ -141,9 +141,9 @@ public class DetailActivity extends AppCompatActivity {
         List<String> ingredients = sandwich.getIngredients();
         for(int i=0; i<ingredients.size(); i++){
             if(i+1 < ingredients.size()){
-                ingredientsTv.append(ingredients.get(i) + "\n");
+                ingredientsTv.append(ingredients.get(i) + ", ");
             } else {
-                ingredientsTv.append(ingredients.get(i));
+                ingredientsTv.append("and " + ingredients.get(i));
             }
         }
     }
