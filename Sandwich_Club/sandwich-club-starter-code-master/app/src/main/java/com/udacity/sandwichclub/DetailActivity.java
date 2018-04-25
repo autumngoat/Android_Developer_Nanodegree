@@ -56,7 +56,12 @@ import com.squareup.picasso.Picasso;
 import com.udacity.sandwichclub.model.Sandwich;
 import com.udacity.sandwichclub.utils.JsonUtils;
 
+import org.w3c.dom.Text;
+
 import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * Provides the details of each sandwich list item with an image
@@ -68,10 +73,21 @@ public class DetailActivity extends AppCompatActivity {
     public static final String EXTRA_POSITION = "extra_position";
     private static final int DEFAULT_POSITION = -1;
 
+    // Followed the ButterKnife tutorial:
+    // https://www.androidhive.info/2017/10/android-working-with-butterknife-viewbinding-library/
+    // as suggested by previous Reviewer
+    @BindView(R.id.description_tv) TextView descriptionTv;
+    @BindView(R.id.origin_tv) TextView originTv;
+    @BindView(R.id.also_known_tv) TextView akaTv;
+    @BindView(R.id.ingredients_tv) TextView ingredientsTv;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
+
+        // Bind the view using ButterKnife
+        ButterKnife.bind(this);
 
         ImageView ingredientsIv = findViewById(R.id.image_iv);
 
@@ -110,11 +126,6 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void populateUI(Sandwich sandwich) {
-        TextView descriptionTv = findViewById(R.id.description_tv);
-        TextView originTv = findViewById(R.id.origin_tv);
-        TextView akaTv = findViewById(R.id.also_known_tv);
-        TextView ingredientsTv = findViewById(R.id.ingredients_tv);
-
         descriptionTv.setText(sandwich.getDescription());
         originTv.setText(sandwich.getPlaceOfOrigin());
 

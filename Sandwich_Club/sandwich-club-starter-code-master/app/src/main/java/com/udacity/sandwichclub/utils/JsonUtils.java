@@ -96,7 +96,7 @@ public class JsonUtils {
 
             String description = sandwich.getString(KEY_DESCRIPTION);
 
-            String image = sandwich.getString(KEY_IMAGE);
+            String image = sandwich.optString(KEY_IMAGE);
 
             JSONArray ingredientsArray = sandwich.getJSONArray(KEY_INGREDIENTS);
             for (int i = 0; i < ingredientsArray.length(); i++) {
