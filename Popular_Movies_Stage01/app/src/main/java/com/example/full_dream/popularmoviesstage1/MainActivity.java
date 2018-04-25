@@ -9,7 +9,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int NUMBER_OF_COLUMNS = 2;
 
-    // Following the tutorial code at:
+    // Following the tutorial code for initial setup of RecyclerView:
     // https://developer.android.com/guide/topics/ui/layout/recyclerview.html#java
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
