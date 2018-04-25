@@ -1,4 +1,4 @@
-package com.example.full_dream.popularmoviesstage1.Model;
+package com.example.full_dream.popularmoviesstage1.model;
 
 /**
  * Provides a data model to represent a Movie object to hold parsed JSON data.
