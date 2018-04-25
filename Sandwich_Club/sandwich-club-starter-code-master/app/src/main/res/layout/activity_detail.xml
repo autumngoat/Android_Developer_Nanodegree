@@ -24,7 +24,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.5" />
+            app:layout_constraintGuide_percent="0.3" />
 
         <!-- Labels -->
         <TextView
@@ -68,19 +68,25 @@
             app:layout_constraintTop_toBottomOf="@id/also_known_tv"
             tools:text="@string/detail_place_of_origin_label" />
 
+        <!-- Used ConstraintLayout line-wrap example:
+         https://stackoverflow.com/questions/40850966/wrap-content-view-inside-a-constraintlayout-stretches-outside-the-screen-->
         <TextView
             android:id="@+id/description_tv"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            app:layout_constraintWidth_default="wrap"
             app:layout_constraintLeft_toRightOf="@id/guideline"
+            app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/origin_tv"
             tools:text="@string/detail_description_label" />
 
         <TextView
             android:id="@+id/ingredients_tv"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            app:layout_constraintWidth_default="wrap"
             app:layout_constraintLeft_toRightOf="@id/guideline"
+            app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/description_tv"
             tools:text="@string/detail_ingredients_label" />
     </android.support.constraint.ConstraintLayout>
