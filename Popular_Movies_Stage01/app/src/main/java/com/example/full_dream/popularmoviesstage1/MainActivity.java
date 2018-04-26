@@ -5,13 +5,15 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
+import butterknife.BindView;
+
 public class MainActivity extends AppCompatActivity {
 
     private static final int NUMBER_OF_COLUMNS = 2;
 
     // Following the tutorial code for initial setup of RecyclerView:
     // https://developer.android.com/guide/topics/ui/layout/recyclerview.html#java
-    private RecyclerView mRecyclerView;
+    @BindView(R.id.recyclerview) private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
