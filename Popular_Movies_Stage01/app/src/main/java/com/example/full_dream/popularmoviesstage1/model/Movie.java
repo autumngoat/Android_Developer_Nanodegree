@@ -7,11 +7,11 @@ package com.example.full_dream.popularmoviesstage1.model;
 public class Movie {
     private String title;
     private String releaseDate;
-    private int poster; // drawable reference id
-    private float voteAvg;
+    private String poster;
+    private double voteAvg;
     private String plotSynopsis;
 
-    public Movie(String title, String releaseDate, int poster, float voteAvg, String plotSynopsis){
+    public Movie(String title, String releaseDate, String poster, double voteAvg, String plotSynopsis){
         this.title = title;
         this.releaseDate = releaseDate;
         this.poster = poster;
@@ -35,19 +35,19 @@ public class Movie {
         this.releaseDate = releaseDate;
     }
 
-    public int getPoster() {
+    public String getPoster() {
         return poster;
     }
 
-    public void setPoster(int poster) {
+    public void setPoster(String poster) {
         this.poster = poster;
     }
 
-    public float getVoteAvg() {
+    public double getVoteAvg() {
         return voteAvg;
     }
 
-    public void setVoteAvg(float voteAvg) {
+    public void setVoteAvg(double voteAvg) {
         this.voteAvg = voteAvg;
     }
 

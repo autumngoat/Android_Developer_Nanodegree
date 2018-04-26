@@ -9,16 +9,20 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Layout;
 import android.util.Log;
 
+import com.example.full_dream.popularmoviesstage1.model.Movie;
+import com.example.full_dream.popularmoviesstage1.utils.JsonUtils;
 import com.example.full_dream.popularmoviesstage1.utils.NetworkUtils;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 
 import butterknife.BindView;
 
-public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<String> {
+public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<ArrayList<Movie>> {
 
     private static final int NUMBER_OF_COLUMNS = 2;
     private static final int MOVIE_SEARCH_LOADER_ID = 100;
@@ -47,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mLayoutManager = new GridLayoutManager(this, NUMBER_OF_COLUMNS);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
+
         //TODO Specify an adapter
         //mAdapter = new mAdapter(dataSet);
         mRecyclerView.setAdapter(mAdapter);
@@ -62,24 +67,24 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     // AsyncTaskLoader
     @NonNull
     @Override
-    public Loader<String> onCreateLoader(int id, @Nullable Bundle args) {
-        return new AsyncTaskLoader<String>(this) {
+    public Loader<ArrayList<Movie>> onCreateLoader(int id, @Nullable Bundle args) {
+        return new AsyncTaskLoader<ArrayList<Movie>>(this) {
             // Called on a worker thread to perform the actual load and return the result of the
             // load operation
             @Nullable
             @Override
-            public String loadInBackground() {
-                String jsonResult = "";
+            public ArrayList<Movie> loadInBackground() {
+                ArrayList<Movie> films = new ArrayList<>();
 
                 try{
                     URL searchUrl = NetworkUtils.buildUrl(mostPopular);
-                    jsonResult = NetworkUtils.getResponseFromHttpUrl(searchUrl);
-                    //Todo parseJson
+                    String jsonResult = NetworkUtils.getResponseFromHttpUrl(searchUrl);
+                    films = JsonUtils.parseMovieJson(jsonResult);
                 } catch (IOException e) {
                     Log.e(TAG, "Error with network or stream reading: " + e);
                 }
 
-                return jsonResult;
+                return films;
             }
 
             @Override
@@ -91,13 +96,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     @Override
-    public void onLoadFinished(@NonNull Loader<String> loader, String data) {
-        //TODO display parsed JSON
-        Log.e("redRabbit", data);
+    public void onLoadFinished(@NonNull Loader<ArrayList<Movie>> loader, ArrayList<Movie> data) {
+
     }
 
     @Override
-    public void onLoaderReset(@NonNull Loader<String> loader) {
+    public void onLoaderReset(@NonNull Loader<ArrayList<Movie>> loader) {
         // Empty on purpose
     }
 }
