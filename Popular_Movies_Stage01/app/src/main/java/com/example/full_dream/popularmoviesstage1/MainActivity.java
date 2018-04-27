@@ -30,11 +30,10 @@ public class MainActivity extends AppCompatActivity implements PosterAdapter.Pos
     private static final String mostPopular = "popularity.desc";
     private static final String topRated = "vote_average.desc";
 
-    // Following the tutorial code for initial setup of RecyclerView:
+    // Following the tutorial code at:
     // https://developer.android.com/guide/topics/ui/layout/recyclerview.html#java
     // ^Fuck that tutorial, looked back at my code for S05.01-Exercise-AsyncTaskLoader
     // for a sanity check
-//    @BindView(R.id.rv_poster_list) RecyclerView mRecyclerView;
     private RecyclerView mRecyclerView;
     private PosterAdapter mPosterAdapter;
 
