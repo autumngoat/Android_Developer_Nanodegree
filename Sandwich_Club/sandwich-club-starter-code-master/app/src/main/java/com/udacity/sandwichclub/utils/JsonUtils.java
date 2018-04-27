@@ -106,7 +106,7 @@ public class JsonUtils {
 
             breadMiddleBread = new Sandwich(mainName, aliases, origin, description, image, ingredients);
         } catch (JSONException e) {
-            Log.e("TAG", "Problem parsing the sandwich JSON " + e);
+            Log.e(TAG, "Problem parsing the sandwich JSON " + e);
         }
 
         return breadMiddleBread;

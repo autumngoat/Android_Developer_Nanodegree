@@ -16,9 +16,9 @@ import java.util.ArrayList;
 public class JsonUtils {
     // Tweaked code from previous project - Sandwich Club app
     // JSON schema from: https://developers.themoviedb.org/3/discover/movie-discover
+    // Apparently total_results != results.length()
     private static String TAG = JsonUtils.class.getSimpleName();
     private static String KEY_RESULTS = "results";
-    private static String KEY_TOTAL_RESULTS = "total_results";
     private static String KEY_TITLE = "title";
     private static String KEY_RELEASE_DATE = "release_date";
     private static String KEY_POSTER_PATH = "poster_path";
@@ -35,15 +35,13 @@ public class JsonUtils {
         try {
             JSONObject root = new JSONObject(json);
             JSONArray results = root.getJSONArray(KEY_RESULTS);
-            int totalResults = root.getInt(KEY_TOTAL_RESULTS);
-            for(int i = 0; i < totalResults; i++){
+            for(int i = 0; i < results.length(); i++){
                 JSONObject result = results.getJSONObject(i);
                 String title = result.getString(KEY_TITLE);
                 String releaseDate = result.getString(KEY_RELEASE_DATE);
                 String posterPath = result.getString(KEY_POSTER_PATH);
                 double voteAvg = result.getDouble(KEY_VOTE_AVG);
                 String plotSynopsis = result.getString(KEY_PLOT_SYNOPSIS);
-
                 movies.add(new Movie(title, releaseDate, posterPath, voteAvg, plotSynopsis));
             }
         } catch (JSONException e) {
