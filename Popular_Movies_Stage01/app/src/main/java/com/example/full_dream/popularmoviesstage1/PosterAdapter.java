@@ -51,15 +51,17 @@ import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
+//import com.bumptech.glide.Glide;
 import com.example.full_dream.popularmoviesstage1.model.Movie;
 import com.example.full_dream.popularmoviesstage1.utils.NetworkUtils;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -110,9 +112,16 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
     @Override
     public void onBindViewHolder(@NonNull PosterAdapterViewHolder posterViewHolder, int position) {
         Movie movie = mMovieData.get(position);
-        Uri uri = NetworkUtils.buildImgUri(movie.getPoster());
-        Glide.with(posterViewHolder.itemView.getContext()).load(uri).into(posterViewHolder.mPosterImageView);
+//        Uri uri = NetworkUtils.buildImgUri(movie.getPoster());
+        String uri = NetworkUtils.buildImgUri(movie.getPoster());
+//        Glide.with(posterViewHolder.itemView.getContext()) // Same as MainActivity.this
+//                .load(uri)
+//                .into(posterViewHolder.mPosterImageView);
+        Picasso.get()
+                .load(uri)
+                .into(posterViewHolder.mPosterImageView);
         posterViewHolder.mTitleTextView.setText(movie.getTitle());
+
     }
 
     /**
@@ -128,6 +137,9 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
 
     public void setMovieData(ArrayList<Movie> movieData){
         mMovieData = movieData;
+        for(Movie movie : movieData){
+            Log.e("Please Not Null", movie.getTitle());
+        }
         notifyDataSetChanged();
     }
 

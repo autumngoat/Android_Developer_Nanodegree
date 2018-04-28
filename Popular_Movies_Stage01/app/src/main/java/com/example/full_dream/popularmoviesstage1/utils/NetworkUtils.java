@@ -120,16 +120,17 @@ public class NetworkUtils {
         }
     }
 
-    public static Uri buildImgUri(String posterPath){
+    public static String buildImgUri(String posterPath){
         if(posterPath.isEmpty()){
             return null;
         }
 
-        Uri builtUri = Uri.parse(TMDB_IMG_BASE_URL).buildUpon()
-                .appendPath(IMAGE_FILE_SIZE)
-                .appendPath(posterPath)
-                .build();
-        return builtUri;
+//        Uri builtUri = Uri.parse(TMDB_IMG_BASE_URL).buildUpon()
+//                .appendPath(IMAGE_FILE_SIZE)
+//                .appendPath(posterPath)
+//                .build();
+        Log.e("buildImgUri", TMDB_IMG_BASE_URL + "/" + IMAGE_FILE_SIZE + "/" + posterPath);
+        return TMDB_IMG_BASE_URL + "/" + IMAGE_FILE_SIZE + "/" + posterPath;
 //        URL url = null;
 //        try {
 //            url = new URL(builtUri.toString());
