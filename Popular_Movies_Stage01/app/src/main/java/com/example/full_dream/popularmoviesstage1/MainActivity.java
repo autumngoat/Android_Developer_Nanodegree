@@ -56,6 +56,7 @@ import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -71,14 +72,14 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity implements PosterAdapter.PosterAdapterOnClickHandler,
         LoaderManager.LoaderCallbacks<ArrayList<Movie>> {
 
-    private static final int NUMBER_OF_COLUMNS = 2;
+    private static final int NUMBER_OF_COLUMNS = 3;
     private static final int MOVIE_SEARCH_LOADER_ID = 100;
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final String mostPopular = "popularity.desc";
     private static final String topRated = "vote_average.desc";
 
     // Looked back at my code for S05.01-Exercise-AsyncTaskLoader
-    // for a sanity check
+    // for AsyncTaskLoader setup
     private RecyclerView mRecyclerView;
     private PosterAdapter mPosterAdapter;
 
@@ -90,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements PosterAdapter.Pos
         mRecyclerView = (RecyclerView)findViewById(R.id.rv_poster_list);
 
         // Use a Grid Layout Manager as per the rubric
-        LinearLayoutManager mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        GridLayoutManager mLayoutManager = new GridLayoutManager(this, NUMBER_OF_COLUMNS);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         mRecyclerView.setHasFixedSize(true);
