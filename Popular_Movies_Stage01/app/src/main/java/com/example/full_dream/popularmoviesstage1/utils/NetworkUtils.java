@@ -50,6 +50,8 @@ package com.example.full_dream.popularmoviesstage1.utils;
 import android.net.Uri;
 import android.util.Log;
 
+import com.example.full_dream.popularmoviesstage1.R;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -71,13 +73,14 @@ public class NetworkUtils {
     private static final String TMDB_DISCOVER_BASE_URL = "https://api.themoviedb.org/3/discover/movie";
     private static final String PARAM_SORT_BY = "sort_by";
     private static final String PARAM_API_KEY = "api_key";
-    private static final String apiKey = "GetYourOwnApiKey";
+    private static final String FORWARD_SLASH = "/";
+    private static final String apiKey = "GetYourOwnApi";
 
     /**
-     * Bulds the URL used to query TheMovieDB (TMDB).
+     * Builds the URL used to query TheMovieDB (TMDB).
      *
-     * @param tmdbDiscoveryQuery The keyword that will be queried for.
-     * @return The URL used to query TheMovieDB.
+     * @param tmdbDiscoveryQuery The keyword that will be queried for
+     * @return The URL used to query TheMovieDB
      */
     public static URL buildSearchUrl(String tmdbDiscoveryQuery){
         Uri builtUri = Uri.parse(TMDB_DISCOVER_BASE_URL).buildUpon()
@@ -97,8 +100,8 @@ public class NetworkUtils {
     /**
      * Returns the entire JSON result from the HTTP response.
      *
-     * @param url The URL to fetch the HTTP response from.
-     * @return The JSON contents of the HTTP response.
+     * @param url The URL to fetch the HTTP response from
+     * @return The JSON contents of the HTTP response
      * @throws IOException related to network and stream reading
      */
     public static String getResponseFromHttpUrl(URL url) throws IOException {
@@ -120,11 +123,24 @@ public class NetworkUtils {
         }
     }
 
+    /**
+     * Builds the URL used to retrieve the movie poster image.
+     *
+     * @param posterPath File path portion of image link
+     * @return Movie poster image link
+     */
     public static String buildImgPath(String posterPath){
         if(posterPath.isEmpty()){
             return null;
         }
 
-        return TMDB_IMG_BASE_URL + "/" + IMAGE_FILE_SIZE + "/" + posterPath;
+        // Uri and URL appendPath returns broken links
+        StringBuilder sb = new StringBuilder();
+        sb.append(TMDB_IMG_BASE_URL)
+                .append(FORWARD_SLASH)
+                .append(IMAGE_FILE_SIZE)
+                .append(FORWARD_SLASH)
+                .append(posterPath);
+        return sb.toString();
     }
 }

@@ -87,7 +87,7 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
     }
 
     /**
-     * Creates ViewHolders
+     * Creates ViewHolders by inflating the movie_list_item view
      */
     @NonNull
     @Override
@@ -102,10 +102,7 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
     }
 
     /**
-     * Fills/refills the ViewHolders
-     *
-     * @param posterViewHolder
-     * @param position
+     * Fills/refills the ViewHolders by binding the data to the UI components
      */
     @Override
     public void onBindViewHolder(@NonNull PosterAdapterViewHolder posterViewHolder, int position) {
@@ -119,7 +116,7 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
     }
 
     /**
-     * Total number of ViewHolders
+     * Total number of ViewHolders by returning the list size
      *
      * @return
      */
@@ -146,7 +143,6 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
 
         /**
          * Sets click listener on newly created empty ViewHolder
-         * @param view
          */
         public PosterAdapterViewHolder(View view){
             super(view);

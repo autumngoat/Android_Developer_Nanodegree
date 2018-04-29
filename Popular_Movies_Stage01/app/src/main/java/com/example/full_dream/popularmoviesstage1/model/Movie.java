@@ -58,6 +58,15 @@ public class Movie {
     private double voteAvg;
     private String plotSynopsis;
 
+    /**
+     * Constructor for a Movie object.
+     *
+     * @param title Name of Movie
+     * @param releaseDate YYYY/MM/DD debut of Movie
+     * @param poster File path of poster image
+     * @param voteAvg Average rating of Movie on TMDB
+     * @param plotSynopsis Brief summary of Movie
+     */
     public Movie(String title, String releaseDate, String poster, double voteAvg, String plotSynopsis){
         this.title = title;
         this.releaseDate = releaseDate;
