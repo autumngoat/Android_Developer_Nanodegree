@@ -63,6 +63,10 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 /**
  * Provides ViewHolders to display inside RecyclerView
  */
@@ -111,8 +115,6 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
         Picasso.get()
                 .load(path)
                 .into(posterViewHolder.mPosterImageView);
-        posterViewHolder.mTitleTextView.setText(movie.getTitle());
-
     }
 
     /**
@@ -137,27 +139,22 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
     /**
      * ViewHolder constructor
      */
-    public class PosterAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView mTitleTextView;
-        ImageView mPosterImageView;
+    public class PosterAdapterViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.iv_poster) ImageView mPosterImageView;
 
         /**
          * Sets click listener on newly created empty ViewHolder
          */
         public PosterAdapterViewHolder(View view){
             super(view);
-            mTitleTextView = (TextView)view.findViewById(R.id.tv_title);
-            mPosterImageView = (ImageView)view.findViewById(R.id.iv_poster);
-            view.setOnClickListener(this);
+            ButterKnife.bind(this, view);
         }
 
         /**
          * Sends selected View's associated Movie object to click-handler.
-         *
-         * @param view The View that was clicked
          */
-        @Override
-        public void onClick(View view) {
+        @OnClick(R.id.iv_poster)
+        public void onClickShowDetails() {
             int adapterPosition = getAdapterPosition();
             Movie selectedMovie = mMovieData.get(adapterPosition);
             String[] movieData = {selectedMovie.getTitle(), selectedMovie.getReleaseDate(),

@@ -74,7 +74,7 @@ public class NetworkUtils {
     private static final String PARAM_SORT_BY = "sort_by";
     private static final String PARAM_API_KEY = "api_key";
     private static final String FORWARD_SLASH = "/";
-    private static final String apiKey = "GetYourOwnApi";
+    private static final String apiKey = "GetYourOwnApiKey";
 
     /**
      * Builds the URL used to query TheMovieDB (TMDB).

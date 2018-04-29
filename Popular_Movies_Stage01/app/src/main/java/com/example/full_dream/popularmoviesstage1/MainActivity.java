@@ -68,6 +68,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class MainActivity extends AppCompatActivity implements PosterAdapter.PosterAdapterOnClickHandler,
         LoaderManager.LoaderCallbacks<ArrayList<Movie>> {
 
@@ -79,15 +82,14 @@ public class MainActivity extends AppCompatActivity implements PosterAdapter.Pos
 
     // Looked back at my code for S05.01-Exercise-AsyncTaskLoader
     // for AsyncTaskLoader setup
-    private RecyclerView mRecyclerView;
+    @BindView(R.id.rv_poster_list) RecyclerView mRecyclerView;
     private PosterAdapter mPosterAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//        ButterKnife.bind(this, mRecyclerView);
-        mRecyclerView = (RecyclerView)findViewById(R.id.rv_poster_list);
+        ButterKnife.bind(this);
 
         // Use a Grid Layout Manager as per the rubric
         GridLayoutManager mLayoutManager = new GridLayoutManager(this, NUMBER_OF_COLUMNS);
