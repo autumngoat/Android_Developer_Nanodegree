@@ -50,12 +50,10 @@ package com.example.full_dream.popularmoviesstage1;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.example.full_dream.popularmoviesstage1.model.Movie;
 import com.example.full_dream.popularmoviesstage1.utils.NetworkUtils;
@@ -71,17 +69,9 @@ import butterknife.OnClick;
  * Provides ViewHolders to display inside RecyclerView
  */
 public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdapterViewHolder> {
-    private ArrayList<Movie> mMovieData;
-
     // I adapted much of the Adapter code from my code for S05.01-Exercise-AsyncTaskLoader
     private final PosterAdapterOnClickHandler mClickHandler;
-
-    /**
-     * The interface that receives onClick messages.
-     */
-    public interface PosterAdapterOnClickHandler {
-        void onClick(String[] movieData);
-    }
+    private ArrayList<Movie> mMovieData;
 
     /**
      * Creates a PosterAdapter.
@@ -99,9 +89,10 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
         Context context = parent.getContext();
         int layoutIdForListItem = R.layout.movie_list_item;
         LayoutInflater inflater = LayoutInflater.from(context);
-        boolean shouldAttachToParentImmediately = false;
 
-        View view = inflater.inflate(layoutIdForListItem, parent, shouldAttachToParentImmediately);
+        View view = inflater.inflate(layoutIdForListItem,
+                parent,
+                context.getResources().getBoolean(R.bool.shouldAttachToParentImmediately));
         return new PosterAdapterViewHolder(view);
     }
 
@@ -124,28 +115,33 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
      */
     @Override
     public int getItemCount() {
-        if(null == mMovieData) return 0;
+        if (null == mMovieData) return 0;
         return mMovieData.size();
     }
 
-    public void setMovieData(ArrayList<Movie> movieData){
+    public void setMovieData(ArrayList<Movie> movieData) {
         mMovieData = movieData;
-        for(Movie movie : movieData){
-            Log.e("Please Not Null", movie.getTitle());
-        }
         notifyDataSetChanged();
+    }
+
+    /**
+     * The interface that receives onClick messages.
+     */
+    public interface PosterAdapterOnClickHandler {
+        void onClick(String[] movieData);
     }
 
     /**
      * ViewHolder constructor
      */
     public class PosterAdapterViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.iv_poster) ImageView mPosterImageView;
+        @BindView(R.id.iv_poster)
+        ImageView mPosterImageView;
 
         /**
          * Sets click listener on newly created empty ViewHolder
          */
-        public PosterAdapterViewHolder(View view){
+        public PosterAdapterViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
         }

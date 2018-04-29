@@ -57,11 +57,18 @@ import butterknife.ButterKnife;
 
 public class DetailActivity extends AppCompatActivity {
 
-    @BindView(R.id.tv_detail_title) TextView mTitle;
-    @BindView(R.id.tv_detail_vote_avg) TextView mRating;
-    @BindView(R.id.tv_detail_release_date) TextView mReleaseDate;
-    @BindView(R.id.tv_detail_summary) TextView mSummary;
-
+    public static final int MOVIE_TITLE = 0;
+    public static final int MOVIE_SCORE = 1;    // Was bothering me that it didn't line up with RATING
+    public static final int MOVIE_DEBUT = 2;
+    public static final int MOVIE_BRIEF = 3;
+    @BindView(R.id.tv_detail_title)
+    TextView mTitle;
+    @BindView(R.id.tv_detail_vote_avg)
+    TextView mRating;
+    @BindView(R.id.tv_detail_release_date)
+    TextView mReleaseDate;
+    @BindView(R.id.tv_detail_summary)
+    TextView mSummary;
     private String[] mMovieDetails;
 
     @Override
@@ -73,13 +80,13 @@ public class DetailActivity extends AppCompatActivity {
 
         Intent intentThatStartedThisActivity = getIntent();
 
-        if(intentThatStartedThisActivity != null){
-            if(intentThatStartedThisActivity.hasExtra(Intent.EXTRA_TEXT)) {
+        if (intentThatStartedThisActivity != null) {
+            if (intentThatStartedThisActivity.hasExtra(Intent.EXTRA_TEXT)) {
                 mMovieDetails = intentThatStartedThisActivity.getStringArrayExtra(Intent.EXTRA_TEXT);
-                mTitle.setText(mMovieDetails[0]);
-                mRating.setText(mMovieDetails[1]);
-                mReleaseDate.setText(mMovieDetails[2]);
-                mSummary.setText(mMovieDetails[3]);
+                mTitle.setText(mMovieDetails[MOVIE_TITLE]);
+                mRating.setText(mMovieDetails[MOVIE_SCORE]);
+                mReleaseDate.setText(mMovieDetails[MOVIE_DEBUT]);
+                mSummary.setText(mMovieDetails[MOVIE_BRIEF]);
             }
         }
     }

@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ /*
   ~  * PROJECT LICENSE
   ~  *
@@ -54,5 +53,5 @@
     <ImageView
         android:id="@+id/iv_poster"
         android:layout_width="match_parent"
-        android:layout_height="185dp" />
+        android:layout_height="@dimen/posterHeight" />
 </FrameLayout>

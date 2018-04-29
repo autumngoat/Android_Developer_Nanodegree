@@ -59,6 +59,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Scanner;
 
+import butterknife.BindString;
+
 /**
  * Utilities used to communicate with the network.
  */
@@ -75,6 +77,11 @@ public class NetworkUtils {
     private static final String PARAM_API_KEY = "api_key";
     private static final String FORWARD_SLASH = "/";
     private static final String apiKey = "GetYourOwnApiKey";
+    // Unsure how useful ButterKnife Resource Binding is.  Did it just to experiment.
+    // Should I have moved all of these untranslatable constant Strings into strings.xml
+    // and bound them with @BindString?
+    private static @BindString(R.string.urlErr)
+    String urlErr;
 
     /**
      * Builds the URL used to query TheMovieDB (TMDB).
@@ -82,7 +89,7 @@ public class NetworkUtils {
      * @param tmdbDiscoveryQuery The keyword that will be queried for
      * @return The URL used to query TheMovieDB
      */
-    public static URL buildSearchUrl(String tmdbDiscoveryQuery){
+    public static URL buildSearchUrl(String tmdbDiscoveryQuery) {
         Uri builtUri = Uri.parse(TMDB_DISCOVER_BASE_URL).buildUpon()
                 .appendQueryParameter(PARAM_API_KEY, apiKey)
                 .appendQueryParameter(PARAM_SORT_BY, tmdbDiscoveryQuery)
@@ -91,7 +98,7 @@ public class NetworkUtils {
         try {
             url = new URL(builtUri.toString());
         } catch (MalformedURLException e) {
-            Log.e(TAG, "TMDB Discovery query resulted in an malformed URL: " + e);
+            Log.e(TAG, urlErr + e);
         }
 
         return url;
@@ -106,14 +113,14 @@ public class NetworkUtils {
      */
     public static String getResponseFromHttpUrl(URL url) throws IOException {
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-        try{
+        try {
             InputStream in = urlConnection.getInputStream();
 
             Scanner scanner = new Scanner(in);
             scanner.useDelimiter("\\A");
 
             boolean hasInput = scanner.hasNext();
-            if(hasInput) {
+            if (hasInput) {
                 return scanner.next();
             } else {
                 return null;
@@ -129,8 +136,8 @@ public class NetworkUtils {
      * @param posterPath File path portion of image link
      * @return Movie poster image link
      */
-    public static String buildImgPath(String posterPath){
-        if(posterPath.isEmpty()){
+    public static String buildImgPath(String posterPath) {
+        if (posterPath.isEmpty()) {
             return null;
         }
 

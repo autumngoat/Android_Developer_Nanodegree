@@ -68,6 +68,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -79,10 +80,13 @@ public class MainActivity extends AppCompatActivity implements PosterAdapter.Pos
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final String mostPopular = "popularity.desc";
     private static final String topRated = "vote_average.desc";
+    @BindString(R.string.networkErr)
+    String networkErr;
 
     // Looked back at my code for S05.01-Exercise-AsyncTaskLoader
     // for AsyncTaskLoader setup
-    @BindView(R.id.rv_poster_list) RecyclerView mRecyclerView;
+    @BindView(R.id.rv_poster_list)
+    RecyclerView mRecyclerView;
     private PosterAdapter mPosterAdapter;
 
     @Override
@@ -118,11 +122,11 @@ public class MainActivity extends AppCompatActivity implements PosterAdapter.Pos
                 ArrayList<Movie> films = new ArrayList<>();
 
                 URL searchUrl = NetworkUtils.buildSearchUrl(mostPopular);
-                try{
+                try {
                     String jsonResult = NetworkUtils.getResponseFromHttpUrl(searchUrl);
                     films = JsonUtils.parseMovieJson(jsonResult);
                 } catch (IOException e) {
-                    Log.e(TAG, "Error with network or stream reading: " + e);
+                    Log.e(TAG, networkErr + e);
                 }
 
                 return films;
@@ -132,7 +136,7 @@ public class MainActivity extends AppCompatActivity implements PosterAdapter.Pos
             @Override
             protected void onStartLoading() {
                 super.onStartLoading();
-                if(mMovieData != null){
+                if (mMovieData != null) {
                     deliverResult(mMovieData);
                 } else {
                     forceLoad();
@@ -149,9 +153,7 @@ public class MainActivity extends AppCompatActivity implements PosterAdapter.Pos
 
     @Override
     public void onLoadFinished(@NonNull Loader<ArrayList<Movie>> loader, ArrayList<Movie> data) {
-        if(data == null){
-
-        } else {
+        if (data != null) {
             mPosterAdapter.setMovieData(data);
         }
     }

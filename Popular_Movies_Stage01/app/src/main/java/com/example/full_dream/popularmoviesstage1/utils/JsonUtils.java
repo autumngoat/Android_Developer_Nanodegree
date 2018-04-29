@@ -49,6 +49,7 @@ package com.example.full_dream.popularmoviesstage1.utils;
 
 import android.util.Log;
 
+import com.example.full_dream.popularmoviesstage1.R;
 import com.example.full_dream.popularmoviesstage1.model.Movie;
 
 import org.json.JSONArray;
@@ -56,6 +57,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+
+import butterknife.BindString;
 
 /**
  * Provides methods to parse JSON and load parsed data into data model(s).
@@ -71,18 +74,20 @@ public class JsonUtils {
     private static String KEY_POSTER_PATH = "poster_path";
     private static String KEY_VOTE_AVG = "vote_average";
     private static String KEY_PLOT_SYNOPSIS = "overview";
+    private static @BindString(R.string.jsonErr)
+    String jsonErr;
 
     /**
      * Parses the JSON string and loads the contents into a Movie object,
      * which is then added to an ArrayList of Movie objects.
      */
-    public static ArrayList<Movie> parseMovieJson(String json){
+    public static ArrayList<Movie> parseMovieJson(String json) {
         ArrayList<Movie> movies = new ArrayList<>();
 
         try {
             JSONObject root = new JSONObject(json);
             JSONArray results = root.getJSONArray(KEY_RESULTS);
-            for(int i = 0; i < results.length(); i++){
+            for (int i = 0; i < results.length(); i++) {
                 JSONObject result = results.getJSONObject(i);
                 String title = result.getString(KEY_TITLE);
                 String releaseDate = result.getString(KEY_RELEASE_DATE);
@@ -92,7 +97,7 @@ public class JsonUtils {
                 movies.add(new Movie(title, releaseDate, posterPath, voteAvg, plotSynopsis));
             }
         } catch (JSONException e) {
-            Log.e(TAG, "Problem parsing TMDB JSON " + e);
+            Log.e(TAG, jsonErr + e);
         }
 
         return movies;

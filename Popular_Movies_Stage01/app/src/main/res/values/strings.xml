@@ -48,5 +48,8 @@
 <resources>
     <string name="app_name">Popular Movies, Stage 1</string>
 
-
+    <!-- Error messages -->
+    <string name="networkErr">Error with network or stream reading: </string>
+    <string name="jsonErr">Problem parsing TMDB JSON: </string>
+    <string name="urlErr">TMDB Discovery query resulted in an malformed URL: </string>
 </resources>
