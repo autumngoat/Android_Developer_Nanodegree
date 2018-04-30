@@ -50,6 +50,7 @@ package com.example.full_dream.popularmoviesstage1.utils;
 import android.net.Uri;
 import android.util.Log;
 
+import com.example.full_dream.popularmoviesstage1.MainActivity;
 import com.example.full_dream.popularmoviesstage1.R;
 
 import java.io.IOException;
@@ -76,12 +77,7 @@ public class NetworkUtils {
     private static final String PARAM_SORT_BY = "sort_by";
     private static final String PARAM_API_KEY = "api_key";
     private static final String FORWARD_SLASH = "/";
-    private static final String apiKey = "GetYourOwnApiKey";
-    // Unsure how useful ButterKnife Resource Binding is.  Did it just to experiment.
-    // Should I have moved all of these untranslatable constant Strings into strings.xml
-    // and bound them with @BindString?
-    private static @BindString(R.string.urlErr)
-    String urlErr;
+    private static final String apiKey = "GetYourOwnApi";
 
     /**
      * Builds the URL used to query TheMovieDB (TMDB).
@@ -98,7 +94,7 @@ public class NetworkUtils {
         try {
             url = new URL(builtUri.toString());
         } catch (MalformedURLException e) {
-            Log.e(TAG, urlErr + e);
+            Log.e(TAG,"TMDB Discovery query resulted in an malformed URL:" + e);
         }
 
         return url;

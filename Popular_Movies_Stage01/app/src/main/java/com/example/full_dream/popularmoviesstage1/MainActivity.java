@@ -59,6 +59,9 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
 import com.example.full_dream.popularmoviesstage1.model.Movie;
 import com.example.full_dream.popularmoviesstage1.utils.JsonUtils;
@@ -75,11 +78,10 @@ import butterknife.ButterKnife;
 public class MainActivity extends AppCompatActivity implements PosterAdapter.PosterAdapterOnClickHandler,
         LoaderManager.LoaderCallbacks<ArrayList<Movie>> {
 
+    private boolean toggleSearchOption = true;
     private static final int NUMBER_OF_COLUMNS = 3;
     private static final int MOVIE_SEARCH_LOADER_ID = 100;
     private static final String TAG = MainActivity.class.getSimpleName();
-    private static final String mostPopular = "popularity.desc";
-    private static final String topRated = "vote_average.desc";
     @BindString(R.string.networkErr)
     String networkErr;
 
@@ -121,7 +123,15 @@ public class MainActivity extends AppCompatActivity implements PosterAdapter.Pos
             public ArrayList<Movie> loadInBackground() {
                 ArrayList<Movie> films = new ArrayList<>();
 
-                URL searchUrl = NetworkUtils.buildSearchUrl(mostPopular);
+                URL searchUrl;
+
+                if(toggleSearchOption){
+                    searchUrl = NetworkUtils.buildSearchUrl(getResources()
+                            .getString(R.string.mostPopularDesc));
+                } else {
+                    searchUrl = NetworkUtils.buildSearchUrl(getResources()
+                            .getString(R.string.higestRatedDesc));
+                }
                 try {
                     String jsonResult = NetworkUtils.getResponseFromHttpUrl(searchUrl);
                     films = JsonUtils.parseMovieJson(jsonResult);
@@ -143,6 +153,11 @@ public class MainActivity extends AppCompatActivity implements PosterAdapter.Pos
                 }
             }
 
+            /**
+             * Cache the data in a member variable and deliver it in onStartLoading.
+             *
+             * @param data Data to cache and deliver to onStartLoading
+             */
             @Override
             public void deliverResult(@Nullable ArrayList<Movie> data) {
                 mMovieData = data;
@@ -151,6 +166,12 @@ public class MainActivity extends AppCompatActivity implements PosterAdapter.Pos
         };
     }
 
+    /**
+     * Show data when load is finished or do nothing
+     *
+     * @param loader
+     * @param data
+     */
     @Override
     public void onLoadFinished(@NonNull Loader<ArrayList<Movie>> loader, ArrayList<Movie> data) {
         if (data != null) {
@@ -158,11 +179,20 @@ public class MainActivity extends AppCompatActivity implements PosterAdapter.Pos
         }
     }
 
+    /**
+     *
+     * @param loader
+     */
     @Override
     public void onLoaderReset(@NonNull Loader<ArrayList<Movie>> loader) {
         // Empty on purpose
     }
 
+    /**
+     * Handle RecyclerView item clicks to launch DetailActivity.
+     *
+     * @param movieDetails String array of parsed JSON data to pass to DetailActivity
+     */
     @Override
     public void onClick(String[] movieDetails) {
         Context context = this;
@@ -170,5 +200,42 @@ public class MainActivity extends AppCompatActivity implements PosterAdapter.Pos
         Intent intentToStartDetailActivity = new Intent(context, destinationClass);
         intentToStartDetailActivity.putExtra(Intent.EXTRA_TEXT, movieDetails);
         startActivity(intentToStartDetailActivity);
+    }
+
+    /**
+     * Inflate the menu for this Activity, only called once.
+     *
+     * @param menu Menu resource file to inflate for this activity
+     * @return Must return true for menu to appear
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.settings, menu);
+        return getResources().getBoolean(R.bool.hasMenuInflated);
+    }
+
+    /**
+     * Handle clicks on menu items.
+     *
+     * @param item Option selected
+     * @return True to consume and false to continue menu processing
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()){
+            case R.id.action_popular:
+                mPosterAdapter.setMovieData(null);
+                toggleSearchOption = true;
+                getSupportLoaderManager().restartLoader(MOVIE_SEARCH_LOADER_ID, null, this);
+                return true;
+            case R.id.action_top_rated:
+                mPosterAdapter.setMovieData(null);
+                toggleSearchOption = false;
+                getSupportLoaderManager().restartLoader(MOVIE_SEARCH_LOADER_ID, null, this);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }

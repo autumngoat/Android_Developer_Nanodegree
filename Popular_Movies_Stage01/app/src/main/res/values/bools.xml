@@ -48,4 +48,5 @@
 
 <resources>
     <bool name="shouldAttachToParentImmediately">false</bool>
+    <bool name="hasMenuInflated">true</bool>
 </resources>
