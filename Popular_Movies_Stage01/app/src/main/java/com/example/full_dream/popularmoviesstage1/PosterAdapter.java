@@ -57,13 +57,13 @@ import android.widget.ImageView;
 
 import com.example.full_dream.popularmoviesstage1.model.Movie;
 import com.example.full_dream.popularmoviesstage1.utils.NetworkUtils;
+
 import com.squareup.picasso.Picasso;
-
-import java.util.ArrayList;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import java.util.ArrayList;
 
 /**
  * Provides ViewHolders to display inside RecyclerView
@@ -153,8 +153,12 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
         public void onClickShowDetails() {
             int adapterPosition = getAdapterPosition();
             Movie selectedMovie = mMovieData.get(adapterPosition);
-            String[] movieData = {selectedMovie.getTitle(), selectedMovie.getReleaseDate(),
-                    Double.toString(selectedMovie.getVoteAvg()), selectedMovie.getPlotSynopsis()};
+            String[] movieData = {
+                    selectedMovie.getPoster(),
+                    selectedMovie.getTitle(),
+                    selectedMovie.getReleaseDate(),
+                    Double.toString(selectedMovie.getVoteAvg()),
+                    selectedMovie.getPlotSynopsis()};
             mClickHandler.onClick(movieData);
         }
     }

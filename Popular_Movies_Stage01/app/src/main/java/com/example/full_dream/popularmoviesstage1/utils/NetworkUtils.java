@@ -50,17 +50,12 @@ package com.example.full_dream.popularmoviesstage1.utils;
 import android.net.Uri;
 import android.util.Log;
 
-import com.example.full_dream.popularmoviesstage1.MainActivity;
-import com.example.full_dream.popularmoviesstage1.R;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Scanner;
-
-import butterknife.BindString;
 
 /**
  * Utilities used to communicate with the network.
@@ -77,7 +72,7 @@ public class NetworkUtils {
     private static final String PARAM_SORT_BY = "sort_by";
     private static final String PARAM_API_KEY = "api_key";
     private static final String FORWARD_SLASH = "/";
-    private static final String apiKey = "GetYourOwnApi";
+    private static final String apiKey = "GetYourOwnApiKey";
 
     /**
      * Builds the URL used to query TheMovieDB (TMDB).

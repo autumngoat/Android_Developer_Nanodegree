@@ -67,14 +67,17 @@ import com.example.full_dream.popularmoviesstage1.model.Movie;
 import com.example.full_dream.popularmoviesstage1.utils.JsonUtils;
 import com.example.full_dream.popularmoviesstage1.utils.NetworkUtils;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
-
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
+
+/**
+ * Setup the main page (list of posters)
+ */
 public class MainActivity extends AppCompatActivity implements PosterAdapter.PosterAdapterOnClickHandler,
         LoaderManager.LoaderCallbacks<ArrayList<Movie>> {
 
@@ -84,9 +87,6 @@ public class MainActivity extends AppCompatActivity implements PosterAdapter.Pos
     private static final String TAG = MainActivity.class.getSimpleName();
     @BindString(R.string.networkErr)
     String networkErr;
-
-    // Looked back at my code for S05.01-Exercise-AsyncTaskLoader
-    // for AsyncTaskLoader setup
     @BindView(R.id.rv_poster_list)
     RecyclerView mRecyclerView;
     private PosterAdapter mPosterAdapter;
@@ -111,6 +111,10 @@ public class MainActivity extends AppCompatActivity implements PosterAdapter.Pos
 
     // Looked to my code for T05b.02-Exercise-AddAsyncTaskLoader for reference for how to setup
     // AsyncTaskLoader
+
+    /**
+     * Create and return a new Loader for the given id.
+     */
     @Override
     public Loader<ArrayList<Movie>> onCreateLoader(int id, @Nullable Bundle args) {
         return new AsyncTaskLoader<ArrayList<Movie>>(this) {
@@ -118,6 +122,12 @@ public class MainActivity extends AppCompatActivity implements PosterAdapter.Pos
             ArrayList<Movie> mMovieData;
 
             // Equivalent to AsyncTask doInBackground
+
+            /**
+             * Perform the actual task/load, which is to make a network call
+             * to TMDB, parse the JSON response, and return the resultant
+             * Movie objects.
+             */
             @Nullable
             @Override
             public ArrayList<Movie> loadInBackground() {
@@ -180,8 +190,7 @@ public class MainActivity extends AppCompatActivity implements PosterAdapter.Pos
     }
 
     /**
-     *
-     * @param loader
+     * Called when a Loader is reset to make data unavailable
      */
     @Override
     public void onLoaderReset(@NonNull Loader<ArrayList<Movie>> loader) {

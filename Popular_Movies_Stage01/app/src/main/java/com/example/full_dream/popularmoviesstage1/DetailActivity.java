@@ -50,17 +50,23 @@ package com.example.full_dream.popularmoviesstage1;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.full_dream.popularmoviesstage1.utils.NetworkUtils;
+
+import com.squareup.picasso.Picasso;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class DetailActivity extends AppCompatActivity {
 
-    public static final int MOVIE_TITLE = 0;
-    public static final int MOVIE_SCORE = 1;    // Was bothering me that it didn't line up with RATING
-    public static final int MOVIE_DEBUT = 2;
-    public static final int MOVIE_BRIEF = 3;
+    public static final int MOVIE_IMAGE = 0;
+    public static final int MOVIE_TITLE = 1;
+    public static final int MOVIE_SCORE = 2;    // Was bothering me that it didn't line up with RATING
+    public static final int MOVIE_DEBUT = 3;
+    public static final int MOVIE_BRIEF = 4;
+
     @BindView(R.id.tv_detail_title)
     TextView mTitle;
     @BindView(R.id.tv_detail_vote_avg)
@@ -69,6 +75,8 @@ public class DetailActivity extends AppCompatActivity {
     TextView mReleaseDate;
     @BindView(R.id.tv_detail_summary)
     TextView mSummary;
+    @BindView(R.id.iv_detail_poster)
+    ImageView mPoster;
     private String[] mMovieDetails;
 
     @Override
@@ -83,6 +91,11 @@ public class DetailActivity extends AppCompatActivity {
         if (intentThatStartedThisActivity != null) {
             if (intentThatStartedThisActivity.hasExtra(Intent.EXTRA_TEXT)) {
                 mMovieDetails = intentThatStartedThisActivity.getStringArrayExtra(Intent.EXTRA_TEXT);
+
+                Picasso.get()
+                        .load(NetworkUtils.buildImgPath(mMovieDetails[MOVIE_IMAGE]))
+                        .into(mPoster);
+
                 mTitle.setText(mMovieDetails[MOVIE_TITLE]);
                 mRating.setText(mMovieDetails[MOVIE_SCORE]);
                 mReleaseDate.setText(mMovieDetails[MOVIE_DEBUT]);

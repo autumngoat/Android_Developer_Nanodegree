@@ -48,17 +48,13 @@
 package com.example.full_dream.popularmoviesstage1.utils;
 
 import android.util.Log;
-
-import com.example.full_dream.popularmoviesstage1.R;
-import com.example.full_dream.popularmoviesstage1.model.Movie;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
+import com.example.full_dream.popularmoviesstage1.model.Movie;
 
-import butterknife.BindString;
+import java.util.ArrayList;
 
 /**
  * Provides methods to parse JSON and load parsed data into data model(s).
