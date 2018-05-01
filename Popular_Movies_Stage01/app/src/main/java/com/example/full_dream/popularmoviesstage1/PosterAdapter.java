@@ -103,8 +103,13 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
     public void onBindViewHolder(@NonNull PosterAdapterViewHolder posterViewHolder, int position) {
         Movie movie = mMovieData.get(position);
         String path = NetworkUtils.buildImgPath(movie.getPoster());
+
+        // Icons made by "https://www.flaticon.com/authors/freprikepik"
+        // Title: "Popcorn"
+        // Licensed by Creative Commons BY 3.0
         Picasso.get()
                 .load(path)
+                .placeholder(R.drawable.ic_popcorn)
                 .into(posterViewHolder.mPosterImageView);
     }
 

@@ -92,8 +92,12 @@ public class DetailActivity extends AppCompatActivity {
             if (intentThatStartedThisActivity.hasExtra(Intent.EXTRA_TEXT)) {
                 mMovieDetails = intentThatStartedThisActivity.getStringArrayExtra(Intent.EXTRA_TEXT);
 
+                // Icons made by "https://www.flaticon.com/authors/freprikepik"
+                // Title: "Popcorn"
+                // Licensed by Creative Commons BY 3.0
                 Picasso.get()
                         .load(NetworkUtils.buildImgPath(mMovieDetails[MOVIE_IMAGE]))
+                        .placeholder(R.drawable.ic_popcorn)
                         .into(mPoster);
 
                 mTitle.setText(mMovieDetails[MOVIE_TITLE]);
