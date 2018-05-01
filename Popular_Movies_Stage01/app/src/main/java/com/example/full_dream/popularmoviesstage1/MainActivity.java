@@ -49,6 +49,8 @@ package com.example.full_dream.popularmoviesstage1;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
@@ -62,6 +64,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.example.full_dream.popularmoviesstage1.model.Movie;
 import com.example.full_dream.popularmoviesstage1.utils.JsonUtils;
@@ -88,6 +91,8 @@ public class MainActivity extends AppCompatActivity implements PosterAdapter.Pos
     // Is there any point in doing this over just making it a String constant?
     @BindString(R.string.network_err)
     String networkErr;
+    @BindString(R.string.network_connection_msg)
+    String netConnectMsg;
     @BindView(R.id.rv_poster_list)
     RecyclerView mRecyclerView;
     private PosterAdapter mPosterAdapter;
@@ -107,7 +112,15 @@ public class MainActivity extends AppCompatActivity implements PosterAdapter.Pos
         mPosterAdapter = new PosterAdapter(this);
         mRecyclerView.setAdapter(mPosterAdapter);
 
-        getSupportLoaderManager().initLoader(MOVIE_SEARCH_LOADER_ID, null, this);
+        // Checked out https://developer.android.com/training/basics/network-ops/managing
+        // for how to check for network status check
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        if(netInfo != null && netInfo.isConnected()){
+            getSupportLoaderManager().initLoader(MOVIE_SEARCH_LOADER_ID, null, this);
+        } else {
+            Toast.makeText(this, netConnectMsg, Toast.LENGTH_LONG).show();
+        }
     }
 
     // Looked to my code for T05b.02-Exercise-AddAsyncTaskLoader for reference for how to setup

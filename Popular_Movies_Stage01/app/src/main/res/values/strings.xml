@@ -62,4 +62,7 @@
     <!-- Detail Labels -->
     <string name="voter_avg_label">Rating: </string>
     <string name="release_date_label">Released: </string>
+
+    <!-- Network connection message -->
+    <string name="network_connection_msg">Please check your network connection.</string>
 </resources>
