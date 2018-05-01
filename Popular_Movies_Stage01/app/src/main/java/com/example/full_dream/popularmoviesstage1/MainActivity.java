@@ -85,7 +85,8 @@ public class MainActivity extends AppCompatActivity implements PosterAdapter.Pos
     private static final int NUMBER_OF_COLUMNS = 3;
     private static final int MOVIE_SEARCH_LOADER_ID = 100;
     private static final String TAG = MainActivity.class.getSimpleName();
-    @BindString(R.string.networkErr)
+    // Is there any point in doing this over just making it a String constant?
+    @BindString(R.string.network_err)
     String networkErr;
     @BindView(R.id.rv_poster_list)
     RecyclerView mRecyclerView;
@@ -137,10 +138,10 @@ public class MainActivity extends AppCompatActivity implements PosterAdapter.Pos
 
                 if(toggleSearchOption){
                     searchUrl = NetworkUtils.buildSearchUrl(getResources()
-                            .getString(R.string.mostPopularDesc));
+                            .getString(R.string.most_popular_desc));
                 } else {
                     searchUrl = NetworkUtils.buildSearchUrl(getResources()
-                            .getString(R.string.higestRatedDesc));
+                            .getString(R.string.higest_rated_desc));
                 }
                 try {
                     String jsonResult = NetworkUtils.getResponseFromHttpUrl(searchUrl);

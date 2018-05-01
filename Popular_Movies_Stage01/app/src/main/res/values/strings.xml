@@ -49,13 +49,17 @@
     <string name="app_name">Popular Movies, Stage 1</string>
 
     <!-- Error messages -->
-    <string name="networkErr">Error with network or stream reading: </string>
+    <string name="network_err">Error with network or stream reading: </string>
 
     <!-- Options menu option titles -->
-    <string name="mostPopular">Most Popular</string>
-    <string name="highestRated">Highest Rated</string>
+    <string name="most_popular">Most Popular</string>
+    <string name="highest_rated">Highest Rated</string>
 
     <!-- Sort-by options -->
-    <string name="mostPopularDesc">popularity.desc</string>
-    <string name="higestRatedDesc">vote_average.desc</string>
+    <string name="most_popular_desc">popularity.desc</string>
+    <string name="higest_rated_desc">vote_average.desc</string>
+
+    <!-- Detail Labels -->
+    <string name="voter_avg_label">Rating: </string>
+    <string name="release_date_label">Released: </string>
 </resources>

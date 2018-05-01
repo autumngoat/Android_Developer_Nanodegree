@@ -67,7 +67,7 @@ public class NetworkUtils {
     // Image query structure: https://developers.themoviedb.org/3/getting-started/images
     private static final String TAG = NetworkUtils.class.getSimpleName();
     private static final String TMDB_IMG_BASE_URL = "https://image.tmdb.org/t/p";
-    private static final String IMAGE_FILE_SIZE = "w185";
+    private static final String IMAGE_FILE_SIZE = "w500";
     private static final String TMDB_DISCOVER_BASE_URL = "https://api.themoviedb.org/3/discover/movie";
     private static final String PARAM_SORT_BY = "sort_by";
     private static final String PARAM_API_KEY = "api_key";

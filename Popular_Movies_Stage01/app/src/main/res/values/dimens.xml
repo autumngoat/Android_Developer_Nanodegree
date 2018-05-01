@@ -48,4 +48,10 @@
 
 <resources>
     <dimen name="posterHeight">185dp</dimen>
+    <dimen name="left_of_title_padding">8dp</dimen>
+    <dimen name="left_of_title_text_size">12sp</dimen>
+    <dimen name="detail_poster_width">370dp</dimen>
+    <dimen name="detail_poster_height">400dp</dimen>
+    <dimen name="detail_title_text_size">24sp</dimen>
+    <dimen name="detail_other_text_size">12sp</dimen>
 </resources>

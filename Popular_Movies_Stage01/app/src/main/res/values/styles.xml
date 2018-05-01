@@ -55,4 +55,13 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <!-- Label Style -->
+    <style name="Labels">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">@dimen/left_of_title_text_size</item>
+        <item name="android:paddingLeft">@dimen/left_of_title_padding</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
 </resources>
