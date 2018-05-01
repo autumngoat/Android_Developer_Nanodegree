@@ -72,7 +72,7 @@ public class NetworkUtils {
     private static final String PARAM_SORT_BY = "sort_by";
     private static final String PARAM_API_KEY = "api_key";
     private static final String FORWARD_SLASH = "/";
-    private static final String apiKey = "GetYourOwnApiKey";
+    private static final String API_KEY = "GetYourOwnApiKey";
 
     /**
      * Builds the URL used to query TheMovieDB (TMDB).
@@ -82,7 +82,7 @@ public class NetworkUtils {
      */
     public static URL buildSearchUrl(String tmdbDiscoveryQuery) {
         Uri builtUri = Uri.parse(TMDB_DISCOVER_BASE_URL).buildUpon()
-                .appendQueryParameter(PARAM_API_KEY, apiKey)
+                .appendQueryParameter(PARAM_API_KEY, API_KEY)
                 .appendQueryParameter(PARAM_SORT_BY, tmdbDiscoveryQuery)
                 .build();
         URL url = null;

@@ -52,11 +52,11 @@ package com.example.full_dream.popularmoviesstage1.model;
  */
 
 public class Movie {
-    private String title;
-    private String releaseDate;
-    private String poster;
-    private double voteAvg;
-    private String plotSynopsis;
+    private String mTitle;
+    private String mReleaseDate;
+    private String mPoster;
+    private double mVoteAvg;
+    private String mPlotSynopsis;
 
     /**
      * Constructor for a Movie object.
@@ -68,50 +68,50 @@ public class Movie {
      * @param plotSynopsis Brief summary of Movie
      */
     public Movie(String title, String releaseDate, String poster, double voteAvg, String plotSynopsis) {
-        this.title = title;
-        this.releaseDate = releaseDate;
-        this.poster = poster;
-        this.voteAvg = voteAvg;
-        this.plotSynopsis = plotSynopsis;
+        this.mTitle = title;
+        this.mReleaseDate = releaseDate;
+        this.mPoster = poster;
+        this.mVoteAvg = voteAvg;
+        this.mPlotSynopsis = plotSynopsis;
     }
 
     public String getTitle() {
-        return title;
+        return mTitle;
     }
 
     public void setTitle(String title) {
-        this.title = title;
+        this.mTitle = title;
     }
 
     public String getReleaseDate() {
-        return releaseDate;
+        return mReleaseDate;
     }
 
     public void setReleaseDate(String releaseDate) {
-        this.releaseDate = releaseDate;
+        this.mReleaseDate = releaseDate;
     }
 
     public String getPoster() {
-        return poster;
+        return mPoster;
     }
 
     public void setPoster(String poster) {
-        this.poster = poster;
+        this.mPoster = poster;
     }
 
     public double getVoteAvg() {
-        return voteAvg;
+        return mVoteAvg;
     }
 
     public void setVoteAvg(double voteAvg) {
-        this.voteAvg = voteAvg;
+        this.mVoteAvg = voteAvg;
     }
 
     public String getPlotSynopsis() {
-        return plotSynopsis;
+        return mPlotSynopsis;
     }
 
     public void setPlotSynopsis(String plotSynopsis) {
-        this.plotSynopsis = plotSynopsis;
+        this.mPlotSynopsis = plotSynopsis;
     }
 }

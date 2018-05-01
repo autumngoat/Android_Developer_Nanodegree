@@ -81,7 +81,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity implements PosterAdapter.PosterAdapterOnClickHandler,
         LoaderManager.LoaderCallbacks<ArrayList<Movie>> {
 
-    private boolean toggleSearchOption = true;
+    private boolean mToggleSearchOption = true;
     private static final int NUMBER_OF_COLUMNS = 3;
     private static final int MOVIE_SEARCH_LOADER_ID = 100;
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -136,7 +136,7 @@ public class MainActivity extends AppCompatActivity implements PosterAdapter.Pos
 
                 URL searchUrl;
 
-                if(toggleSearchOption){
+                if(mToggleSearchOption){
                     searchUrl = NetworkUtils.buildSearchUrl(getResources()
                             .getString(R.string.most_popular_desc));
                 } else {
@@ -236,12 +236,12 @@ public class MainActivity extends AppCompatActivity implements PosterAdapter.Pos
         switch(item.getItemId()){
             case R.id.action_popular:
                 mPosterAdapter.setMovieData(null);
-                toggleSearchOption = true;
+                mToggleSearchOption = true;
                 getSupportLoaderManager().restartLoader(MOVIE_SEARCH_LOADER_ID, null, this);
                 return true;
             case R.id.action_top_rated:
                 mPosterAdapter.setMovieData(null);
-                toggleSearchOption = false;
+                mToggleSearchOption = false;
                 getSupportLoaderManager().restartLoader(MOVIE_SEARCH_LOADER_ID, null, this);
                 return true;
             default:
