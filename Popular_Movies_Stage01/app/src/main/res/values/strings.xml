@@ -56,8 +56,8 @@
     <string name="highest_rated">Highest Rated</string>
 
     <!-- Sort-by options -->
-    <string name="most_popular_desc">popularity.desc</string>
-    <string name="higest_rated_desc">vote_average.desc</string>
+    <string name="most_popular_desc">popular</string>
+    <string name="highest_rated_desc">top_rated</string>
 
     <!-- Detail Labels -->
     <string name="voter_avg_label">Rating: </string>

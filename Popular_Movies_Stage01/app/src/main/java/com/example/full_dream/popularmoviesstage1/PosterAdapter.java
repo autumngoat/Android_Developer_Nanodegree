@@ -161,8 +161,8 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
             String[] movieData = {
                     selectedMovie.getPoster(),
                     selectedMovie.getTitle(),
-                    selectedMovie.getReleaseDate(),
                     Double.toString(selectedMovie.getVoteAvg()),
+                    selectedMovie.getReleaseDate(),
                     selectedMovie.getPlotSynopsis()};
             mClickHandler.onClick(movieData);
         }

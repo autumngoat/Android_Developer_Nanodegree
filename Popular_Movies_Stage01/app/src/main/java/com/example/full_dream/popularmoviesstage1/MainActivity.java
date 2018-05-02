@@ -154,7 +154,7 @@ public class MainActivity extends AppCompatActivity implements PosterAdapter.Pos
                             .getString(R.string.most_popular_desc));
                 } else {
                     searchUrl = NetworkUtils.buildSearchUrl(getResources()
-                            .getString(R.string.higest_rated_desc));
+                            .getString(R.string.highest_rated_desc));
                 }
                 try {
                     String jsonResult = NetworkUtils.getResponseFromHttpUrl(searchUrl);

@@ -68,8 +68,7 @@ public class NetworkUtils {
     private static final String TAG = NetworkUtils.class.getSimpleName();
     private static final String TMDB_IMG_BASE_URL = "https://image.tmdb.org/t/p";
     private static final String IMAGE_FILE_SIZE = "w500";
-    private static final String TMDB_DISCOVER_BASE_URL = "https://api.themoviedb.org/3/discover/movie";
-    private static final String PARAM_SORT_BY = "sort_by";
+    private static final String TMDB_DISCOVER_BASE_URL = "https://api.themoviedb.org/3/movie/";
     private static final String PARAM_API_KEY = "api_key";
     private static final String FORWARD_SLASH = "/";
     private static final String API_KEY = "GetYourOwnApiKey";
@@ -81,9 +80,8 @@ public class NetworkUtils {
      * @return The URL used to query TheMovieDB
      */
     public static URL buildSearchUrl(String tmdbDiscoveryQuery) {
-        Uri builtUri = Uri.parse(TMDB_DISCOVER_BASE_URL).buildUpon()
+        Uri builtUri = Uri.parse(TMDB_DISCOVER_BASE_URL + tmdbDiscoveryQuery).buildUpon()
                 .appendQueryParameter(PARAM_API_KEY, API_KEY)
-                .appendQueryParameter(PARAM_SORT_BY, tmdbDiscoveryQuery)
                 .build();
         URL url = null;
         try {
