@@ -1,0 +1,71 @@
+<!--
+  ~ /*
+  ~  * PROJECT LICENSE
+  ~  *
+  ~  * This project was submitted by Seong Wang as part of the Android Developer Nanodegree at Udacity.
+  ~  *
+  ~  * As part of Udacity Honor code:
+  ~  *   - I hereby confirm that all project submissions consist of my own work. Accordingly, I will document and cite the origins of any part(s) of my project submissions that were taken from websites, books, forums, blog posts, GitHub repositories, or any other source and explain why I used them for any part of my submission.
+  ~  *     - Acceptable sources consist of:
+  ~  *         - Unmodified or modified code from the Udacity courses
+  ~  *         - A modest amount of unmodified or modified code from third-party sources with attribution
+  ~  *     - NOT ACCEPTABLE: Any part of another student’s work, even with attribution
+  ~  *   - I understand that Udacity will check my submission for plagiarism, and that failure to adhere to the Udacity Honor Code
+  ~  *   may result in the cancellation of my enrollment without refund.
+  ~  *   - I understand that I may be asked to explain my work in a video call with a Udacity Representative before my Nanodegree is
+  ~  *   conferred.
+  ~  *
+  ~  * I, the author of the project, allow you to check the code as a reference so long as you are not a fellow Android Developer
+  ~  * Nanodegree student, but if you submit it, it's your own responsibility if you get expelled.
+  ~  *
+  ~  * Copyright (c) 2018 Seong Wang
+  ~  *
+  ~  * Besides the above notice, the following license applies and this license notice must be included in all works derived from
+  ~  * this project.
+  ~  *
+  ~  * MIT License
+  ~  *
+  ~  * Permission is hereby granted, free of charge, to any person obtaining a copy
+  ~  * of this software and associated documentation files (the "Software"), to deal
+  ~  * in the Software without restriction, including without limitation the rights
+  ~  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  ~  * copies of the Software, and to permit persons to whom the Software is
+  ~  * furnished to do so, subject to the following conditions:
+  ~  *
+  ~  * The above copyright notice and this permission notice shall be included in all
+  ~  * copies or substantial portions of the Software.
+  ~  *
+  ~  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  ~  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  ~  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  ~  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  ~  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  ~  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  ~  * SOFTWARE.
+  ~  */
+  -->
+
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="512dp"
+    android:height="512dp"
+    android:viewportWidth="512"
+    android:viewportHeight="512">
+  <path
+      android:pathData="M428.53,173.82l-34.92,338.18l-275.22,0l-34.92,-338.18z"
+      android:fillColor="#FF0A68"/>
+  <path
+      android:pathData="M428.53,173.82l-34.92,338.18l-137.61,0l0,-338.18z"
+      android:fillColor="#E0025F"/>
+  <path
+      android:pathData="M435.33,139.24c0,8.05 -1.16,16.07 -3.43,23.81l-3.17,10.77H83.27l-3.17,-10.77c-2.27,-7.74 -3.43,-15.76 -3.43,-23.81c0,-46.54 37.86,-84.4 84.4,-84.4c2.59,0 5.18,0.11 7.75,0.35c6.7,-14.21 16.77,-26.53 29.59,-36.1C215.15,6.6 235.06,0 256,0s40.85,6.6 57.59,19.09c12.82,9.57 22.89,21.89 29.59,36.1c2.57,-0.24 5.16,-0.35 7.75,-0.35C397.47,54.84 435.33,92.7 435.33,139.24z"
+      android:fillColor="#FFC300"/>
+  <path
+      android:pathData="M435.33,139.24c0,8.05 -1.16,16.07 -3.43,23.81l-3.17,10.77H256V0c20.94,0 40.85,6.6 57.59,19.09c12.82,9.57 22.89,21.89 29.59,36.1c2.57,-0.24 5.16,-0.35 7.75,-0.35C397.47,54.84 435.33,92.7 435.33,139.24z"
+      android:fillColor="#FFA700"/>
+  <path
+      android:pathData="M232.48,512l-30.07,0l-21.86,-338.18l30.07,0z"
+      android:fillColor="#FFDE82"/>
+  <path
+      android:pathData="M331.45,173.82l-21.86,338.18l-30.07,0l21.86,-338.18z"
+      android:fillColor="#FFBF7B"/>
+</vector>
