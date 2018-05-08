@@ -46,7 +46,7 @@
   -->
 
 <resources>
-    <string name="app_name">Popular Movies, Stage 1</string>
+    <string name="app_name">Popular Movies, Stage 2</string>
 
     <!-- Error messages -->
     <string name="network_err">Error with network or stream reading: </string>

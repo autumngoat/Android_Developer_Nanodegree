@@ -45,55 +45,58 @@
  *
  */
 
-package com.example.full_dream.popularmoviesstage1.utils;
+package com.example.full_dream.popularmoviesstage1.model;
 
-import android.util.Log;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import com.example.full_dream.popularmoviesstage1.model.Movie;
-
-import java.util.ArrayList;
+import java.util.List;
+import com.squareup.moshi.Json;
 
 /**
- * Provides methods to parse JSON and load parsed data into data model(s).
+ * Provides a data model to represent the initial JSON HTTP response as a POJO
+ * that contains the desired Movie details in the 'results' JSONArray.
+ *
+ * Used jsonprettyprint.com and jsonschema2pojo.com to auto-generate this POJO
+ * from a TMDB JSON HTTP Response.
  */
-public class JsonUtils {
-    // Tweaked code from previous project - Sandwich Club app
-    // JSON schema from: https://developers.themoviedb.org/3/discover/movie-discover
-    // Apparently total_results != results.length()
-    private static String TAG = JsonUtils.class.getSimpleName();
-    private static String KEY_RESULTS = "results";
-    private static String KEY_TITLE = "title";
-    private static String KEY_RELEASE_DATE = "release_date";
-    private static String KEY_POSTER_PATH = "poster_path";
-    private static String KEY_VOTE_AVG = "vote_average";
-    private static String KEY_PLOT_SYNOPSIS = "overview";
+public class MovieResponse {
 
-    /**
-     * Parses the JSON string and loads the contents into a Movie object,
-     * which is then added to an ArrayList of Movie objects.
-     */
-    public static ArrayList<Movie> parseMovieJson(String json){
-        ArrayList<Movie> movies = new ArrayList<>();
+    @Json(name = "page")
+    private Integer page;
+    @Json(name = "total_results")
+    private Integer totalResults;
+    @Json(name = "total_pages")
+    private Integer totalPages;
+    @Json(name = "results")
+    private List<Movie> results = null;
 
-        try {
-            JSONObject root = new JSONObject(json);
-            JSONArray results = root.getJSONArray(KEY_RESULTS);
-            for(int i = 0; i < results.length(); i++){
-                JSONObject result = results.getJSONObject(i);
-                String title = result.getString(KEY_TITLE);
-                String releaseDate = result.getString(KEY_RELEASE_DATE);
-                String posterPath = result.getString(KEY_POSTER_PATH);
-                double voteAvg = result.getDouble(KEY_VOTE_AVG);
-                String plotSynopsis = result.getString(KEY_PLOT_SYNOPSIS);
-//                movies.add(new Movie(title, releaseDate, posterPath, voteAvg, plotSynopsis));
-            }
-        } catch (JSONException e) {
-            Log.e(TAG, "Problem parsing TMDB JSON: " + e);
-        }
+    public Integer getPage() {
+        return page;
+    }
 
-        return movies;
+    public void setPage(Integer page) {
+        this.page = page;
+    }
+
+    public Integer getTotalResults() {
+        return totalResults;
+    }
+
+    public void setTotalResults(Integer totalResults) {
+        this.totalResults = totalResults;
+    }
+
+    public Integer getTotalPages() {
+        return totalPages;
+    }
+
+    public void setTotalPages(Integer totalPages) {
+        this.totalPages = totalPages;
+    }
+
+    public List<Movie> getResults() {
+        return results;
+    }
+
+    public void setResults(List<Movie> results) {
+        this.results = results;
     }
 }

@@ -48,8 +48,10 @@
 package com.example.full_dream.popularmoviesstage1;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,6 +66,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Provides ViewHolders to display inside RecyclerView
@@ -71,7 +74,7 @@ import java.util.ArrayList;
 public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdapterViewHolder> {
     // I adapted much of the Adapter code from my code for S05.01-Exercise-AsyncTaskLoader
     private final PosterAdapterOnClickHandler mClickHandler;
-    private ArrayList<Movie> mMovieData;
+    private List<Movie> mMovieData;
 
     /**
      * Creates a PosterAdapter.
@@ -102,15 +105,16 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
     @Override
     public void onBindViewHolder(@NonNull PosterAdapterViewHolder posterViewHolder, int position) {
         Movie movie = mMovieData.get(position);
-        String path = NetworkUtils.buildImgPath(movie.getPoster());
+//        String path = NetworkUtils.buildImgPath(movie.getPoster());
 
         // Icons made by "https://www.flaticon.com/authors/freprikepik"
         // Title: "Popcorn"
         // Licensed by Creative Commons BY 3.0
         Picasso.get()
-                .load(path)
+                .load(movie.getPosterPath())
                 .placeholder(R.drawable.ic_popcorn)
                 .into(posterViewHolder.mPosterImageView);
+        Log.e("blueRabbit", movie.getPosterPath());
     }
 
     /**
@@ -124,7 +128,7 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
         return mMovieData.size();
     }
 
-    public void setMovieData(ArrayList<Movie> movieData) {
+    public void setMovieData(List<Movie> movieData) {
         mMovieData = movieData;
         notifyDataSetChanged();
     }
@@ -133,7 +137,7 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
      * The interface that receives onClick messages.
      */
     public interface PosterAdapterOnClickHandler {
-        void onClick(String[] movieData);
+        void onClick(Movie movie);
     }
 
     /**
@@ -158,13 +162,14 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
         public void onClickShowDetails() {
             int adapterPosition = getAdapterPosition();
             Movie selectedMovie = mMovieData.get(adapterPosition);
-            String[] movieData = {
-                    selectedMovie.getPoster(),
-                    selectedMovie.getTitle(),
-                    Double.toString(selectedMovie.getVoteAvg()),
-                    selectedMovie.getReleaseDate(),
-                    selectedMovie.getPlotSynopsis()};
-            mClickHandler.onClick(movieData);
+
+//            String[] movieData = {
+//                    selectedMovie.getPoster(),
+//                    selectedMovie.getTitle(),
+//                    Double.toString(selectedMovie.getVoteAvg()),
+//                    selectedMovie.getReleaseDate(),
+//                    selectedMovie.getPlotSynopsis()};
+            mClickHandler.onClick(selectedMovie);
         }
     }
 }

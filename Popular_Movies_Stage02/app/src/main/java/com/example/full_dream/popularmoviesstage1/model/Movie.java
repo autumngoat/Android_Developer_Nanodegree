@@ -47,71 +47,171 @@
 
 package com.example.full_dream.popularmoviesstage1.model;
 
-/**
- * Provides a data model to represent a Movie object to hold parsed JSON data.
- */
+import java.util.List;
+import com.squareup.moshi.Json;
 
+/**
+ * Provides a data model to represent a Movie POJO to hold parsed JSON data.
+ *
+ * Used jsonprettyprint.com and jsonschema2pojo.com to auto-generate this POJO
+ * from a TMDB JSON HTTP Response.
+ */
 public class Movie {
-    private String mTitle;
-    private String mReleaseDate;
-    private String mPoster;
-    private double mVoteAvg;
-    private String mPlotSynopsis;
+    @Json(name = "vote_count")
+    private Integer voteCount;
+    @Json(name = "id")
+    private Integer id;
+    @Json(name = "video")
+    private Boolean video;
+    @Json(name = "vote_average")
+    private Double voteAverage;
+    @Json(name = "title")
+    private String title;
+    @Json(name = "popularity")
+    private Double popularity;
+    @Json(name = "poster_path")
+    private String posterPath;
+    @Json(name = "original_language")
+    private String originalLanguage;
+    @Json(name = "original_title")
+    private String originalTitle;
+    @Json(name = "genre_ids")
+    private List<Integer> genreIds = null;
+    @Json(name = "backdrop_path")
+    private String backdropPath;
+    @Json(name = "adult")
+    private Boolean adult;
+    @Json(name = "overview")
+    private String overview;
+    @Json(name = "release_date")
+    private String releaseDate;
+
+    // Image query structure: https://developers.themoviedb.org/3/getting-started/images
+    private static final String TMDB_IMG_BASE_URL = "https://image.tmdb.org/t/p/";
+    private static final String IMAGE_FILE_SIZE = "w500";
 
     /**
-     * Constructor for a Movie object.
-     *
-     * @param title        Name of Movie
-     * @param releaseDate  YYYY/MM/DD debut of Movie
-     * @param poster       File path of poster image
-     * @param voteAvg      Average rating of Movie on TMDB
-     * @param plotSynopsis Brief summary of Movie
+     * Movie contructor.
      */
-    public Movie(String title, String releaseDate, String poster, double voteAvg, String plotSynopsis) {
-        this.mTitle = title;
-        this.mReleaseDate = releaseDate;
-        this.mPoster = poster;
-        this.mVoteAvg = voteAvg;
-        this.mPlotSynopsis = plotSynopsis;
+    public Movie(String title, String releaseDate, String posterPath, double voteAvg,
+                 String plotSynopsis){
+        this.originalTitle = title;
+        this.releaseDate = releaseDate;
+        this.posterPath = posterPath;
+        this.voteAverage = voteAvg;
+        this.overview = plotSynopsis;
+    }
+
+    public Integer getVoteCount() {
+        return voteCount;
+    }
+
+    public void setVoteCount(Integer voteCount) {
+        this.voteCount = voteCount;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Boolean getVideo() {
+        return video;
+    }
+
+    public void setVideo(Boolean video) {
+        this.video = video;
+    }
+
+    public Double getVoteAverage() {
+        return voteAverage;
+    }
+
+    public void setVoteAverage(Double voteAverage) {
+        this.voteAverage = voteAverage;
     }
 
     public String getTitle() {
-        return mTitle;
+        return title;
     }
 
     public void setTitle(String title) {
-        this.mTitle = title;
+        this.title = title;
+    }
+
+    public Double getPopularity() {
+        return popularity;
+    }
+
+    public void setPopularity(Double popularity) {
+        this.popularity = popularity;
+    }
+
+    // Return a complete URL link to poster image
+    public String getPosterPath() {
+        return TMDB_IMG_BASE_URL + IMAGE_FILE_SIZE + posterPath;
+    }
+
+    public void setPosterPath(String posterPath) {
+        this.posterPath = posterPath;
+    }
+
+    public String getOriginalLanguage() {
+        return originalLanguage;
+    }
+
+    public void setOriginalLanguage(String originalLanguage) {
+        this.originalLanguage = originalLanguage;
+    }
+
+    public String getOriginalTitle() {
+        return originalTitle;
+    }
+
+    public void setOriginalTitle(String originalTitle) {
+        this.originalTitle = originalTitle;
+    }
+
+    public List<Integer> getGenreIds() {
+        return genreIds;
+    }
+
+    public void setGenreIds(List<Integer> genreIds) {
+        this.genreIds = genreIds;
+    }
+
+    public String getBackdropPath() {
+        return backdropPath;
+    }
+
+    public void setBackdropPath(String backdropPath) {
+        this.backdropPath = backdropPath;
+    }
+
+    public Boolean getAdult() {
+        return adult;
+    }
+
+    public void setAdult(Boolean adult) {
+        this.adult = adult;
+    }
+
+    public String getOverview() {
+        return overview;
+    }
+
+    public void setOverview(String overview) {
+        this.overview = overview;
     }
 
     public String getReleaseDate() {
-        return mReleaseDate;
+        return releaseDate;
     }
 
     public void setReleaseDate(String releaseDate) {
-        this.mReleaseDate = releaseDate;
-    }
-
-    public String getPoster() {
-        return mPoster;
-    }
-
-    public void setPoster(String poster) {
-        this.mPoster = poster;
-    }
-
-    public double getVoteAvg() {
-        return mVoteAvg;
-    }
-
-    public void setVoteAvg(double voteAvg) {
-        this.mVoteAvg = voteAvg;
-    }
-
-    public String getPlotSynopsis() {
-        return mPlotSynopsis;
-    }
-
-    public void setPlotSynopsis(String plotSynopsis) {
-        this.mPlotSynopsis = plotSynopsis;
+        this.releaseDate = releaseDate;
     }
 }
