@@ -31,7 +31,7 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
     private boolean mToggleSearchOption = true;
     private static final String MOST_POPULAR = "popular";
     private static final String TOP_RATED = "top_rated";
-    private static final String API_KEY = "GetYourOwnApi";
+    private static final String API_KEY = "GetYourOwnApiKey";
     private static final int NUMBER_OF_COLUMNS = 3;
     private GridLayoutManager mLayoutManager;
     private PosterAdapter mPosterAdapter;
@@ -62,9 +62,8 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Initialize the dataset.  The data comes either from a local ContentProvider or
-        // remote server.
-
+        // Fill the PosterAdapter with the initial data from the network call
+        callRetrofit();
     }
 
     /**
@@ -99,9 +98,6 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
 //        } else {
 //            Toast.makeText(this, netConnectMsg, Toast.LENGTH_LONG).show();
 //        }
-
-        // Fill the PosterAdapter with the initial data from the network call
-        callRetrofit();
 
         // Return the fragment view
         return rootView;

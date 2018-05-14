@@ -47,8 +47,6 @@
 
 package com.example.full_dream.popularmoviesstage1;
 
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -78,37 +76,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        // Create a new PosterListFragment instance
-        PosterListFragment posterListFragment = new PosterListFragment();
-        // Return the FragmentManager for interacting with Fragments associated with this Activity,
-        // used to create transactions for adding, removing, and replacing Fragments
-        FragmentManager fm = getSupportFragmentManager();
-        // Start a series edit operations associated with this FragmentManager
-        FragmentTransaction ft = fm.beginTransaction();
-        // Add fragment to the container
-        ft.add(R.id.fragment_container, posterListFragment);
-        // Schedules a commit of this transaction (does not happen immediately) to be done on the
-        // main/UI thread when the thread next becomes available
-        ft.commit();
-
-//        // Use a Grid Layout Manager as per the rubric
-//        GridLayoutManager mLayoutManager = new GridLayoutManager(this, NUMBER_OF_COLUMNS);
-//        mRecyclerView.setLayoutManager(mLayoutManager);
-//
-//        mRecyclerView.setHasFixedSize(true);
-//
-//        mPosterAdapter = new PosterAdapter(this);
-//        mRecyclerView.setAdapter(mPosterAdapter);
-
-        // Checked out https://developer.android.com/training/basics/network-ops/managing
-        // for how to check for network status check
-//        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-//        NetworkInfo netInfo = cm.getActiveNetworkInfo();
-//        if(netInfo != null && netInfo.isConnected()){
-//            callRetrofit();
-//        } else {
-//            Toast.makeText(this, netConnectMsg, Toast.LENGTH_LONG).show();
-//        }
+        // Previously:
+        //  Learned how to setup and display fragments from TFragments.01-Exercise-CreateBodyPartFragment
+        // Now:
+        //  Learned how to setup and display a master-list fragment from TFragments.02-Exercise-CreateMasterListFragment
+        //   Static fragments DO NOT need a container or transactions
     }
 
     /**
