@@ -82,16 +82,25 @@ public class MainActivity extends AppCompatActivity implements PosterAdapter.Pos
 
     private boolean mToggleSearchOption = true;
     private static final int NUMBER_OF_COLUMNS = 3;
-    private static final int MOVIE_SEARCH_LOADER_ID = 100;
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final String MOST_POPULAR = "popular";
     private static final String TOP_RATED = "top_rated";
-    private static final String API_KEY = "GetYourOwnApi";
+    private static final String API_KEY = "GetYourOwnApiKey";
     // Is there any point in doing this over just making it a String constant?
     @BindString(R.string.network_err)
     String networkErr;
     @BindString(R.string.network_connection_msg)
     String netConnectMsg;
+    @BindString(R.string.title)
+    String title;
+    @BindString(R.string.release_date)
+    String releaseDate;
+    @BindString(R.string.poster_path)
+    String posterPath;
+    @BindString(R.string.vote_average)
+    String voteAvg;
+    @BindString(R.string.plot_synopsis)
+    String plotSynopsis;
     @BindView(R.id.rv_poster_list)
     RecyclerView mRecyclerView;
     private PosterAdapter mPosterAdapter;
@@ -116,146 +125,50 @@ public class MainActivity extends AppCompatActivity implements PosterAdapter.Pos
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         if(netInfo != null && netInfo.isConnected()){
-//            getSupportLoaderManager().initLoader(MOVIE_SEARCH_LOADER_ID, null, this);
-
-            // Instantiate the Retrofit (type safe HTTP) client
-            RetrofitClient client = new RetrofitClient();
-
-            // Pass service interface to create() to generate an implementation of the API endpoint
-            TheMovieDBService service = client.getClient().create(TheMovieDBService.class);
-
-            // Call represents the HTTP request while the generic parameter, in this case
-            // MovieResponse, represents the HTTP response body type which will be converted
-            // by one of the Converter.Factory instances (Moshi) to JSON to POJO(s).
-            Call<MovieResponse> call;
-
-            // Popular or Top Rated?
-            if(mToggleSearchOption){
-                call = service.getPopularMovies(MOST_POPULAR, API_KEY);
-            } else {
-                call = service.getTopRatedMovies(TOP_RATED, API_KEY);
-            }
-
-            // Asynchronously send the HTTP request and notify the callback of its HTTP response
-            // or if an error occurred talking to the server, creating the HTTP request
-            call.enqueue(new Callback<MovieResponse>() {
-                @Override
-                public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
-                    Log.e("whiteRabbit", response.toString());
-                    Log.e("redRabbit", response.body().toString());
-                    List<Movie> movies = response.body().getResults();
-                    mPosterAdapter.setMovieData(movies);
-                    mPosterAdapter.notifyDataSetChanged();
-                }
-
-                @Override
-                public void onFailure(Call<MovieResponse> call, Throwable t) {
-                    Toast.makeText(MainActivity.this, "Failed", Toast.LENGTH_SHORT).show();
-                }
-            });
+            callRetrofit();
         } else {
             Toast.makeText(this, netConnectMsg, Toast.LENGTH_LONG).show();
         }
     }
 
-    // Looked to my code for T05b.02-Exercise-AddAsyncTaskLoader for reference for how to setup
-    // AsyncTaskLoader
-
     /**
-     * Create and return a new Loader for the given id.
+     * Helper function to be able to call Retrofit whenever data needs to be retrieved.
      */
-//    @Override
-//    public Loader<ArrayList<Movie>> onCreateLoader(int id, @Nullable Bundle args) {
-//        return new AsyncTaskLoader<ArrayList<Movie>>(this) {
-//            // Cache the result
-//            ArrayList<Movie> mMovieData;
-//
-//            // Equivalent to AsyncTask doInBackground
-//            /**
-//             * Perform the actual task/load, which is to make a network call
-//             * to TMDB, parse the JSON response, and return the resultant
-//             * Movie objects.
-//             */
-//            @Nullable
-//            @Override
-//            public ArrayList<Movie> loadInBackground() {
-//               ArrayList<Movie> films = new ArrayList<>();
-////
-////                URL searchUrl;
-////
-////                if(mToggleSearchOption){
-////                    searchUrl = NetworkUtils.buildSearchUrl(getResources()
-////                            .getString(R.string.most_popular_desc));
-////                } else {
-////                    searchUrl = NetworkUtils.buildSearchUrl(getResources()
-////                            .getString(R.string.highest_rated_desc));
-////                }
-////                try {
-////                    String jsonResult = NetworkUtils.getResponseFromHttpUrl(searchUrl);
-////                    films = JsonUtils.parseMovieJson(jsonResult);
-////                } catch (IOException e) {
-////                    Log.e(TAG, networkErr + e);
-////                }
-////
-////                return films;
-//
-//                try{
-//                    TheMovieDBService service = TheMovieDBService.retrofit.create(TheMovieDBService.class);
-//                    Call<ArrayList<Movie>> call = service.getPopularMovies("421f703237a26dc2e80a4c0152b5f060");
-//                    Response<ArrayList<Movie>> response = call.execute();
-//                    Log.e("HelloKitty", response.body().toString());
-//                    films = response.body();
-//                } catch(IOException e){
-//                    e.printStackTrace();
-//                }
-//
-//                return films;
-//            }
-//
-//            // Equivalent to AsyncTask onPreExecute
-//            @Override
-//            protected void onStartLoading() {
-//                super.onStartLoading();
-//                if (mMovieData != null) {
-//                    deliverResult(mMovieData);
-//                } else {
-//                    forceLoad();
-//                }
-//            }
-//
-//            /**
-//             * Cache the data in a member variable and deliver it in onStartLoading.
-//             *
-//             * @param data Data to cache and deliver to onStartLoading
-//             */
-//            @Override
-//            public void deliverResult(@Nullable ArrayList<Movie> data) {
-//                mMovieData = data;
-//                super.deliverResult(data);
-//            }
-//        };
-//    }
+    public void callRetrofit(){
+        // Instantiate the Retrofit (type safe HTTP) client
+        RetrofitClient client = new RetrofitClient();
 
-    /**
-     * Show data when load is finished or do nothing
-     *
-     * @param loader
-     * @param data
-     */
-//    @Override
-//    public void onLoadFinished(@NonNull Loader<ArrayList<Movie>> loader, ArrayList<Movie> data) {
-//        if (data != null) {
-//            mPosterAdapter.setMovieData(data);
-//        }
-//    }
+        // Pass service interface to create() to generate an implementation of the API endpoint
+        TheMovieDBService service = client.getClient().create(TheMovieDBService.class);
 
-    /**
-     * Called when a Loader is reset to make data unavailable
-     */
-//    @Override
-//    public void onLoaderReset(@NonNull Loader<ArrayList<Movie>> loader) {
-//        // Empty on purpose
-//    }
+        // Call represents the HTTP request while the generic parameter, in this case
+        // MovieResponse, represents the HTTP response body type which will be converted
+        // by one of the Converter.Factory instances (Moshi) to JSON to POJO(s).
+        Call<MovieResponse> call;
+
+        // Popular or Top Rated?
+        if(mToggleSearchOption){
+            call = service.getPopularMovies(MOST_POPULAR, API_KEY);
+        } else {
+            call = service.getTopRatedMovies(TOP_RATED, API_KEY);
+        }
+
+        // Asynchronously send the HTTP request and notify the callback of its HTTP response
+        // or if an error occurred talking to the server, creating the HTTP request
+        call.enqueue(new Callback<MovieResponse>() {
+            @Override
+            public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
+                List<Movie> movies = response.body().getResults();
+                mPosterAdapter.setMovieData(movies);
+                mPosterAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onFailure(Call<MovieResponse> call, Throwable t) {
+                Toast.makeText(MainActivity.this, "Failed", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
     /**
      * Handle RecyclerView item clicks to launch DetailActivity.
@@ -265,14 +178,13 @@ public class MainActivity extends AppCompatActivity implements PosterAdapter.Pos
         Context context = this;
         Class destinationClass = DetailActivity.class;
         Intent intentToStartDetailActivity = new Intent(context, destinationClass);
-//        intentToStartDetailActivity.putExtra(Intent.EXTRA_TEXT, movieDetails);
         // I didn't know you could name the EXTRA's!!!
-        // No need for enumeration then!
-        intentToStartDetailActivity.putExtra("title", movie.getTitle());
-        intentToStartDetailActivity.putExtra("releaseDate", movie.getReleaseDate());
-        intentToStartDetailActivity.putExtra("posterPath", movie.getPosterPath());
-        intentToStartDetailActivity.putExtra("voteAvg", Double.toString(movie.getVoteAverage()));
-        intentToStartDetailActivity.putExtra("plotSynopsis", movie.getOverview());
+        // No need for enumeration or remembering the order of the EXTRAs for extraction like before
+        intentToStartDetailActivity.putExtra(title, movie.getTitle());
+        intentToStartDetailActivity.putExtra(releaseDate, movie.getReleaseDate());
+        intentToStartDetailActivity.putExtra(posterPath, movie.getPosterPath());
+        intentToStartDetailActivity.putExtra(voteAvg, Double.toString(movie.getVoteAverage()));
+        intentToStartDetailActivity.putExtra(plotSynopsis, movie.getOverview());
         startActivity(intentToStartDetailActivity);
     }
 
@@ -301,12 +213,12 @@ public class MainActivity extends AppCompatActivity implements PosterAdapter.Pos
             case R.id.action_popular:
                 mPosterAdapter.setMovieData(null);
                 mToggleSearchOption = true;
-//                getSupportLoaderManager().restartLoader(MOVIE_SEARCH_LOADER_ID, null, this);
+                callRetrofit();
                 return true;
             case R.id.action_top_rated:
                 mPosterAdapter.setMovieData(null);
                 mToggleSearchOption = false;
-//                getSupportLoaderManager().restartLoader(MOVIE_SEARCH_LOADER_ID, null, this);
+                callRetrofit();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

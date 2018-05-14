@@ -48,7 +48,6 @@
 package com.example.full_dream.popularmoviesstage1;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -58,14 +57,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.example.full_dream.popularmoviesstage1.model.Movie;
-import com.example.full_dream.popularmoviesstage1.utils.NetworkUtils;
 
 import com.squareup.picasso.Picasso;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -105,7 +102,6 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
     @Override
     public void onBindViewHolder(@NonNull PosterAdapterViewHolder posterViewHolder, int position) {
         Movie movie = mMovieData.get(position);
-//        String path = NetworkUtils.buildImgPath(movie.getPoster());
 
         // Icons made by "https://www.flaticon.com/authors/freprikepik"
         // Title: "Popcorn"
@@ -162,13 +158,6 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
         public void onClickShowDetails() {
             int adapterPosition = getAdapterPosition();
             Movie selectedMovie = mMovieData.get(adapterPosition);
-
-//            String[] movieData = {
-//                    selectedMovie.getPoster(),
-//                    selectedMovie.getTitle(),
-//                    Double.toString(selectedMovie.getVoteAvg()),
-//                    selectedMovie.getReleaseDate(),
-//                    selectedMovie.getPlotSynopsis()};
             mClickHandler.onClick(selectedMovie);
         }
     }

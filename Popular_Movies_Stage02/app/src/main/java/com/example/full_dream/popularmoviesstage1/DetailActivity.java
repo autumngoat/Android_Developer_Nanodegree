@@ -53,20 +53,23 @@ import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.full_dream.popularmoviesstage1.utils.NetworkUtils;
-
 import com.squareup.picasso.Picasso;
+
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class DetailActivity extends AppCompatActivity {
-
-    public static final int MOVIE_IMAGE = 0;
-    public static final int MOVIE_TITLE = 1;
-    public static final int MOVIE_SCORE = 2;    // Was bothering me that it didn't line up with RATING
-    public static final int MOVIE_DEBUT = 3;
-    public static final int MOVIE_BRIEF = 4;
-
+    @BindString(R.string.title)
+    String title;
+    @BindString(R.string.release_date)
+    String releaseDate;
+    @BindString(R.string.poster_path)
+    String posterPath;
+    @BindString(R.string.vote_average)
+    String voteAvg;
+    @BindString(R.string.plot_synopsis)
+    String plotSynopsis;
     @BindView(R.id.tv_detail_title)
     TextView mTitle;
     @BindView(R.id.tv_detail_vote_avg)
@@ -77,7 +80,6 @@ public class DetailActivity extends AppCompatActivity {
     TextView mSummary;
     @BindView(R.id.iv_detail_poster)
     ImageView mPoster;
-    private String[] mMovieDetails;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,21 +91,19 @@ public class DetailActivity extends AppCompatActivity {
         Intent intentThatStartedThisActivity = getIntent();
 
         if (intentThatStartedThisActivity != null) {
-            if (intentThatStartedThisActivity.hasExtra(Intent.EXTRA_TEXT)) {
-                mMovieDetails = intentThatStartedThisActivity.getStringArrayExtra(Intent.EXTRA_TEXT);
-
+            if (intentThatStartedThisActivity.hasExtra(title)) {
                 // Icons made by "https://www.flaticon.com/authors/freprikepik"
                 // Title: "Popcorn"
                 // Licensed by Creative Commons BY 3.0
                 Picasso.get()
-                        .load(NetworkUtils.buildImgPath(mMovieDetails[MOVIE_IMAGE]))
+                        .load(getIntent().getExtras().getString(posterPath))
                         .placeholder(R.drawable.ic_popcorn)
                         .into(mPoster);
 
-                mTitle.setText(mMovieDetails[MOVIE_TITLE]);
-                mRating.setText(mMovieDetails[MOVIE_SCORE]);
-                mReleaseDate.setText(mMovieDetails[MOVIE_DEBUT]);
-                mSummary.setText(mMovieDetails[MOVIE_BRIEF]);
+                mTitle.setText(getIntent().getExtras().getString(title));
+                mRating.setText(Double.toString(getIntent().getExtras().getDouble(voteAvg)));
+                mReleaseDate.setText(getIntent().getExtras().getString(releaseDate));
+                mSummary.setText(getIntent().getExtras().getString(plotSynopsis));
             }
         }
     }
