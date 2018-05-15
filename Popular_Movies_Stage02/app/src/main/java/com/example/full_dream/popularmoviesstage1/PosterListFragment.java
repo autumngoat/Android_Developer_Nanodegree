@@ -1,14 +1,63 @@
+/*
+ *
+ *  * PROJECT LICENSE
+ *  *
+ *  * This project was submitted by Seong Wang as part of the Android Developer Nanodegree at Udacity.
+ *  *
+ *  * As part of Udacity Honor code:
+ *  *   - I hereby confirm that all project submissions consist of my own work. Accordingly, I will document and cite the origins of any part(s) of my project submissions that were taken from websites, books, forums, blog posts, GitHub repositories, or any other source and explain why I used them for any part of my submission.
+ *  *     - Acceptable sources consist of:
+ *  *         - Unmodified or modified code from the Udacity courses
+ *  *         - A modest amount of unmodified or modified code from third-party sources with attribution
+ *  *     - NOT ACCEPTABLE: Any part of another student’s work, even with attribution
+ *  *   - I understand that Udacity will check my submission for plagiarism, and that failure to adhere to the Udacity Honor Code
+ *  *   may result in the cancellation of my enrollment without refund.
+ *  *   - I understand that I may be asked to explain my work in a video call with a Udacity Representative before my Nanodegree is
+ *  *   conferred.
+ *  *
+ *  * I, the author of the project, allow you to check the code as a reference so long as you are not a fellow Android Developer
+ *  * Nanodegree student, but if you submit it, it's your own responsibility if you get expelled.
+ *  *
+ *  * Copyright (c) 2018 Seong Wang
+ *  *
+ *  * Besides the above notice, the following license applies and this license notice must be included in all works derived from
+ *  * this project.
+ *  *
+ *  * MIT License
+ *  *
+ *  * Permission is hereby granted, free of charge, to any person obtaining a copy
+ *  * of this software and associated documentation files (the "Software"), to deal
+ *  * in the Software without restriction, including without limitation the rights
+ *  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ *  * copies of the Software, and to permit persons to whom the Software is
+ *  * furnished to do so, subject to the following conditions:
+ *  *
+ *  * The above copyright notice and this permission notice shall be included in all
+ *  * copies or substantial portions of the Software.
+ *  *
+ *  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ *  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ *  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ *  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ *  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ *  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ *  * SOFTWARE.
+ *
+ */
+
 package com.example.full_dream.popularmoviesstage1;
 
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.BundleCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -28,10 +77,10 @@ import retrofit2.Response;
 
 public class PosterListFragment extends Fragment implements PosterAdapter.PosterAdapterOnClickHandler{
 
-    private boolean mToggleSearchOption = true;
+    private boolean mToggleSearchOption =  true;
     private static final String MOST_POPULAR = "popular";
     private static final String TOP_RATED = "top_rated";
-    private static final String API_KEY = "GetYourOwnApiKey";
+    private static final String API_KEY = "GetYourOwnApi";
     private static final int NUMBER_OF_COLUMNS = 3;
     private GridLayoutManager mLayoutManager;
     private PosterAdapter mPosterAdapter;
@@ -49,7 +98,7 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
     RecyclerView mRecyclerView;
 
     /**
-     * Mandatory empty constructor
+     * Mandatory empty constructor for the Fragment Manager to instantiate the fragment.
      */
     public  PosterListFragment(){}
 
@@ -61,6 +110,12 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Get the Boolean from Options Menu of host Activity to determine what data source to use
+        // to populate the RecyclerView
+//        mToggleSearchOption = getArguments().getBoolean("toogle");
+
+        setHasOptionsMenu(true);
 
         // Fill the PosterAdapter with the initial data from the network call
         callRetrofit();
@@ -108,17 +163,49 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
      */
     @Override
     public void onClick(Movie movie) {
-        Context context = getActivity();
-        Class destinationClass = DetailActivity.class;
-        Intent intentToStartDetailActivity = new Intent(context, destinationClass);
-        // I didn't know you could name the EXTRA's!!!
-        // No need for enumeration or remembering the order of the EXTRAs for extraction like before
-        intentToStartDetailActivity.putExtra(title, movie.getTitle());
-        intentToStartDetailActivity.putExtra(releaseDate, movie.getReleaseDate());
-        intentToStartDetailActivity.putExtra(posterPath, movie.getPosterPath());
-        intentToStartDetailActivity.putExtra(voteAvg, Double.toString(movie.getVoteAverage()));
-        intentToStartDetailActivity.putExtra(plotSynopsis, movie.getOverview());
-        startActivity(intentToStartDetailActivity);
+
+        // Popular Movies, Stage 2 v.01
+
+
+        // Popular Movies, Stage 2 v.00
+        // Place selected movie's details inside a Bundle and attach it to an Intent that will
+        // launch the DetailActivity
+//        Bundle b = new Bundle();
+//        b.putString(title, movie.getTitle());
+//        Log.e("rabbit", b.getString(title));
+//        b.putString(releaseDate, movie.getReleaseDate());
+//        Log.e("rabbit", b.getString(releaseDate));
+////        b.putDouble(voteAvg, movie.getVoteAverage());
+//        b.putString(plotSynopsis, movie.getOverview());
+//
+//        // Attach the Bundle to an intent
+//        Intent intent = new Intent(getActivity(), DetailActivity.class);
+//        intent.putExtra("deets", b);
+//        // Bundle[{null=plotSynopsis}]
+//        Log.e("rabbit", intent.getBundleExtra("deets").toString());
+//
+//        startActivity(intent);
+
+        // Popular Movies, Stage 1
+//        Context context = getActivity();
+//        Class destinationClass = DetailActivity.class;
+//        Intent intentToStartDetailActivity = new Intent(context, destinationClass);
+//        // I didn't know you could name the EXTRA's!!!
+//        // No need for enumeration or remembering the order of the EXTRAs for extraction like before
+//        intentToStartDetailActivity.putExtra(title, movie.getTitle());
+//        intentToStartDetailActivity.putExtra(releaseDate, movie.getReleaseDate());
+//        intentToStartDetailActivity.putExtra(posterPath, movie.getPosterPath());
+//        intentToStartDetailActivity.putExtra(voteAvg, Double.toString(movie.getVoteAverage()));
+//        intentToStartDetailActivity.putExtra(plotSynopsis, movie.getOverview());
+//
+//        // Returns 'title'
+//        Toast.makeText(getActivity(), "Movie: " + movie.getTitle(), Toast.LENGTH_SHORT).show();
+//        // All return the 'plotSynopsis'
+//        Log.e("rabbit", "intent title: " + intentToStartDetailActivity.getStringExtra(title));
+//        Log.e("rabbit", "intent releasedate: " + intentToStartDetailActivity.getStringExtra(releaseDate));
+//        Log.e("rabbit", "intent posterpath: " + intentToStartDetailActivity.getStringExtra(posterPath));
+//
+//        startActivity(intentToStartDetailActivity);
     }
 
     /**
@@ -158,5 +245,46 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
 //                Toast.makeText(MainActivity.this, "Failed", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    /**
+     * Inflate the menu for this Activity, only called once.
+     *
+     * @param menu Menu resource file to inflate for this activity
+     * @return Must return true for menu to appear
+     */
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.settings, menu);
+        super.onCreateOptionsMenu(menu,inflater);
+    }
+
+    @Override
+    public void setHasOptionsMenu(boolean hasMenu) {
+        super.setHasOptionsMenu(hasMenu);
+    }
+
+    /**
+     * Handle clicks on menu items.
+     *
+     * @param item Option selected
+     * @return True to consume and false to continue menu processing
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()){
+            case R.id.action_popular:
+                mToggleSearchOption = true;
+                callRetrofit();
+                return true;
+            case R.id.action_top_rated:
+                mToggleSearchOption = false;
+                callRetrofit();
+                return true;
+            case R.id.action_favorites:
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }

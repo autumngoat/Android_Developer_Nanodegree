@@ -47,6 +47,9 @@
 
 package com.example.full_dream.popularmoviesstage1.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.List;
 import com.squareup.moshi.Json;
 
@@ -56,7 +59,7 @@ import com.squareup.moshi.Json;
  * Used jsonprettyprint.com and jsonschema2pojo.com to auto-generate this POJO
  * from a TMDB JSON HTTP Response.
  */
-public class Movie {
+public class Movie implements Parcelable{
     @Json(name = "vote_count")
     private Integer voteCount;
     @Json(name = "id")
@@ -91,7 +94,80 @@ public class Movie {
     private static final String IMAGE_FILE_SIZE = "w500";
 
     /**
-     * Movie contructor.
+     * Interface that must be implemented and provided as a public CREATOR field that
+     * generates instances of your Parcelable class from a Parcel.
+     */
+    public final static Parcelable.Creator<Movie> CREATOR = new Creator<Movie>() {
+        @SuppressWarnings({
+                "unchecked"
+        })
+        public Movie createFromParcel(Parcel in) {
+            return new Movie(in);
+        }
+
+        public Movie[] newArray(int size) {
+            return (new Movie[size]);
+        }
+    };
+
+    /**
+     * Movie constructor using Parcel.
+     *
+     * @param in
+     */
+    protected Movie(Parcel in) {
+        this.voteCount = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.id = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.video = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
+        this.voteAverage = ((Double) in.readValue((Double.class.getClassLoader())));
+        this.title = ((String) in.readValue((String.class.getClassLoader())));
+        this.popularity = ((Double) in.readValue((Double.class.getClassLoader())));
+        this.posterPath = ((String) in.readValue((String.class.getClassLoader())));
+        this.originalLanguage = ((String) in.readValue((String.class.getClassLoader())));
+        this.originalTitle = ((String) in.readValue((String.class.getClassLoader())));
+        in.readList(this.genreIds, (java.lang.Integer.class.getClassLoader()));
+        this.backdropPath = ((String) in.readValue((String.class.getClassLoader())));
+        this.adult = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
+        this.overview = ((String) in.readValue((String.class.getClassLoader())));
+        this.releaseDate = ((String) in.readValue((String.class.getClassLoader())));
+    }
+
+    /**
+     * Flattens the object in to a Parcel.
+     *
+     * @param dest The Parcel in which object should be written.
+     * @param flags Additional flags about how the object should be written. May be 0
+     *              or PARCELABLE_WRITE_RETURN_VALUE.
+     */
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(voteCount);
+        dest.writeValue(id);
+        dest.writeValue(video);
+        dest.writeValue(voteAverage);
+        dest.writeValue(title);
+        dest.writeValue(popularity);
+        dest.writeValue(posterPath);
+        dest.writeValue(originalLanguage);
+        dest.writeValue(originalTitle);
+        dest.writeList(genreIds);
+        dest.writeValue(backdropPath);
+        dest.writeValue(adult);
+        dest.writeValue(overview);
+        dest.writeValue(releaseDate);
+    }
+
+    /**
+     * Indicates that the Parcelable object's flattened representation includes a file descriptor in
+     * the output of writeToParcel(Parcel, int) or returns 0.
+     *
+     * @return 0 or CONTENTS_FILE_DESCRIPTOR bitmask.
+     */
+    public int describeContents() {
+        return 0;
+    }
+
+    /**
+     * Movie contructor with Popular Movies, Stage 1 required details.
      */
     public Movie(String title, String releaseDate, String posterPath, double voteAvg,
                  String plotSynopsis){

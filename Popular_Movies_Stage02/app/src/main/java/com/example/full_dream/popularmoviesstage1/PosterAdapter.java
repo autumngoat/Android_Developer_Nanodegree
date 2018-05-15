@@ -109,6 +109,7 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
         Picasso.get()
                 .load(movie.getPosterPath())
                 .placeholder(R.drawable.ic_popcorn)
+                .error(R.drawable.ic_popcorn_error)
                 .into(posterViewHolder.mPosterImageView);
     }
 
@@ -124,6 +125,7 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
     }
 
     public void setMovieData(List<Movie> movieData) {
+        mMovieData = null;
         mMovieData = movieData;
         notifyDataSetChanged();
     }

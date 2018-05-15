@@ -50,6 +50,7 @@ package com.example.full_dream.popularmoviesstage1;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -88,23 +89,64 @@ public class DetailActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-        Intent intentThatStartedThisActivity = getIntent();
+        // Popular Movies, Stage 2 v.01
 
-        if (intentThatStartedThisActivity != null) {
-            if (intentThatStartedThisActivity.hasExtra(title)) {
-                // Icons made by "https://www.flaticon.com/authors/freprikepik"
-                // Title: "Popcorn"
-                // Licensed by Creative Commons BY 3.0
-                Picasso.get()
-                        .load(getIntent().getExtras().getString(posterPath))
-                        .placeholder(R.drawable.ic_popcorn)
-                        .into(mPoster);
 
-                mTitle.setText(getIntent().getExtras().getString(title));
-                mRating.setText(Double.toString(getIntent().getExtras().getDouble(voteAvg)));
-                mReleaseDate.setText(getIntent().getExtras().getString(releaseDate));
-                mSummary.setText(getIntent().getExtras().getString(plotSynopsis));
-            }
-        }
+        // Popular Movies, Stage 2 v.00
+        // Only create new fragments when there is no previously saved state
+//        if(savedInstanceState == null){
+//            Picasso.get()
+////                        .load(getIntent().getExtras().getString(posterPath))
+//                        .load("/e1mjopzAS2KNsvpbpahQ1a6SkSn.jpg")
+//                        .placeholder(R.drawable.ic_popcorn)
+//                        .into(mPoster);
+//
+//            Log.e("rabbit", "do the dance");
+//
+//            Bundle b = getIntent().getBundleExtra("deets");
+//            String blah = b.getString(title, "fuck");
+//            String haha = b.getString(voteAvg, "what");
+//
+//            // Println needs a message, NPE
+//            Log.e("rabbit1", blah);
+//            Log.e("rabbit2", haha);
+//
+//            mTitle.setText("happy");
+//            mRating.setText("3.3");
+////            mReleaseDate.setText(getIntent().getStringExtra(releaseDate));
+////            mSummary.setText(getIntent().getStringExtra(plotSynopsis));
+//            mReleaseDate.setText("2018-03-02");
+//            mSummary.setText("In a world...");
+//        } else {
+//            Log.e("rabbit", "what the fuck");
+//        }
+
+        // Popular Movies, Stage 1
+//        Intent intentThatStartedThisActivity = getIntent();
+//
+//        if (intentThatStartedThisActivity != null) {
+//            if (intentThatStartedThisActivity.hasExtra(title)) {
+//                // Icons made by "https://www.flaticon.com/authors/freprikepik"
+//                // Title: "Popcorn"
+//                // Licensed by Creative Commons BY 3.0
+//                Picasso.get()
+//                        .load(getIntent().getExtras().getString(posterPath))
+//                        .placeholder(R.drawable.ic_popcorn)
+//                        .into(mPoster);
+//
+//                String blah = getIntent().getStringExtra(title);
+//                String haha = getIntent().getStringExtra(voteAvg);
+//
+//                Log.e("rabbit", blah);
+//                Log.e("rabbit", haha);
+//
+//                mTitle.setText(getIntent().getExtras().getString(title));
+//                mRating.setText(Double.toString(getIntent().getExtras().getDouble(voteAvg)));
+//                mReleaseDate.setText(getIntent().getExtras().getString(releaseDate));
+//                mSummary.setText(getIntent().getExtras().getString(plotSynopsis));
+//            }
+//        } else {
+//            Log.e("rabbit", "PYT");
+//        }
     }
 }

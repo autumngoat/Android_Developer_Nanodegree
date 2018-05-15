@@ -54,6 +54,7 @@
     <!-- Options menu option titles -->
     <string name="most_popular">Most Popular</string>
     <string name="highest_rated">Highest Rated</string>
+    <string name="favorites">Favorites</string>
 
     <!-- Sort-by options -->
     <string name="most_popular_desc">popular</string>
