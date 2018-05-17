@@ -50,7 +50,6 @@ package com.example.full_dream.popularmoviesstage1.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.List;
 import com.squareup.moshi.Json;
 
 /**
@@ -58,32 +57,33 @@ import com.squareup.moshi.Json;
  *
  * Used jsonprettyprint.com and jsonschema2pojo.com to auto-generate this POJO
  * from a TMDB JSON HTTP Response.
+ *
+ * Used jsonschema2pojo.com to auto-generate Parcelable.
+ *
+ * Used https://medium.com/@adetayo_james/implement-parcelable-in-android-4d20994f0510
+ * to troubleshoot the buggy auto-generate mess received from jsonschema2pojo.com.
  */
 public class Movie implements Parcelable{
     @Json(name = "vote_count")
-    private Integer voteCount;
+    private int voteCount;
     @Json(name = "id")
-    private Integer id;
+    private int id;
     @Json(name = "video")
-    private Boolean video;
+    private boolean video;
     @Json(name = "vote_average")
-    private Double voteAverage;
+    private double voteAverage;
     @Json(name = "title")
     private String title;
     @Json(name = "popularity")
-    private Double popularity;
+    private double popularity;
     @Json(name = "poster_path")
     private String posterPath;
     @Json(name = "original_language")
     private String originalLanguage;
     @Json(name = "original_title")
     private String originalTitle;
-    @Json(name = "genre_ids")
-    private List<Integer> genreIds = null;
     @Json(name = "backdrop_path")
     private String backdropPath;
-    @Json(name = "adult")
-    private Boolean adult;
     @Json(name = "overview")
     private String overview;
     @Json(name = "release_date")
@@ -98,62 +98,83 @@ public class Movie implements Parcelable{
      * generates instances of your Parcelable class from a Parcel.
      */
     public final static Parcelable.Creator<Movie> CREATOR = new Creator<Movie>() {
-        @SuppressWarnings({
-                "unchecked"
-        })
+        /**
+         * Create a new instance of the Parcelable class, instantiating it from the given Parcel
+         * whose data had previously been written by Parcelable.writeToParcel().
+         *
+         * @param in The Parcel to read the object's data from.
+         * @return Returns T, a new instance of the Parcelable class.
+         */
         public Movie createFromParcel(Parcel in) {
             return new Movie(in);
         }
 
+        /**
+         * Creates a new array of the Parcelable class.
+         *
+         * @param size Size of the array.
+         * @return Returns an array of the Parcelable class, with every entry initialized to null.
+         */
         public Movie[] newArray(int size) {
             return (new Movie[size]);
         }
     };
 
     /**
-     * Movie constructor using Parcel.
+     * Parcelable constructor used in createFromParcel() to create a new instance of the Parcelable
+     * class, instantiating it from the given Parcel whose data had previously been written by
+     * Parcelable.writeToParcel().
      *
-     * @param in
+     * https://developer.android.com/reference/android/os/Parcel
+     *
+     * @param in Container for a message (data and object references) that can be sent through an
+     *           IBinder
      */
-    protected Movie(Parcel in) {
-        this.voteCount = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.id = ((Integer) in.readValue((Integer.class.getClassLoader())));
+    private Movie(Parcel in) {
+        // in.readInt() - Read an integer value from the parcel at the current dataPosition()
+        //  Kept having ClassCastExceptions with casting ClassLoader until I stopped using object
+        //  wrappers and used in.readType() methods... and now
+        //  ((Cast) in.readValue((Cast.class.getClassLoader()))) works and I don't know why...
+        this.voteCount = in.readInt();
+        this.id = in.readInt();
         this.video = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
-        this.voteAverage = ((Double) in.readValue((Double.class.getClassLoader())));
-        this.title = ((String) in.readValue((String.class.getClassLoader())));
-        this.popularity = ((Double) in.readValue((Double.class.getClassLoader())));
-        this.posterPath = ((String) in.readValue((String.class.getClassLoader())));
-        this.originalLanguage = ((String) in.readValue((String.class.getClassLoader())));
-        this.originalTitle = ((String) in.readValue((String.class.getClassLoader())));
-        in.readList(this.genreIds, (java.lang.Integer.class.getClassLoader()));
-        this.backdropPath = ((String) in.readValue((String.class.getClassLoader())));
-        this.adult = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
-        this.overview = ((String) in.readValue((String.class.getClassLoader())));
-        this.releaseDate = ((String) in.readValue((String.class.getClassLoader())));
+        this.voteAverage = in.readDouble();
+        this.title = in.readString();
+        this.popularity = in.readDouble();
+        this.posterPath = in.readString();
+        this.originalLanguage = in.readString();
+        this.originalTitle = in.readString();
+        this.backdropPath = in.readString();
+        this.overview = in.readString();
+        this.releaseDate = in.readString();
     }
 
     /**
-     * Flattens the object in to a Parcel.
+     * Flattens this object into a Parcel.
+     *
+     * Source: https://developer.android.com/reference/android/os/Parcelable#writeToParcel(android.os.Parcel,%20int)
      *
      * @param dest The Parcel in which object should be written.
      * @param flags Additional flags about how the object should be written. May be 0
      *              or PARCELABLE_WRITE_RETURN_VALUE.
      */
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(voteCount);
-        dest.writeValue(id);
+        // writeValue() - Flatten a generic object in to a parcel.
+        // Using writeValue() seemed to return null values... changed object wrappers to primitives
+        // i.e. Integer to int and used specific writeType() methods and now writeValue() works...
+        //  I don't know why
+        dest.writeInt(voteCount);
+        dest.writeInt(id);
         dest.writeValue(video);
-        dest.writeValue(voteAverage);
-        dest.writeValue(title);
-        dest.writeValue(popularity);
-        dest.writeValue(posterPath);
-        dest.writeValue(originalLanguage);
-        dest.writeValue(originalTitle);
-        dest.writeList(genreIds);
-        dest.writeValue(backdropPath);
-        dest.writeValue(adult);
-        dest.writeValue(overview);
-        dest.writeValue(releaseDate);
+        dest.writeDouble(voteAverage);
+        dest.writeString(title);
+        dest.writeDouble(popularity);
+        dest.writeString(posterPath);
+        dest.writeString(originalLanguage);
+        dest.writeString(originalTitle);
+        dest.writeString(backdropPath);
+        dest.writeString(overview);
+        dest.writeString(releaseDate);
     }
 
     /**
@@ -171,11 +192,20 @@ public class Movie implements Parcelable{
      */
     public Movie(String title, String releaseDate, String posterPath, double voteAvg,
                  String plotSynopsis){
-        this.originalTitle = title;
+        this.title = title;
         this.releaseDate = releaseDate;
         this.posterPath = posterPath;
         this.voteAverage = voteAvg;
         this.overview = plotSynopsis;
+    }
+
+    @Override
+    public String toString() {
+        return "\ntitle: " + this.title +
+                "\nreleaseDate: " + this.releaseDate +
+                "\nposterPath: " + this.posterPath +
+                "\nvoteAverage: " + this.voteAverage +
+                "\noverview: " + this.overview;
     }
 
     public Integer getVoteCount() {
@@ -251,28 +281,12 @@ public class Movie implements Parcelable{
         this.originalTitle = originalTitle;
     }
 
-    public List<Integer> getGenreIds() {
-        return genreIds;
-    }
-
-    public void setGenreIds(List<Integer> genreIds) {
-        this.genreIds = genreIds;
-    }
-
     public String getBackdropPath() {
         return backdropPath;
     }
 
     public void setBackdropPath(String backdropPath) {
         this.backdropPath = backdropPath;
-    }
-
-    public Boolean getAdult() {
-        return adult;
-    }
-
-    public void setAdult(Boolean adult) {
-        this.adult = adult;
     }
 
     public String getOverview() {

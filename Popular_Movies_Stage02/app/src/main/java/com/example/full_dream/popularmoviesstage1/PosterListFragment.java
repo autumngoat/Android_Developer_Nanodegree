@@ -47,19 +47,22 @@
 
 package com.example.full_dream.popularmoviesstage1;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.BundleCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.full_dream.popularmoviesstage1.model.Movie;
 import com.example.full_dream.popularmoviesstage1.model.MovieResponse;
@@ -75,12 +78,12 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class PosterListFragment extends Fragment implements PosterAdapter.PosterAdapterOnClickHandler{
+public class PosterListFragment extends Fragment implements PosterAdapter.PosterAdapterOnClickHandler {
 
     private boolean mToggleSearchOption =  true;
     private static final String MOST_POPULAR = "popular";
     private static final String TOP_RATED = "top_rated";
-    private static final String API_KEY = "GetYourOwnApi";
+    private static final String API_KEY = "GetYourOwnApiKey";
     private static final int NUMBER_OF_COLUMNS = 3;
     private GridLayoutManager mLayoutManager;
     private PosterAdapter mPosterAdapter;
@@ -111,10 +114,7 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Get the Boolean from Options Menu of host Activity to determine what data source to use
-        // to populate the RecyclerView
-//        mToggleSearchOption = getArguments().getBoolean("toogle");
-
+        //
         setHasOptionsMenu(true);
 
         // Fill the PosterAdapter with the initial data from the network call
@@ -159,56 +159,6 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
     }
 
     /**
-     * Handle RecyclerView item clicks to launch DetailActivity.
-     */
-    @Override
-    public void onClick(Movie movie) {
-
-        // Popular Movies, Stage 2 v.01
-
-
-        // Popular Movies, Stage 2 v.00
-        // Place selected movie's details inside a Bundle and attach it to an Intent that will
-        // launch the DetailActivity
-//        Bundle b = new Bundle();
-//        b.putString(title, movie.getTitle());
-//        Log.e("rabbit", b.getString(title));
-//        b.putString(releaseDate, movie.getReleaseDate());
-//        Log.e("rabbit", b.getString(releaseDate));
-////        b.putDouble(voteAvg, movie.getVoteAverage());
-//        b.putString(plotSynopsis, movie.getOverview());
-//
-//        // Attach the Bundle to an intent
-//        Intent intent = new Intent(getActivity(), DetailActivity.class);
-//        intent.putExtra("deets", b);
-//        // Bundle[{null=plotSynopsis}]
-//        Log.e("rabbit", intent.getBundleExtra("deets").toString());
-//
-//        startActivity(intent);
-
-        // Popular Movies, Stage 1
-//        Context context = getActivity();
-//        Class destinationClass = DetailActivity.class;
-//        Intent intentToStartDetailActivity = new Intent(context, destinationClass);
-//        // I didn't know you could name the EXTRA's!!!
-//        // No need for enumeration or remembering the order of the EXTRAs for extraction like before
-//        intentToStartDetailActivity.putExtra(title, movie.getTitle());
-//        intentToStartDetailActivity.putExtra(releaseDate, movie.getReleaseDate());
-//        intentToStartDetailActivity.putExtra(posterPath, movie.getPosterPath());
-//        intentToStartDetailActivity.putExtra(voteAvg, Double.toString(movie.getVoteAverage()));
-//        intentToStartDetailActivity.putExtra(plotSynopsis, movie.getOverview());
-//
-//        // Returns 'title'
-//        Toast.makeText(getActivity(), "Movie: " + movie.getTitle(), Toast.LENGTH_SHORT).show();
-//        // All return the 'plotSynopsis'
-//        Log.e("rabbit", "intent title: " + intentToStartDetailActivity.getStringExtra(title));
-//        Log.e("rabbit", "intent releasedate: " + intentToStartDetailActivity.getStringExtra(releaseDate));
-//        Log.e("rabbit", "intent posterpath: " + intentToStartDetailActivity.getStringExtra(posterPath));
-//
-//        startActivity(intentToStartDetailActivity);
-    }
-
-    /**
      * Helper function to be able to call Retrofit whenever data needs to be retrieved.
      */
     public void callRetrofit(){
@@ -245,6 +195,36 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
 //                Toast.makeText(MainActivity.this, "Failed", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    /**
+     * Handle RecyclerView item clicks to launch DetailActivity.
+     */
+    @Override
+    public void onClick(Movie movie) {
+        Context context = getActivity();
+        Class destinationClass = DetailActivity.class;
+        Intent intentToStartDetailActivity = new Intent(context, destinationClass);
+        // I didn't know you could name the EXTRA's!!!
+        // No need for enumeration or remembering the order of the EXTRAs for extraction like before
+//        intentToStartDetailActivity.putExtra(title, movie.getTitle());
+//        intentToStartDetailActivity.putExtra(releaseDate, movie.getReleaseDate());
+//        intentToStartDetailActivity.putExtra(posterPath, movie.getPosterPath());
+//        intentToStartDetailActivity.putExtra(voteAvg, Double.toString(movie.getVoteAverage()));
+//        intentToStartDetailActivity.putExtra(plotSynopsis, movie.getOverview());
+
+        // Returns 'title'
+        Toast.makeText(getActivity(), "Movie: " + movie.getTitle(), Toast.LENGTH_SHORT).show();
+        // All return the 'plotSynopsis'
+//        Log.e("rabbit", "intent title: " + intentToStartDetailActivity.getStringExtra(title));
+//        Log.e("rabbit", "intent releasedate: " + intentToStartDetailActivity.getStringExtra(releaseDate));
+//        Log.e("rabbit", "intent posterpath: " + intentToStartDetailActivity.getStringExtra(posterPath));
+
+        Log.e("rabbit", "PosterListFragment: " + movie.toString());
+
+        intentToStartDetailActivity.putExtra("deets", movie);
+
+        startActivity(intentToStartDetailActivity);
     }
 
     /**

@@ -50,6 +50,7 @@ package com.example.full_dream.popularmoviesstage1;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+
 import butterknife.ButterKnife;
 
 /**

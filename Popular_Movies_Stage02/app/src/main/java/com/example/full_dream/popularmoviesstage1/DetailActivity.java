@@ -54,6 +54,7 @@ import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.full_dream.popularmoviesstage1.model.Movie;
 import com.squareup.picasso.Picasso;
 
 import butterknife.BindString;
@@ -89,64 +90,50 @@ public class DetailActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-        // Popular Movies, Stage 2 v.01
+        Intent intentThatStartedThisActivity = getIntent();
 
+        if (intentThatStartedThisActivity != null) {
 
-        // Popular Movies, Stage 2 v.00
-        // Only create new fragments when there is no previously saved state
-//        if(savedInstanceState == null){
-//            Picasso.get()
-////                        .load(getIntent().getExtras().getString(posterPath))
-//                        .load("/e1mjopzAS2KNsvpbpahQ1a6SkSn.jpg")
-//                        .placeholder(R.drawable.ic_popcorn)
-//                        .into(mPoster);
-//
-//            Log.e("rabbit", "do the dance");
-//
-//            Bundle b = getIntent().getBundleExtra("deets");
-//            String blah = b.getString(title, "fuck");
-//            String haha = b.getString(voteAvg, "what");
-//
-//            // Println needs a message, NPE
-//            Log.e("rabbit1", blah);
-//            Log.e("rabbit2", haha);
-//
-//            mTitle.setText("happy");
-//            mRating.setText("3.3");
-////            mReleaseDate.setText(getIntent().getStringExtra(releaseDate));
-////            mSummary.setText(getIntent().getStringExtra(plotSynopsis));
-//            mReleaseDate.setText("2018-03-02");
-//            mSummary.setText("In a world...");
-//        } else {
-//            Log.e("rabbit", "what the fuck");
-//        }
+            // Fucking returns gibberish
+            //  Problem was inside Movie (Parcelable) object, obviously
+//            Movie movie = intentThatStartedThisActivity.getParcelableExtra("deets");
+//            Movie movie = intentThatStartedThisActivity.getExtras().getParcelable("deets");
+//            Movie movie = (Movie) intentThatStartedThisActivity.getParcelableExtra("deets");
+//            Movie movie = (Movie)intentThatStartedThisActivity.getExtras().get("deets");
+            Bundle b = intentThatStartedThisActivity.getExtras();
+            if(intentThatStartedThisActivity.hasExtra("deets")){
+                Log.e("rabbit", "deets");
+            } else {
+                Log.e("rabbit", "NO DEETS");
+            }
+            Movie movie = b.getParcelable("deets");
 
-        // Popular Movies, Stage 1
-//        Intent intentThatStartedThisActivity = getIntent();
-//
-//        if (intentThatStartedThisActivity != null) {
-//            if (intentThatStartedThisActivity.hasExtra(title)) {
-//                // Icons made by "https://www.flaticon.com/authors/freprikepik"
-//                // Title: "Popcorn"
-//                // Licensed by Creative Commons BY 3.0
-//                Picasso.get()
-//                        .load(getIntent().getExtras().getString(posterPath))
-//                        .placeholder(R.drawable.ic_popcorn)
-//                        .into(mPoster);
-//
-//                String blah = getIntent().getStringExtra(title);
-//                String haha = getIntent().getStringExtra(voteAvg);
-//
-//                Log.e("rabbit", blah);
-//                Log.e("rabbit", haha);
-//
-//                mTitle.setText(getIntent().getExtras().getString(title));
-//                mRating.setText(Double.toString(getIntent().getExtras().getDouble(voteAvg)));
-//                mReleaseDate.setText(getIntent().getExtras().getString(releaseDate));
-//                mSummary.setText(getIntent().getExtras().getString(plotSynopsis));
-//            }
-//        } else {
-//            Log.e("rabbit", "PYT");
-//        }
+            if(movie == null) {
+                Log.e("rabbit", "movie is null");
+            } else {
+                Log.e("rabbit", "DetailActivity: " + movie.toString());
+            }
+
+            // Icons made by "https://www.flaticon.com/authors/freprikepik"
+            // Title: "Popcorn"
+            // Licensed by Creative Commons BY 3.0
+            Picasso.get()
+                    .load(movie.getPosterPath())
+                    .placeholder(R.drawable.ic_popcorn)
+                    .error(R.drawable.ic_popcorn)
+                    .into(mPoster);
+
+            String title = movie.getTitle();
+            double rating = movie.getVoteAverage();
+            String date = movie.getReleaseDate();
+            String summary = movie.getOverview();
+
+            mTitle.setText(title);
+            mRating.setText(Double.toString(rating));
+            mReleaseDate.setText(date);
+            mSummary.setText(summary);
+        } else {
+            Log.e("rabbit", "Intent does not have Extra deets");
+        }
     }
 }
