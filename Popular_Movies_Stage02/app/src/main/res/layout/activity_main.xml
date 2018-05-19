@@ -50,6 +50,6 @@
     android:layout_height="match_parent"
 
     android:id="@+id/poster_list_fragment"
-    android:name="com.example.full_dream.popularmoviesstage1.PosterListFragment">
+    android:name="com.example.full_dream.popularmoviesstage1.fragment.PosterListFragment">
 
 </fragment>

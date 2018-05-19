@@ -45,7 +45,7 @@
  *
  */
 
-package com.example.full_dream.popularmoviesstage1;
+package com.example.full_dream.popularmoviesstage1.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;

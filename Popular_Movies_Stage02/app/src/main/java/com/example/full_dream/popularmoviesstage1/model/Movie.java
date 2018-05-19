@@ -282,7 +282,7 @@ public class Movie implements Parcelable{
     }
 
     public String getBackdropPath() {
-        return backdropPath;
+        return TMDB_IMG_BASE_URL + IMAGE_FILE_SIZE + backdropPath;
     }
 
     public void setBackdropPath(String backdropPath) {

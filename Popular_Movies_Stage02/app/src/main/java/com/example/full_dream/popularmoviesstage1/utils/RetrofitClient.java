@@ -88,4 +88,16 @@ public class RetrofitClient {
 
         return retrofit;
     }
+
+//    public TheMovieDBService getClient(){
+//        retrofit = new Retrofit.Builder()
+//                .baseUrl(TMDB_BASE_URL)
+//                .addConverterFactory(MoshiConverterFactory.create())
+//                .build();
+//
+//        // Pass service interface to create() to generate an implementation of the API endpoint
+//        TheMovieDBService service = retrofit.create(TheMovieDBService.class);
+//
+//        return service;
+//    }
 }

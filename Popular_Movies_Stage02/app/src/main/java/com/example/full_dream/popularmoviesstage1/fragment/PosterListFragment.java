@@ -45,7 +45,7 @@
  *
  */
 
-package com.example.full_dream.popularmoviesstage1;
+package com.example.full_dream.popularmoviesstage1.fragment;
 
 import android.content.Context;
 import android.content.Intent;
@@ -55,15 +55,17 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
+import com.example.full_dream.popularmoviesstage1.DetailActivity;
+import com.example.full_dream.popularmoviesstage1.R;
+import com.example.full_dream.popularmoviesstage1.adapter.PosterAdapter;
 import com.example.full_dream.popularmoviesstage1.model.Movie;
 import com.example.full_dream.popularmoviesstage1.model.MovieResponse;
 import com.example.full_dream.popularmoviesstage1.utils.RetrofitClient;
@@ -84,7 +86,6 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
     private static final String MOST_POPULAR = "popular";
     private static final String TOP_RATED = "top_rated";
     private static final String API_KEY = "GetYourOwnApiKey";
-    private static final int NUMBER_OF_COLUMNS = 3;
     private GridLayoutManager mLayoutManager;
     private PosterAdapter mPosterAdapter;
     @BindString(R.string.title)
@@ -134,12 +135,23 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         // Inflate fragment layout
         View rootView = inflater.inflate(R.layout.fragment_poster_list, container, false);
+
         // Grab the view from the fragment layout
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.rv_poster_list);
+
+        // Calculate auto-fit number of columns for GridLayoutManager
+        // Source: https://stackoverflow.com/questions/33575731/gridlayoutmanager-how-to-auto-fit-columns
+        DisplayMetrics displayMetrics = getActivity().getResources().getDisplayMetrics();
+        float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
+        int widthOfRecyclerView = 120;
+        int numberOfColumns = (int) (dpWidth / widthOfRecyclerView);
+
         // Use a Grid Layout Manager as per the rubric
-        mLayoutManager = new GridLayoutManager(getActivity(), NUMBER_OF_COLUMNS);
+        mLayoutManager = new GridLayoutManager(getActivity(), numberOfColumns);
         mRecyclerView.setLayoutManager(mLayoutManager);
+
         mRecyclerView.setHasFixedSize(true);
+
         mPosterAdapter = new PosterAdapter(this);
         // Set the view to the empty PosterAdapter
         mRecyclerView.setAdapter(mPosterAdapter);
@@ -175,9 +187,9 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
 
         // Popular or Top Rated?
         if(mToggleSearchOption){
-            call = service.getPopularMovies(MOST_POPULAR, API_KEY);
+            call = service.getMovies(MOST_POPULAR, API_KEY);
         } else {
-            call = service.getTopRatedMovies(TOP_RATED, API_KEY);
+            call = service.getMovies(TOP_RATED, API_KEY);
         }
 
         // Asynchronously send the HTTP request and notify the callback of its HTTP response
@@ -205,25 +217,7 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
         Context context = getActivity();
         Class destinationClass = DetailActivity.class;
         Intent intentToStartDetailActivity = new Intent(context, destinationClass);
-        // I didn't know you could name the EXTRA's!!!
-        // No need for enumeration or remembering the order of the EXTRAs for extraction like before
-//        intentToStartDetailActivity.putExtra(title, movie.getTitle());
-//        intentToStartDetailActivity.putExtra(releaseDate, movie.getReleaseDate());
-//        intentToStartDetailActivity.putExtra(posterPath, movie.getPosterPath());
-//        intentToStartDetailActivity.putExtra(voteAvg, Double.toString(movie.getVoteAverage()));
-//        intentToStartDetailActivity.putExtra(plotSynopsis, movie.getOverview());
-
-        // Returns 'title'
-        Toast.makeText(getActivity(), "Movie: " + movie.getTitle(), Toast.LENGTH_SHORT).show();
-        // All return the 'plotSynopsis'
-//        Log.e("rabbit", "intent title: " + intentToStartDetailActivity.getStringExtra(title));
-//        Log.e("rabbit", "intent releasedate: " + intentToStartDetailActivity.getStringExtra(releaseDate));
-//        Log.e("rabbit", "intent posterpath: " + intentToStartDetailActivity.getStringExtra(posterPath));
-
-        Log.e("rabbit", "PosterListFragment: " + movie.toString());
-
         intentToStartDetailActivity.putExtra("deets", movie);
-
         startActivity(intentToStartDetailActivity);
     }
 

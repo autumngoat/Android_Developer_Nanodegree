@@ -45,7 +45,7 @@
  *
  */
 
-package com.example.full_dream.popularmoviesstage1;
+package com.example.full_dream.popularmoviesstage1.adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -55,6 +55,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.example.full_dream.popularmoviesstage1.R;
 import com.example.full_dream.popularmoviesstage1.model.Movie;
 
 import com.squareup.picasso.Picasso;
@@ -137,14 +138,14 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
     }
 
     /**
-     * ViewHolder constructor
+     * ViewHolder inner class.
      */
     public class PosterAdapterViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.iv_poster)
         ImageView mPosterImageView;
 
         /**
-         * Sets click listener on newly created empty ViewHolder
+         * ViewHolder constructor that sets click listener on newly created empty ViewHolder
          */
         public PosterAdapterViewHolder(View view) {
             super(view);

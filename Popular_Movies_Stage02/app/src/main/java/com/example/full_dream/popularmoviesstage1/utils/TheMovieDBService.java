@@ -48,6 +48,8 @@
 package com.example.full_dream.popularmoviesstage1.utils;
 
 import com.example.full_dream.popularmoviesstage1.model.MovieResponse;
+import com.example.full_dream.popularmoviesstage1.model.Review;
+import com.example.full_dream.popularmoviesstage1.model.Trailer;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -67,28 +69,39 @@ public interface TheMovieDBService {
     String API_KEY = "api_key";
 
     /**
-     * Make a GET HTTP request for the most popular movies and returns
-     * a HTTP response as a MovieResponse POJO.
+     * Make a GET HTTP request for:
+     *  the most popular movies or
+     *  the top rated movies,
+     * and returns a HTTP response as a MovieResponse POJO.
      *
      * Source:
      * http://square.github.io/retrofit/2.x/retrofit/retrofit2/http/GET.html
      * http://square.github.io/retrofit/2.x/retrofit/retrofit2/Call.html
      */
-    @GET("movie/{search}/") Call<MovieResponse> getPopularMovies(
-            @Path("search") String user,
+    @GET("movie/{search}/") Call<MovieResponse> getMovies(
+            @Path("search") String searchTerms,
             @Query(API_KEY) String apiKey);
 
     /**
-     * Make a GET HTTP request for the top rated movies and returns
-     * a HTTP response as a Movieresponse POJO.
+     * Make a GET HTTP request for the videos (trailers) related to the selected movie and returns
+     * a HTTP response as a Trailer POJO.
      *
      * Source:
-     * http://square.github.io/retrofit/2.x/retrofit/retrofit2/http/GET.html
-     * http://square.github.io/retrofit/2.x/retrofit/retrofit2/Call.html
+     * https://developers.themoviedb.org/3/movies/get-movie-videos
      */
-    @GET("movie/{search}/")
-    Call<MovieResponse> getTopRatedMovies(
-            @Path("search") String user,
+    @GET("movie/{movie_id}/")
+    Call<Trailer> getTrailers(
+            @Path("movie_id") String movieId,
             @Query(API_KEY) String apiKey);
 
+    /**
+     *
+     *
+     * Source:
+     * https://developers.themoviedb.org/3/reviews/get-review-details
+     */
+    @GET("review/{review_id}/")
+    Call<Review> getReviews(
+            @Path("review_id") String reviewId,
+            @Query(API_KEY) String apiKey);
 }
