@@ -141,13 +141,42 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
 
         // Calculate auto-fit number of columns for GridLayoutManager
         // Source: https://stackoverflow.com/questions/33575731/gridlayoutmanager-how-to-auto-fit-columns
-        DisplayMetrics displayMetrics = getActivity().getResources().getDisplayMetrics();
-        float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
-        int widthOfRecyclerView = 120;
-        int numberOfColumns = (int) (dpWidth / widthOfRecyclerView);
+//        DisplayMetrics displayMetrics = getActivity().getResources().getDisplayMetrics();
+//        float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
+//        int widthOfRecyclerView = 120;
+//        int numberOfColumns = (int) (dpWidth / widthOfRecyclerView);
+
+        // Least common multiple of 2 and 3 is 6
+        int numberOfColumns = 6;
 
         // Use a Grid Layout Manager as per the rubric
         mLayoutManager = new GridLayoutManager(getActivity(), numberOfColumns);
+
+        // Experimented with different span counts on different rows from this code:
+        // https://stackoverflow.com/questions/31112291/recyclerview-layoutmanager-different-span-counts-on-different-rows
+        mLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                // Five is the total number of items in a repeated section:
+                //  2 items spanning 3 columns in row 1,
+                //  3 items spanning 2 columns in row 2,
+                //  and then repeat
+                switch(position % 5){
+                    // First row of 2 items span 3 columns each (6 columns total)
+                    case 0:
+                    case 1:
+                        return 3;
+                    // Second row of 3 items span 2 columns each (6 columns total)
+                    case 2:
+                    case 3:
+                    case 4:
+                        return 2;
+                    default:
+                        return 1;
+                }
+            }
+        });
+
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         mRecyclerView.setHasFixedSize(true);
