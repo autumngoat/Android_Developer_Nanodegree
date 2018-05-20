@@ -49,7 +49,10 @@ package com.example.full_dream.popularmoviesstage1;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.KeyEvent;
 
+
+import com.example.full_dream.popularmoviesstage1.fragment.PosterListFragment;
 
 import butterknife.ButterKnife;
 
@@ -65,8 +68,25 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        //  Learned how to setup and display a master-list fragment from:
-        //  TFragments.02-Exercise-CreateMasterListFragment
-        //   Static fragments DO NOT need a container or transactions
+        // Implement PosterListFragment like this so that I can replace it with a
+        // DetailFragment on ViewHolder click
+        PosterListFragment posterListFragment = new PosterListFragment();
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.fragment_container, posterListFragment)
+                .commit();
+    }
+
+    /**
+     * Navigate back to the PosterListFragment from the DetailFragment on Back press.
+     */
+    @Override
+    public void onBackPressed() {
+        this.getSupportFragmentManager().popBackStack();
+        PosterListFragment posterListFragment = new PosterListFragment();
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container, posterListFragment)
+                .commit();
     }
 }

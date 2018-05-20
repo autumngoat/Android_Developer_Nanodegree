@@ -53,9 +53,10 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -243,11 +244,25 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
      */
     @Override
     public void onClick(Movie movie) {
-        Context context = getActivity();
-        Class destinationClass = DetailActivity.class;
-        Intent intentToStartDetailActivity = new Intent(context, destinationClass);
-        intentToStartDetailActivity.putExtra("deets", movie);
-        startActivity(intentToStartDetailActivity);
+//        Context context = getActivity();
+//        Class destinationClass = DetailActivity.class;
+//        Intent intentToStartDetailActivity = new Intent(context, destinationClass);
+//        intentToStartDetailActivity.putExtra("deets", movie);
+//        startActivity(intentToStartDetailActivity);
+
+        // Create a DetailFragment instance
+        DetailFragment detailFragment = new DetailFragment();
+        // Return the FragmentManager for interacting with Fragments in this Fragment
+        FragmentManager fm = getFragmentManager();
+        // Start a series of Fragment edit operations associated with this FragmentManager
+        FragmentTransaction ft = fm.beginTransaction();
+        // Add this transaction to the back stack
+        ft.addToBackStack(null);
+        // Replace the PosterListFragment with the DetailsFragment
+        ft.replace(R.id.fragment_container, detailFragment);
+        // Schedules a commit of this transaction (does not happen immediately) to be done
+        // on the main/UI thread when the thread next becomes available
+        ft.commit();
     }
 
     /**
