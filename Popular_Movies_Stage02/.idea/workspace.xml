@@ -47,7 +47,7 @@
       <file leaf-file-name="PosterListFragment.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/full_dream/popularmoviesstage1/fragment/PosterListFragment.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="54">
+            <state relative-caret-position="119">
               <caret line="87" column="59" lean-forward="false" selection-start-line="87" selection-start-column="59" selection-end-line="87" selection-end-column="59" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -63,14 +63,24 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="fragment_poster_list.xml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/fragment_poster_list.xml">
+      <file leaf-file-name="Movie.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/full_dream/popularmoviesstage1/model/Movie.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-180">
+              <caret line="62" column="35" lean-forward="false" selection-start-line="62" selection-start-column="35" selection-end-line="62" selection-end-column="35" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="settings.xml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/res/menu/settings.xml">
           <provider editor-type-id="android-designer2">
             <state />
           </provider>
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="357">
-              <caret line="45" column="5" lean-forward="false" selection-start-line="45" selection-start-column="5" selection-end-line="45" selection-end-column="5" />
+            <state relative-caret-position="386">
+              <caret line="52" column="48" lean-forward="false" selection-start-line="52" selection-start-column="48" selection-end-line="52" selection-end-column="48" />
               <folding />
             </state>
           </provider>
@@ -82,20 +92,8 @@
             <state />
           </provider>
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="386">
-              <caret line="52" column="14" lean-forward="false" selection-start-line="52" selection-start-column="14" selection-end-line="52" selection-end-column="14" />
-              <folding>
-                <element signature="e#3164#3185#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="MovieResponse.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/full_dream/popularmoviesstage1/model/MovieResponse.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="197">
-              <caret line="64" column="33" lean-forward="false" selection-start-line="64" selection-start-column="33" selection-end-line="64" selection-end-column="33" />
+            <state relative-caret-position="116">
+              <caret line="40" column="39" lean-forward="false" selection-start-line="40" selection-start-column="39" selection-end-line="40" selection-end-column="39" />
               <folding />
             </state>
           </provider>
@@ -2135,10 +2133,8 @@
       <list>
         <option value="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/full_dream/popularmoviesstage1/DetailFragment.java" />
-        <option value="$PROJECT_DIR$/app/src/main/res/layout/fragment_poster_list.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/fragment_movie_details.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/full_dream/popularmoviesstage1/utils/NetworkUtils.java" />
-        <option value="$PROJECT_DIR$/app/src/main/res/menu/settings.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/drawable/ic_popcorn_error.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml" />
@@ -2158,6 +2154,8 @@
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/full_dream/popularmoviesstage1/model/Review.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/full_dream/popularmoviesstage1/model/TrailerResponse.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/full_dream/popularmoviesstage1/model/Trailer.java" />
+        <option value="$PROJECT_DIR$/app/src/main/res/menu/settings.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/fragment_poster_list.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/movie_list_item.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/full_dream/popularmoviesstage1/fragment/PosterListFragment.java" />
       </list>
@@ -2940,16 +2938,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/menu/settings.xml">
-      <provider editor-type-id="android-designer2">
-        <state />
-      </provider>
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="422">
-          <caret line="52" column="28" lean-forward="true" selection-start-line="52" selection-start-column="28" selection-end-line="52" selection-end-column="28" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/drawable/ic_popcorn.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-807">
@@ -3083,14 +3071,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/full_dream/popularmoviesstage1/model/Movie.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="108">
-          <caret line="54" column="0" lean-forward="false" selection-start-line="54" selection-start-column="0" selection-end-line="58" selection-end-column="34" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/full_dream/popularmoviesstage1/model/Review.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="72">
@@ -3194,10 +3174,13 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/full_dream/popularmoviesstage1/model/MovieResponse.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/menu/settings.xml">
+      <provider editor-type-id="android-designer2">
+        <state />
+      </provider>
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="197">
-          <caret line="64" column="33" lean-forward="false" selection-start-line="64" selection-start-column="33" selection-end-line="64" selection-end-column="33" />
+        <state relative-caret-position="386">
+          <caret line="52" column="48" lean-forward="false" selection-start-line="52" selection-start-column="48" selection-end-line="52" selection-end-column="48" />
           <folding />
         </state>
       </provider>
@@ -3207,8 +3190,24 @@
         <state />
       </provider>
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="357">
-          <caret line="45" column="5" lean-forward="false" selection-start-line="45" selection-start-column="5" selection-end-line="45" selection-end-column="5" />
+        <state relative-caret-position="224">
+          <caret line="50" column="0" lean-forward="true" selection-start-line="50" selection-start-column="0" selection-end-line="50" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/full_dream/popularmoviesstage1/model/Movie.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-180">
+          <caret line="62" column="35" lean-forward="false" selection-start-line="62" selection-start-column="35" selection-end-line="62" selection-end-column="35" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/full_dream/popularmoviesstage1/model/MovieResponse.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="197">
+          <caret line="64" column="33" lean-forward="false" selection-start-line="64" selection-start-column="33" selection-end-line="64" selection-end-column="33" />
           <folding />
         </state>
       </provider>
@@ -3218,17 +3217,15 @@
         <state />
       </provider>
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="386">
-          <caret line="52" column="14" lean-forward="false" selection-start-line="52" selection-start-column="14" selection-end-line="52" selection-end-column="14" />
-          <folding>
-            <element signature="e#3164#3185#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="116">
+          <caret line="40" column="39" lean-forward="false" selection-start-line="40" selection-start-column="39" selection-end-line="40" selection-end-column="39" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/full_dream/popularmoviesstage1/fragment/PosterListFragment.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="54">
+        <state relative-caret-position="119">
           <caret line="87" column="59" lean-forward="false" selection-start-line="87" selection-start-column="59" selection-end-line="87" selection-end-column="59" />
           <folding>
             <element signature="imports" expanded="true" />
