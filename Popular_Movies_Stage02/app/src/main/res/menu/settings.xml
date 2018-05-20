@@ -49,7 +49,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <group android:checkableBehavior="single">
         <item android:id="@+id/action_popular"
-            android:title="@string/most_popular"/>
+            android:title="@string/most_popular"
+            android:checked="true"/>
         <item android:id="@+id/action_top_rated"
             android:title="@string/highest_rated"/>
         <item android:id="@+id/action_favorites"

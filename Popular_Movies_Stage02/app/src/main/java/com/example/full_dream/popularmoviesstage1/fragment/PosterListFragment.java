@@ -278,13 +278,16 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
         switch(item.getItemId()){
             case R.id.action_popular:
                 mToggleSearchOption = true;
+                item.setChecked(!item.isChecked());
                 callRetrofit();
                 return true;
             case R.id.action_top_rated:
                 mToggleSearchOption = false;
+                item.setChecked(!item.isChecked());
                 callRetrofit();
                 return true;
             case R.id.action_favorites:
+                item.setChecked(!item.isChecked());
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
