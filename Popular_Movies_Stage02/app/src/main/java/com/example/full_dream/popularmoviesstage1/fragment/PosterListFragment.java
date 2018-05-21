@@ -47,8 +47,6 @@
 
 package com.example.full_dream.popularmoviesstage1.fragment;
 
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -64,7 +62,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.full_dream.popularmoviesstage1.DetailActivity;
 import com.example.full_dream.popularmoviesstage1.R;
 import com.example.full_dream.popularmoviesstage1.adapter.PosterAdapter;
 import com.example.full_dream.popularmoviesstage1.model.Movie;
@@ -252,6 +249,12 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
 
         // Create a DetailFragment instance
         DetailFragment detailFragment = new DetailFragment();
+        // Create a Bundle instance
+        Bundle bundle = new Bundle();
+        // Place Movie Parcelable inside the Bundle with "deets" key
+        bundle.putParcelable("deets", movie);
+        // Pass a bundle to the Fragment's constructor
+        detailFragment.setArguments(bundle);
         // Return the FragmentManager for interacting with Fragments in this Fragment
         FragmentManager fm = getFragmentManager();
         // Start a series of Fragment edit operations associated with this FragmentManager

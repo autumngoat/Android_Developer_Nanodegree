@@ -51,12 +51,41 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.example.full_dream.popularmoviesstage1.R;
+import com.example.full_dream.popularmoviesstage1.model.Movie;
+import com.example.full_dream.popularmoviesstage1.model.Review;
+import com.example.full_dream.popularmoviesstage1.model.Trailer;
+import com.example.full_dream.popularmoviesstage1.utils.RetrofitClient;
+import com.example.full_dream.popularmoviesstage1.utils.TheMovieDBService;
+import com.squareup.picasso.Picasso;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class DetailFragment extends Fragment {
+
+    private Movie mMovie;
+    @BindView(R.id.iv_background_poster)
+    ImageView mBackgroundPoster;
+    @BindView(R.id.tv_rating)
+    TextView mRating;
+//    @BindView(R.id.tv_detail_title)
+//    TextView mTitle;
+//    @BindView(R.id.tv_detail_release_date)
+//    TextView mReleaseDate;
+//    @BindView(R.id.tv_detail_summary)
+//    TextView mSummary;
 
     /**
      * Mandatory empty constructor for the Fragment Manager to instantiate the fragment.
@@ -64,12 +93,51 @@ public class DetailFragment extends Fragment {
     public DetailFragment(){}
 
     /**
+     * Setup the data component of the Fragment.
+     */
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        mMovie = getArguments().getParcelable("deets");
+        if(mMovie == null){
+            Log.e("rabbit", "not again");
+        }
+    }
+
+    /**
      * Inflates the fragment layout file and sets the contents to be displayed.
      */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return super.onCreateView(inflater, container, savedInstanceState);
+        View rootView = inflater.inflate(R.layout.fragment_movie_details, container, false);
+
+        // Non-activity binding
+        //  source: http://jakewharton.github.io/butterknife/
+        ButterKnife.bind(this, rootView);
+
+
+        // Icons made by "https://www.flaticon.com/authors/freprikepik"
+        // Title: "Popcorn"
+        // Licensed by Creative Commons BY 3.0
+        Picasso.get()
+                .load(mMovie.getPosterPath())
+                .placeholder(R.drawable.ic_popcorn)
+                .error(R.drawable.ic_popcorn)
+                .into(mBackgroundPoster);
+
+//        String title = mMovie.getTitle();
+        String rating = Double.toString(mMovie.getVoteAverage());
+//        String date = mMovie.getReleaseDate();
+//        String summary = mMovie.getOverview();
+
+//        mTitle.setText(title);
+        mRating.setText(rating);
+//        mReleaseDate.setText(date);
+//        mSummary.setText(summary);
+
+        return rootView;
     }
 
     @Override
@@ -81,5 +149,73 @@ public class DetailFragment extends Fragment {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    /**
+     * Helper function to be able to call Retrofit whenever data needs to be retrieved.
+     */
+    public void callRetrofitForTrailers(){
+        // Instantiate the Retrofit (type safe HTTP) client
+        RetrofitClient client = new RetrofitClient();
+
+        // Pass service interface to create() to generate an implementation of the API endpoint
+        TheMovieDBService service = client.getClient().create(TheMovieDBService.class);
+
+        // Call represents the HTTP request while the generic parameter, in this case
+        // MovieResponse, represents the HTTP response body type which will be converted
+        // by one of the Converter.Factory instances (Moshi) to JSON to POJO(s).
+        Call<Trailer> call;
+
+        call = service.getTrailers("", "");
+
+        // Asynchronously send the HTTP request and notify the callback of its HTTP response
+        // or if an error occurred talking to the server, creating the HTTP request
+        call.enqueue(new Callback<Trailer>() {
+            @Override
+            public void onResponse(Call<Trailer> call, Response<Trailer> response) {
+//                List<Movie> movies = response.body().getResults();
+//                mPosterAdapter.setMovieData(movies);
+//                mPosterAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onFailure(Call<Trailer> call, Throwable t) {
+//                Toast.makeText(MainActivity.this, "Failed", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    /**
+     * Helper function to be able to call Retrofit whenever data needs to be retrieved.
+     */
+    public void callRetrofitForReviews(){
+        // Instantiate the Retrofit (type safe HTTP) client
+        RetrofitClient client = new RetrofitClient();
+
+        // Pass service interface to create() to generate an implementation of the API endpoint
+        TheMovieDBService service = client.getClient().create(TheMovieDBService.class);
+
+        // Call represents the HTTP request while the generic parameter, in this case
+        // MovieResponse, represents the HTTP response body type which will be converted
+        // by one of the Converter.Factory instances (Moshi) to JSON to POJO(s).
+        Call<Review> call;
+
+        call = service.getReviews("", "");
+
+        // Asynchronously send the HTTP request and notify the callback of its HTTP response
+        // or if an error occurred talking to the server, creating the HTTP request
+        call.enqueue(new Callback<Review>() {
+            @Override
+            public void onResponse(Call<Review> call, Response<Review> response) {
+//                List<Movie> movies = response.body().getResults();
+//                mPosterAdapter.setMovieData(movies);
+//                mPosterAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onFailure(Call<Review> call, Throwable t) {
+//                Toast.makeText(MainActivity.this, "Failed", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }
