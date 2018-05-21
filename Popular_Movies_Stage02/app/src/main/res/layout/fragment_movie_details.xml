@@ -61,6 +61,8 @@
             android:adjustViewBounds="true"/>
     </FrameLayout>
 
+    <!-- Background transparency
+     Source: https://stackoverflow.com/questions/11285961/how-to-make-a-background-20-transparent-on-android-->
     <TextView
         android:id="@+id/tv_rating"
         android:textSize="36sp"

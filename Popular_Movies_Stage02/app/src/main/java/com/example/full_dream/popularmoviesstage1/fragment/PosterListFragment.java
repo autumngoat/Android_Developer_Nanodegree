@@ -73,6 +73,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -81,6 +82,7 @@ import retrofit2.Response;
 public class PosterListFragment extends Fragment implements PosterAdapter.PosterAdapterOnClickHandler {
 
     private boolean mToggleSearchOption =  true;
+    private Unbinder mUnbinder;
     private static final String MOST_POPULAR = "popular";
     private static final String TOP_RATED = "top_rated";
     private static final String API_KEY = "GetYourOwnApiKey";
@@ -124,9 +126,10 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
         // Inflate fragment layout
         View rootView = inflater.inflate(R.layout.fragment_poster_list, container, false);
 
-        // Non-activity binding
+        // Non-Activity Binding - Fragments
+        // Binding Reset - Set views to null in onDestroyView
         //  source: http://jakewharton.github.io/butterknife/
-        ButterKnife.bind(this, rootView);
+        mUnbinder = ButterKnife.bind(this, rootView);
 
         // Calculate auto-fit number of columns for GridLayoutManager
         // Source: https://stackoverflow.com/questions/33575731/gridlayoutmanager-how-to-auto-fit-columns
@@ -186,6 +189,12 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
 
         // Return the fragment view
         return rootView;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mUnbinder.unbind();
     }
 
     /**

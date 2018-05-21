@@ -69,6 +69,7 @@ import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -76,6 +77,7 @@ import retrofit2.Response;
 public class DetailFragment extends Fragment {
 
     private Movie mMovie;
+    private Unbinder mUnbinder;
     @BindView(R.id.iv_background_poster)
     ImageView mBackgroundPoster;
     @BindView(R.id.tv_rating)
@@ -113,9 +115,10 @@ public class DetailFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_movie_details, container, false);
 
-        // Non-activity binding
+        // Non-Activity Binding - Fragments
+        // Binding Reset - Set views to null in onDestroyView
         //  source: http://jakewharton.github.io/butterknife/
-        ButterKnife.bind(this, rootView);
+        mUnbinder = ButterKnife.bind(this, rootView);
 
 
         // Icons made by "https://www.flaticon.com/authors/freprikepik"
@@ -138,6 +141,12 @@ public class DetailFragment extends Fragment {
 //        mSummary.setText(summary);
 
         return rootView;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mUnbinder.unbind();
     }
 
     @Override
