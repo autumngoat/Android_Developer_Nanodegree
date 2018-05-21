@@ -50,26 +50,95 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <FrameLayout
+    <!-- Set poster as background image -->
+    <ImageView
+        android:id="@+id/iv_background_poster"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"/>
 
-        <ImageView
-            android:id="@+id/iv_background_poster"
+    <!-- I did not want to use a Nested ConstraintLayout but I could not figure out how to overlay
+         a black 80% opaque (alpha dec: 204 hex: CC) without it.
+    Background transparency
+     Source: https://stackoverflow.com/questions/11285961/how-to-make-a-background-20-transparent-on-android-->
+    <android.support.constraint.ConstraintLayout
+        style="@style/DetailBlocks">
+
+        <TextView
+            android:id="@+id/tv_rating"
+            android:textSize="36sp"
+            android:layout_margin="8dp"
+            style="@style/DetailTextViews"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/top_underscore"/>
+
+        <android.support.constraint.Guideline
+            android:id="@+id/gl_top"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:adjustViewBounds="true"/>
-    </FrameLayout>
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.05"/>
 
-    <!-- Background transparency
-     Source: https://stackoverflow.com/questions/11285961/how-to-make-a-background-20-transparent-on-android-->
-    <TextView
-        android:id="@+id/tv_rating"
-        android:textSize="36sp"
-        android:background="#33000000"
-        android:padding="16dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@android:color/white" />
+        <TextView
+            android:id="@+id/tv_title"
+            android:textSize="28sp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            style="@style/DetailTextViews"
+            app:layout_constraintBottom_toTopOf="@id/gl_top"
+            app:layout_constraintLeft_toRightOf="@id/tv_rating"
+            app:layout_constraintRight_toRightOf="parent"/>
 
+        <TextView
+            android:id="@+id/tv_original_title"
+            android:textSize="16sp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            style="@style/DetailTextViews"
+            app:layout_constraintTop_toBottomOf="@id/gl_top"
+            app:layout_constraintLeft_toRightOf="@id/tv_rating"/>
+
+        <View
+            android:id="@+id/top_underscore"
+            android:layout_width="wrap_content"
+            android:layout_height="1dp"
+            android:background="#FFFFFF"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@id/tv_original_title"
+            app:layout_constraintLeft_toLeftOf="@id/tv_rating"
+            app:layout_constraintRight_toRightOf="@id/tv_original_language"/>
+
+        <TextView
+            android:id="@+id/tv_release_date"
+            style="@style/DetailTextViews"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
+            app:layout_constraintTop_toBottomOf="@id/top_underscore"
+            app:layout_constraintLeft_toLeftOf="@id/tv_rating"/>
+
+        <TextView
+            android:id="@+id/tv_original_language"
+            style="@style/DetailTextViews"
+            android:layout_marginRight="16dp"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintTop_toBottomOf="@id/top_underscore"
+            app:layout_constraintRight_toRightOf="parent"/>
+
+        <TextView
+            android:id="@+id/tv_summary"
+            style="@style/DetailTextViews"
+            android:layout_margin="8dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_release_date"/>
+
+        <ImageView
+            android:id="@+id/iv_backdrop"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:alpha="0.8"
+            android:adjustViewBounds="true"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+    </android.support.constraint.ConstraintLayout>
 </android.support.constraint.ConstraintLayout>

@@ -82,12 +82,18 @@ public class DetailFragment extends Fragment {
     ImageView mBackgroundPoster;
     @BindView(R.id.tv_rating)
     TextView mRating;
-//    @BindView(R.id.tv_detail_title)
-//    TextView mTitle;
-//    @BindView(R.id.tv_detail_release_date)
-//    TextView mReleaseDate;
-//    @BindView(R.id.tv_detail_summary)
-//    TextView mSummary;
+    @BindView(R.id.tv_title)
+    TextView mTitle;
+    @BindView(R.id.tv_original_title)
+    TextView mOriginalTitle;
+    @BindView(R.id.tv_release_date)
+    TextView mReleaseDate;
+    @BindView(R.id.iv_backdrop)
+    ImageView mBackdrop;
+    @BindView(R.id.tv_original_language)
+    TextView mOriginalLanguage;
+    @BindView(R.id.tv_summary)
+    TextView mSummary;
 
     /**
      * Mandatory empty constructor for the Fragment Manager to instantiate the fragment.
@@ -130,15 +136,26 @@ public class DetailFragment extends Fragment {
                 .error(R.drawable.ic_popcorn)
                 .into(mBackgroundPoster);
 
-//        String title = mMovie.getTitle();
         String rating = Double.toString(mMovie.getVoteAverage());
-//        String date = mMovie.getReleaseDate();
-//        String summary = mMovie.getOverview();
+        String title = mMovie.getTitle();
+        String originalTitle = mMovie.getOriginalTitle();
+        String date = mMovie.getReleaseDate();
 
-//        mTitle.setText(title);
+        Picasso.get()
+                .load(mMovie.getBackdropPath())
+                .placeholder(R.drawable.ic_popcorn)
+                .error(R.drawable.ic_popcorn)
+                .into(mBackdrop);
+
+        String originalLanguage = mMovie.getOriginalLanguage();
+        String summary = mMovie.getOverview();
+
         mRating.setText(rating);
-//        mReleaseDate.setText(date);
-//        mSummary.setText(summary);
+        mTitle.setText(title);
+        mOriginalTitle.setText(originalTitle);
+        mReleaseDate.setText(date);
+        mOriginalLanguage.setText(originalLanguage);
+        mSummary.setText(summary);
 
         return rootView;
     }
