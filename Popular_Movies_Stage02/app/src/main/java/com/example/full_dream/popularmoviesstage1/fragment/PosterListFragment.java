@@ -71,8 +71,8 @@ import com.example.full_dream.popularmoviesstage1.utils.TheMovieDBService;
 
 import java.util.List;
 
-import butterknife.BindString;
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -86,16 +86,6 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
     private static final String API_KEY = "GetYourOwnApiKey";
     private GridLayoutManager mLayoutManager;
     private PosterAdapter mPosterAdapter;
-    @BindString(R.string.title)
-    String title;
-    @BindString(R.string.release_date)
-    String releaseDate;
-    @BindString(R.string.poster_path)
-    String posterPath;
-    @BindString(R.string.vote_average)
-    String voteAvg;
-    @BindString(R.string.plot_synopsis)
-    String plotSynopsis;
     @BindView(R.id.rv_poster_list)
     RecyclerView mRecyclerView;
 
@@ -134,8 +124,9 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
         // Inflate fragment layout
         View rootView = inflater.inflate(R.layout.fragment_poster_list, container, false);
 
-        // Grab the view from the fragment layout
-        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.rv_poster_list);
+        // Non-activity binding
+        //  source: http://jakewharton.github.io/butterknife/
+        ButterKnife.bind(this, rootView);
 
         // Calculate auto-fit number of columns for GridLayoutManager
         // Source: https://stackoverflow.com/questions/33575731/gridlayoutmanager-how-to-auto-fit-columns

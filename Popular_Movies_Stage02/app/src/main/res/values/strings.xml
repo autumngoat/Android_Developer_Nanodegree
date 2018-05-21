@@ -66,11 +66,4 @@
 
     <!-- Network connection message -->
     <string name="network_connection_msg">Please check your network connection.</string>
-
-    <!-- Intent extra keys -->
-    <string name="title">title</string>
-    <string name="release_date">releaseDate</string>
-    <string name="poster_path">posterPath</string>
-    <string name="vote_average">voteAvg</string>
-    <string name="plot_synopsis">plotSynopsis</string>
 </resources>
