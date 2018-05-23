@@ -49,7 +49,9 @@ package com.example.full_dream.popularmoviesstage1.utils;
 
 import com.example.full_dream.popularmoviesstage1.model.MovieResponse;
 import com.example.full_dream.popularmoviesstage1.model.Review;
+import com.example.full_dream.popularmoviesstage1.model.ReviewResponse;
 import com.example.full_dream.popularmoviesstage1.model.Trailer;
+import com.example.full_dream.popularmoviesstage1.model.TrailerResponse;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -90,8 +92,8 @@ public interface TheMovieDBService {
      * https://developers.themoviedb.org/3/movies/get-movie-videos
      */
     @GET("movie/{movie_id}/videos?")
-    Call<Trailer> getTrailers(
-            @Path("movie_id") String movieId,
+    Call<TrailerResponse> getTrailers(
+            @Path("movie_id") int movieId,
             @Query(API_KEY) String apiKey);
 
     /**
@@ -100,8 +102,8 @@ public interface TheMovieDBService {
      * Source:
      * https://developers.themoviedb.org/3/movies/get-movie-reviews
      */
-    @GET("movie/{review_id}/reviews?")
-    Call<Review> getReviews(
-            @Path("movie_id") String movieId,
+    @GET("movie/{movie_id}/reviews?")
+    Call<ReviewResponse> getReviews(
+            @Path("movie_id") int movieId,
             @Query(API_KEY) String apiKey);
 }

@@ -16,8 +16,8 @@ public class ReviewResponse {
     private Integer id;
     @Json(name = "page")
     private Integer page;
-    @Json(name = "reviews")
-    private List<Review> reviews = null;
+    @Json(name = "results")
+    private List<Review> results;
     @Json(name = "total_pages")
     private Integer totalPages;
     @Json(name = "total_reviews")
@@ -40,11 +40,11 @@ public class ReviewResponse {
     }
 
     public List<Review> getReviews() {
-        return reviews;
+        return results;
     }
 
-    public void setReviews(List<Review> reviews) {
-        this.reviews = reviews;
+    public void setReviews(List<Review> results) {
+        this.results = results;
     }
 
     public Integer getTotalPages() {

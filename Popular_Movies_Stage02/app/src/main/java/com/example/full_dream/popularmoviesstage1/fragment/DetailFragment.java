@@ -51,6 +51,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -59,13 +61,20 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.full_dream.popularmoviesstage1.BuildConfig;
 import com.example.full_dream.popularmoviesstage1.R;
+import com.example.full_dream.popularmoviesstage1.adapter.ReviewAdapter;
+import com.example.full_dream.popularmoviesstage1.adapter.TrailerAdapter;
 import com.example.full_dream.popularmoviesstage1.model.Movie;
 import com.example.full_dream.popularmoviesstage1.model.Review;
+import com.example.full_dream.popularmoviesstage1.model.ReviewResponse;
 import com.example.full_dream.popularmoviesstage1.model.Trailer;
+import com.example.full_dream.popularmoviesstage1.model.TrailerResponse;
 import com.example.full_dream.popularmoviesstage1.utils.RetrofitClient;
 import com.example.full_dream.popularmoviesstage1.utils.TheMovieDBService;
 import com.squareup.picasso.Picasso;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -78,6 +87,10 @@ public class DetailFragment extends Fragment {
 
     private Movie mMovie;
     private Unbinder mUnbinder;
+    private String API_KEY = BuildConfig.API_KEY;
+    private LinearLayoutManager mLayoutManager;
+    private ReviewAdapter mReviewAdapter;
+    private TrailerAdapter mTrailerAdapter;
     @BindView(R.id.iv_background_poster)
     ImageView mBackgroundPoster;
     @BindView(R.id.tv_rating)
@@ -94,6 +107,10 @@ public class DetailFragment extends Fragment {
     TextView mOriginalLanguage;
     @BindView(R.id.tv_summary)
     TextView mSummary;
+    @BindView(R.id.rv_review_list)
+    RecyclerView mReviewRecyclerView;
+//    @BindView(R.id.rv_trailer_list)
+//    RecyclerView mTrailerRecyclerView;
 
     /**
      * Mandatory empty constructor for the Fragment Manager to instantiate the fragment.
@@ -111,6 +128,8 @@ public class DetailFragment extends Fragment {
         if(mMovie == null){
             Log.e("rabbit", "not again");
         }
+
+        callRetrofitForReviews();
     }
 
     /**
@@ -125,7 +144,6 @@ public class DetailFragment extends Fragment {
         // Binding Reset - Set views to null in onDestroyView
         //  source: http://jakewharton.github.io/butterknife/
         mUnbinder = ButterKnife.bind(this, rootView);
-
 
         // Icons made by "https://www.flaticon.com/authors/freprikepik"
         // Title: "Popcorn"
@@ -156,6 +174,15 @@ public class DetailFragment extends Fragment {
         mReleaseDate.setText(date);
         mOriginalLanguage.setText(originalLanguage);
         mSummary.setText(summary);
+
+        // Setup Review RecyclerView
+        mLayoutManager = new LinearLayoutManager(getActivity(),
+                LinearLayoutManager.HORIZONTAL,
+                false);
+        mReviewRecyclerView.setLayoutManager(mLayoutManager);
+        // Need to initiliaze ReviewAdapter or else NPE when running callRetrofitForReviews()
+        mReviewAdapter = new ReviewAdapter();
+        mReviewRecyclerView.setAdapter(mReviewAdapter);
 
         return rootView;
     }
@@ -190,23 +217,23 @@ public class DetailFragment extends Fragment {
         // Call represents the HTTP request while the generic parameter, in this case
         // MovieResponse, represents the HTTP response body type which will be converted
         // by one of the Converter.Factory instances (Moshi) to JSON to POJO(s).
-        Call<Trailer> call;
+        Call<TrailerResponse> call;
 
-        call = service.getTrailers("", "");
+        call = service.getTrailers(mMovie.getId(), API_KEY);
 
         // Asynchronously send the HTTP request and notify the callback of its HTTP response
         // or if an error occurred talking to the server, creating the HTTP request
-        call.enqueue(new Callback<Trailer>() {
+        call.enqueue(new Callback<TrailerResponse>() {
             @Override
-            public void onResponse(Call<Trailer> call, Response<Trailer> response) {
-//                List<Movie> movies = response.body().getResults();
-//                mPosterAdapter.setMovieData(movies);
-//                mPosterAdapter.notifyDataSetChanged();
+            public void onResponse(Call<TrailerResponse> call, Response<TrailerResponse> response) {
+                List<Trailer> trailers = response.body().getResults();
+//                mTrailerAdapter.setTrailerList(trailers);
+//                mTrailerAdapter.notifyDataSetChanged();
             }
 
             @Override
-            public void onFailure(Call<Trailer> call, Throwable t) {
-//                Toast.makeText(MainActivity.this, "Failed", Toast.LENGTH_SHORT).show();
+            public void onFailure(Call<TrailerResponse> call, Throwable t) {
+                Log.e("rabbit", "trailer problems");
             }
         });
     }
@@ -224,23 +251,31 @@ public class DetailFragment extends Fragment {
         // Call represents the HTTP request while the generic parameter, in this case
         // MovieResponse, represents the HTTP response body type which will be converted
         // by one of the Converter.Factory instances (Moshi) to JSON to POJO(s).
-        Call<Review> call;
+        Call<ReviewResponse> call;
 
-        call = service.getReviews("", "");
+        call = service.getReviews(mMovie.getId(), API_KEY);
 
         // Asynchronously send the HTTP request and notify the callback of its HTTP response
         // or if an error occurred talking to the server, creating the HTTP request
-        call.enqueue(new Callback<Review>() {
+        call.enqueue(new Callback<ReviewResponse>() {
             @Override
-            public void onResponse(Call<Review> call, Response<Review> response) {
-//                List<Movie> movies = response.body().getResults();
-//                mPosterAdapter.setMovieData(movies);
-//                mPosterAdapter.notifyDataSetChanged();
+            public void onResponse(Call<ReviewResponse> call, Response<ReviewResponse> response) {
+                List<Review> review = response.body().getReviews();
+
+//                Log.e("rabbit", "\nResponse: " + response.toString());
+//                Log.e("rabbit", "\nResponse Body: " + response.body().toString());
+
+                mReviewAdapter.setReviewList(review);
+                mReviewAdapter.notifyDataSetChanged();
+
+//                for(int i = 0; i < review.size(); i++){
+//                    Log.e("rabbit", "\nreview " + i + " " + review.get(i).getAuthor());
+//                }
             }
 
             @Override
-            public void onFailure(Call<Review> call, Throwable t) {
-//                Toast.makeText(MainActivity.this, "Failed", Toast.LENGTH_SHORT).show();
+            public void onFailure(Call<ReviewResponse> call, Throwable t) {
+                Log.e("rabbit", "review problems");
             }
         });
     }

@@ -15,7 +15,7 @@ public class TrailerResponse {
     @Json(name = "id")
     private Integer id;
     @Json(name = "results")
-    private List<Trailer> results = null;
+    private List<Trailer> results;
 
     public Integer getId() {
         return id;
