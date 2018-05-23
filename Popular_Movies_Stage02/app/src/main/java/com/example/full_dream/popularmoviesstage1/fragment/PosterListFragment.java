@@ -62,6 +62,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.full_dream.popularmoviesstage1.BuildConfig;
 import com.example.full_dream.popularmoviesstage1.R;
 import com.example.full_dream.popularmoviesstage1.adapter.PosterAdapter;
 import com.example.full_dream.popularmoviesstage1.model.Movie;
@@ -85,7 +86,8 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
     private Unbinder mUnbinder;
     private static final String MOST_POPULAR = "popular";
     private static final String TOP_RATED = "top_rated";
-    private static final String API_KEY = "GetYourOwnApiKey";
+//    private static final String API_KEY = "GetYourOwnApiKey";
+    private String API_KEY = BuildConfig.API_KEY;
     private GridLayoutManager mLayoutManager;
     private PosterAdapter mPosterAdapter;
     @BindView(R.id.rv_poster_list)
