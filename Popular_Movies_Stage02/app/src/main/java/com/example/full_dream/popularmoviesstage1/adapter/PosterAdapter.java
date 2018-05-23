@@ -115,8 +115,6 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
 
     /**
      * Total number of ViewHolders by returning the list size
-     *
-     * @return
      */
     @Override
     public int getItemCount() {

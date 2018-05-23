@@ -89,7 +89,7 @@ public interface TheMovieDBService {
      * Source:
      * https://developers.themoviedb.org/3/movies/get-movie-videos
      */
-    @GET("movie/{movie_id}/videos")
+    @GET("movie/{movie_id}/videos?")
     Call<Trailer> getTrailers(
             @Path("movie_id") String movieId,
             @Query(API_KEY) String apiKey);
@@ -100,8 +100,8 @@ public interface TheMovieDBService {
      * Source:
      * https://developers.themoviedb.org/3/movies/get-movie-reviews
      */
-    @GET("review/{review_id}/reviews")
+    @GET("movie/{review_id}/reviews?")
     Call<Review> getReviews(
-            @Path("review_id") String reviewId,
+            @Path("movie_id") String movieId,
             @Query(API_KEY) String apiKey);
 }

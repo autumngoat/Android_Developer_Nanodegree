@@ -86,7 +86,6 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
     private Unbinder mUnbinder;
     private static final String MOST_POPULAR = "popular";
     private static final String TOP_RATED = "top_rated";
-//    private static final String API_KEY = "GetYourOwnApiKey";
     private String API_KEY = BuildConfig.API_KEY;
     private GridLayoutManager mLayoutManager;
     private PosterAdapter mPosterAdapter;
