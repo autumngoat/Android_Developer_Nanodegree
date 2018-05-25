@@ -87,7 +87,6 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
     private static final String MOST_POPULAR = "popular";
     private static final String TOP_RATED = "top_rated";
     private String API_KEY = BuildConfig.API_KEY;
-    private GridLayoutManager mLayoutManager;
     private PosterAdapter mPosterAdapter;
     @BindView(R.id.rv_poster_list)
     RecyclerView mRecyclerView;
@@ -143,7 +142,7 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
         int numberOfColumns = 6;
 
         // Use a Grid Layout Manager as per the rubric
-        mLayoutManager = new GridLayoutManager(getActivity(), numberOfColumns);
+        GridLayoutManager mLayoutManager = new GridLayoutManager(getActivity(), numberOfColumns);
 
         // Experimented with different span counts on different rows from this code:
         // https://stackoverflow.com/questions/31112291/recyclerview-layoutmanager-different-span-counts-on-different-rows
@@ -242,12 +241,6 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
      */
     @Override
     public void onClick(Movie movie) {
-//        Context context = getActivity();
-//        Class destinationClass = DetailActivity.class;
-//        Intent intentToStartDetailActivity = new Intent(context, destinationClass);
-//        intentToStartDetailActivity.putExtra("deets", movie);
-//        startActivity(intentToStartDetailActivity);
-
         // Create a DetailFragment instance
         DetailFragment detailFragment = new DetailFragment();
         // Create a Bundle instance

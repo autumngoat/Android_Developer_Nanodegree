@@ -47,6 +47,9 @@
 
 package com.example.full_dream.popularmoviesstage1.fragment;
 
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -83,13 +86,11 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class DetailFragment extends Fragment {
+public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAdapterOnClickHandler {
 
     private Movie mMovie;
     private Unbinder mUnbinder;
     private String API_KEY = BuildConfig.API_KEY;
-    private LinearLayoutManager mTrailerLayoutManager;
-    private LinearLayoutManager mReviewLayoutManager;
     private ReviewAdapter mReviewAdapter;
     private TrailerAdapter mTrailerAdapter;
     @BindView(R.id.iv_background_poster)
@@ -178,16 +179,16 @@ public class DetailFragment extends Fragment {
         mSummary.setText(summary);
 
         // Cannot use the same LinearLayoutManager for both Trailer and Review RecyclerViews
-        mTrailerLayoutManager = new LinearLayoutManager(getActivity(),
+        LinearLayoutManager mTrailerLayoutManager = new LinearLayoutManager(getActivity(),
                 LinearLayoutManager.HORIZONTAL,
                 false);
 
         // Setup Trailer RecyclerView and Adapter
         mTrailerRecyclerView.setLayoutManager(mTrailerLayoutManager);
-        mTrailerAdapter = new TrailerAdapter();
+        mTrailerAdapter = new TrailerAdapter(this);
         mTrailerRecyclerView.setAdapter(mTrailerAdapter);
 
-        mReviewLayoutManager = new LinearLayoutManager(getActivity(),
+        LinearLayoutManager mReviewLayoutManager = new LinearLayoutManager(getActivity(),
                 LinearLayoutManager.HORIZONTAL,
                 false);
 
@@ -284,5 +285,20 @@ public class DetailFragment extends Fragment {
                 Log.e("rabbit", "Problems retrieving Reviews");
             }
         });
+    }
+
+    /**
+     * Handle RecyclerView item clicks to play the YouTube video.
+     */
+    public void onClick(String youtubeKey){
+        try {
+            // Launch YouTube app
+            getActivity().startActivity(new Intent(Intent.ACTION_VIEW,
+                    Uri.parse("vnd.youtube:" + youtubeKey)));
+        } catch (ActivityNotFoundException ex) {
+            // Launch YouTube website
+            getActivity().startActivity(new Intent(Intent.ACTION_VIEW,
+                    Uri.parse("http://www.youtube.com/watch?v=" + youtubeKey)));
+        }
     }
 }

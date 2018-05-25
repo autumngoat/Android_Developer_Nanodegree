@@ -3,7 +3,6 @@ package com.example.full_dream.popularmoviesstage1.adapter;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +17,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Creates and binds the Trailer ViewHolders for the Trailer RecyclerView
@@ -29,6 +29,21 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerA
     private static final String YOUTUBE_THUMBNAIL_PATH_START = "https://img.youtube.com/vi/";
     // High-quality Default image
     private static final String YOUTUBE_THUMBNAIL_PATH_END = "/hqdefault.jpg";
+    private final TrailerAdapterOnClickHandler mClickHandler;
+
+    /**
+     * Creates a PosterAdapter.
+     */
+    public TrailerAdapter(TrailerAdapterOnClickHandler clickHandler) {
+        mClickHandler = clickHandler;
+    }
+
+    /**
+     * The interface that receives onClick messages.
+     */
+    public interface TrailerAdapterOnClickHandler {
+        void onClick(String youtubeKey);
+    }
 
     public void setTrailerList(List<Trailer> trailers){
         mTrailerList = trailers;
@@ -103,6 +118,16 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerA
         TrailerAdapterViewHolder(View view){
             super(view);
             ButterKnife.bind(this, view);
+        }
+
+        /**
+         * Sends selected View's associated Movie object to click-handler.
+         */
+        @OnClick(R.id.video_thumbnail)
+        public void onClickPlayVideo() {
+            int adapterPosition = getAdapterPosition();
+            String youtubeKey = mTrailerList.get(adapterPosition).getKey();
+            mClickHandler.onClick(youtubeKey);
         }
     }
 }
