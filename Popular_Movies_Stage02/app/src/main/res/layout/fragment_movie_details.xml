@@ -133,11 +133,11 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_release_date"/>
 
-        <!--<android.support.v7.widget.RecyclerView-->
-            <!--android:id="@+id/rv_trailer_list"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--app:layout_constraintTop_toBottomOf="@id/tv_summary"/>-->
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_trailer_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/tv_summary"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_review_list"
@@ -145,7 +145,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_summary"
+            app:layout_constraintTop_toBottomOf="@id/rv_trailer_list"
             android:layout_marginTop="8dp"/>
 
         <ImageView

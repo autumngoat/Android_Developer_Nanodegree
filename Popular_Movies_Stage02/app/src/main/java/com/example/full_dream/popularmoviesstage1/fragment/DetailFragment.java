@@ -88,7 +88,8 @@ public class DetailFragment extends Fragment {
     private Movie mMovie;
     private Unbinder mUnbinder;
     private String API_KEY = BuildConfig.API_KEY;
-    private LinearLayoutManager mLayoutManager;
+    private LinearLayoutManager mTrailerLayoutManager;
+    private LinearLayoutManager mReviewLayoutManager;
     private ReviewAdapter mReviewAdapter;
     private TrailerAdapter mTrailerAdapter;
     @BindView(R.id.iv_background_poster)
@@ -109,8 +110,8 @@ public class DetailFragment extends Fragment {
     TextView mSummary;
     @BindView(R.id.rv_review_list)
     RecyclerView mReviewRecyclerView;
-//    @BindView(R.id.rv_trailer_list)
-//    RecyclerView mTrailerRecyclerView;
+    @BindView(R.id.rv_trailer_list)
+    RecyclerView mTrailerRecyclerView;
 
     /**
      * Mandatory empty constructor for the Fragment Manager to instantiate the fragment.
@@ -129,6 +130,7 @@ public class DetailFragment extends Fragment {
             Log.e("rabbit", "not again");
         }
 
+        callRetrofitForTrailers();
         callRetrofitForReviews();
     }
 
@@ -175,11 +177,22 @@ public class DetailFragment extends Fragment {
         mOriginalLanguage.setText(originalLanguage);
         mSummary.setText(summary);
 
-        // Setup Review RecyclerView
-        mLayoutManager = new LinearLayoutManager(getActivity(),
+        // Cannot use the same LinearLayoutManager for both Trailer and Review RecyclerViews
+        mTrailerLayoutManager = new LinearLayoutManager(getActivity(),
                 LinearLayoutManager.HORIZONTAL,
                 false);
-        mReviewRecyclerView.setLayoutManager(mLayoutManager);
+
+        // Setup Trailer RecyclerView and Adapter
+        mTrailerRecyclerView.setLayoutManager(mTrailerLayoutManager);
+        mTrailerAdapter = new TrailerAdapter();
+        mTrailerRecyclerView.setAdapter(mTrailerAdapter);
+
+        mReviewLayoutManager = new LinearLayoutManager(getActivity(),
+                LinearLayoutManager.HORIZONTAL,
+                false);
+
+        // Setup Review RecyclerView and Adapter
+        mReviewRecyclerView.setLayoutManager(mReviewLayoutManager);
         // Need to initiliaze ReviewAdapter or else NPE when running callRetrofitForReviews()
         mReviewAdapter = new ReviewAdapter();
         mReviewRecyclerView.setAdapter(mReviewAdapter);
@@ -227,13 +240,14 @@ public class DetailFragment extends Fragment {
             @Override
             public void onResponse(Call<TrailerResponse> call, Response<TrailerResponse> response) {
                 List<Trailer> trailers = response.body().getResults();
-//                mTrailerAdapter.setTrailerList(trailers);
-//                mTrailerAdapter.notifyDataSetChanged();
+
+                mTrailerAdapter.setTrailerList(trailers);
+                mTrailerAdapter.notifyDataSetChanged();
             }
 
             @Override
             public void onFailure(Call<TrailerResponse> call, Throwable t) {
-                Log.e("rabbit", "trailer problems");
+                Log.e("rabbit", "Problems retrieving Trailers");
             }
         });
     }
@@ -252,7 +266,6 @@ public class DetailFragment extends Fragment {
         // MovieResponse, represents the HTTP response body type which will be converted
         // by one of the Converter.Factory instances (Moshi) to JSON to POJO(s).
         Call<ReviewResponse> call;
-
         call = service.getReviews(mMovie.getId(), API_KEY);
 
         // Asynchronously send the HTTP request and notify the callback of its HTTP response
@@ -262,20 +275,13 @@ public class DetailFragment extends Fragment {
             public void onResponse(Call<ReviewResponse> call, Response<ReviewResponse> response) {
                 List<Review> review = response.body().getReviews();
 
-//                Log.e("rabbit", "\nResponse: " + response.toString());
-//                Log.e("rabbit", "\nResponse Body: " + response.body().toString());
-
                 mReviewAdapter.setReviewList(review);
                 mReviewAdapter.notifyDataSetChanged();
-
-//                for(int i = 0; i < review.size(); i++){
-//                    Log.e("rabbit", "\nreview " + i + " " + review.get(i).getAuthor());
-//                }
             }
 
             @Override
             public void onFailure(Call<ReviewResponse> call, Throwable t) {
-                Log.e("rabbit", "review problems");
+                Log.e("rabbit", "Problems retrieving Reviews");
             }
         });
     }

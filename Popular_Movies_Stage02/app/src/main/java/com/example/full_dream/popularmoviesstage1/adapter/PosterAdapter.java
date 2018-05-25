@@ -145,7 +145,7 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
         /**
          * ViewHolder constructor that sets click listener on newly created empty ViewHolder
          */
-        public PosterAdapterViewHolder(View view) {
+        PosterAdapterViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
         }

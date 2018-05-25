@@ -9,20 +9,30 @@ import com.squareup.moshi.Json;
  * from a TMDB JSON HTTP Response.
  */
 public class Trailer {
+    // I have no idea what this is for and there is no documentation for it that I could find
     @Json(name = "id")
     private String id;
+    // Identifies the international language code (i.e. en, jp, kr, etc.)
     @Json(name = "iso_639_1")
     private String iso6391;
+    // Identifies the country of origin (i.e. US, JP, KR, etc.)
     @Json(name = "iso_3166_1")
     private String iso31661;
+    // Identifies the video key for YouTube (i.e. https://www.youtube.com/watch?v=<<key>>)
     @Json(name = "key")
     private String key;
+    // Identifies the name of the video on YouTube
     @Json(name = "name")
     private String name;
+    // It is always YouTube
+    // Source: Moderator Travis Bell
+    // https://www.themoviedb.org/talk/5451ec02c3a3680245005e3c?page=2
     @Json(name = "site")
     private String site;
+    // Available video sizes (i.e. 360, 480, 720, and 1080)
     @Json(name = "size")
     private Integer size;
+    // Type of video (i.e. trailer, clips, teasers, and featurettes)
     @Json(name = "type")
     private String type;
 

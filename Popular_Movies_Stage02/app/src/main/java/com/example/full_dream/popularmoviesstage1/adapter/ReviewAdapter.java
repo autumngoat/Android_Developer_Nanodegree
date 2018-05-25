@@ -18,23 +18,17 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/**
+ * Creates and binds the Review ViewHolders for the Review RecyclerView
+ */
 public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewAdapterViewHolder>{
 
     private List<Review> mReviewList;
 
-    /**
-     * Constructor.
-     */
-    public ReviewAdapter(){ }
-
     public void setReviewList(List<Review> reviewList){
-        mReviewList = null;
+//        mReviewList = null;
         mReviewList = reviewList;
-        notifyDataSetChanged();
-    }
-
-    public List<Review> getReviewList(){
-        return mReviewList;
+//        notifyDataSetChanged();
     }
 
     /**
@@ -89,7 +83,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewAdap
         /**
          * ViewHolder constructor for new empty ViewHolders
          */
-        public ReviewAdapterViewHolder(View view){
+        ReviewAdapterViewHolder(View view){
             super(view);
             ButterKnife.bind(this, view);
         }
