@@ -27,7 +27,7 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerA
     private List<Trailer> mTrailerList;
     // Alternatively could have used 'i3.ytimg.com'
     private static final String YOUTUBE_THUMBNAIL_PATH_START = "https://img.youtube.com/vi/";
-    // High-quality default image
+    // High-quality Default image
     private static final String YOUTUBE_THUMBNAIL_PATH_END = "/hqdefault.jpg";
 
     public void setTrailerList(List<Trailer> trailers){
