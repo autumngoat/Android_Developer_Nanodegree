@@ -194,7 +194,7 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
 
         // Setup Review RecyclerView and Adapter
         mReviewRecyclerView.setLayoutManager(mReviewLayoutManager);
-        // Need to initiliaze ReviewAdapter or else NPE when running callRetrofitForReviews()
+        // Need to initialize ReviewAdapter or else NPE when running callRetrofitForReviews()
         mReviewAdapter = new ReviewAdapter();
         mReviewRecyclerView.setAdapter(mReviewAdapter);
 
