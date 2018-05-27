@@ -1,5 +1,6 @@
 package com.example.full_dream.popularmoviesstage1.data;
 
+import android.net.Uri;
 import android.provider.BaseColumns;
 
 /**
@@ -8,8 +9,16 @@ import android.provider.BaseColumns;
  * Followed the Udacity course "Developing Android Apps" >>
  * Lesson 9: Storing Data in SQLite >>
  * 5. Creating the Contract
+ * 10. Change the Contract
  */
 public class FavoriteContract {
+
+    // The content authority, which is how your code knows which Content Provider to access
+    private static final String AUTHORITY = "com.example.full_dream.popularmoviesstage1";
+    // The base content URI = "content://" + <authority>
+    private static final Uri BASE_CONTENT_URI = Uri.parse("content://" + AUTHORITY);
+    // This is the path for the "favorites" directory
+    private static final String PATH_FAVORITE = "favorite";
 
     /**
      * Prevent someone from accidentally making an instance of FavoriteContract.
@@ -22,6 +31,12 @@ public class FavoriteContract {
      *  primary key field called _ID.
      */
     public static final class FavoriteEntry implements BaseColumns{
+        // FavoriteEntry content URI = base content URI + path
+        public static final Uri CONTENT_URI = BASE_CONTENT_URI
+                .buildUpon()
+                .appendPath(PATH_FAVORITE)
+                .build();
+
         public static final String TABLE_NAME = "favorite";
         public static final String COLUMN_NAME_TITLE = "title";
         public static final String COLUMN_NAME_POSTER = "poster";
