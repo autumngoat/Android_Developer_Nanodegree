@@ -9,16 +9,17 @@ import android.provider.BaseColumns;
  * Followed the Udacity course "Developing Android Apps" >>
  * Lesson 9: Storing Data in SQLite >>
  * 5. Creating the Contract
+ * Lesson 11: Building a Content Provider >>
  * 10. Change the Contract
  */
 public class FavoriteContract {
 
     // The content authority, which is how your code knows which Content Provider to access
-    private static final String AUTHORITY = "com.example.full_dream.popularmoviesstage1";
+    public static final String AUTHORITY = "com.example.full_dream.popularmoviesstage1";
     // The base content URI = "content://" + <authority>
-    private static final Uri BASE_CONTENT_URI = Uri.parse("content://" + AUTHORITY);
+    public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + AUTHORITY);
     // This is the path for the "favorites" directory
-    private static final String PATH_FAVORITE = "favorite";
+    public static final String PATH_FAVORITE = "favorite";
 
     /**
      * Prevent someone from accidentally making an instance of FavoriteContract.
