@@ -8,6 +8,10 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+/**
+ * Followed the Udacity course "Developing Android Apps" >>
+ * Lesson 11: Building a Content Provider
+ */
 public class FavoriteContentProvider extends ContentProvider {
 
     // Member variable for a FavoriteDbHelper that is initialized in the onCreate() method

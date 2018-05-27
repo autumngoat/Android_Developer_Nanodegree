@@ -4,6 +4,10 @@ import android.provider.BaseColumns;
 
 /**
  * Defines the tables and columns for each table that are included in the database.
+ *
+ * Followed the Udacity course "Developing Android Apps" >>
+ * Lesson 9: Storing Data in SQLite >>
+ * 5. Creating the Contract
  */
 public class FavoriteContract {
 
