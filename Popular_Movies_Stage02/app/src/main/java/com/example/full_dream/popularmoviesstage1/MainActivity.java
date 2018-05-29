@@ -47,6 +47,7 @@
 
 package com.example.full_dream.popularmoviesstage1;
 
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -54,6 +55,7 @@ import android.view.KeyEvent;
 
 import com.example.full_dream.popularmoviesstage1.fragment.PosterListFragment;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**

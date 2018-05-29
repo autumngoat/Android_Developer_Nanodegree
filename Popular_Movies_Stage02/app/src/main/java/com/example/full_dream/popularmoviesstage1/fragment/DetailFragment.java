@@ -48,11 +48,13 @@
 package com.example.full_dream.popularmoviesstage1.fragment;
 
 import android.content.ActivityNotFoundException;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -63,11 +65,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.full_dream.popularmoviesstage1.BuildConfig;
+import com.example.full_dream.popularmoviesstage1.MainActivity;
 import com.example.full_dream.popularmoviesstage1.R;
 import com.example.full_dream.popularmoviesstage1.adapter.ReviewAdapter;
 import com.example.full_dream.popularmoviesstage1.adapter.TrailerAdapter;
+import com.example.full_dream.popularmoviesstage1.data.FavoriteContract.*;
 import com.example.full_dream.popularmoviesstage1.model.Movie;
 import com.example.full_dream.popularmoviesstage1.model.Review;
 import com.example.full_dream.popularmoviesstage1.model.ReviewResponse;
@@ -113,6 +118,8 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
     RecyclerView mReviewRecyclerView;
     @BindView(R.id.rv_trailer_list)
     RecyclerView mTrailerRecyclerView;
+    @BindView(R.id.detail_fab_fav)
+    FloatingActionButton fab;
 
     /**
      * Mandatory empty constructor for the Fragment Manager to instantiate the fragment.
@@ -198,8 +205,19 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
         mReviewAdapter = new ReviewAdapter();
         mReviewRecyclerView.setAdapter(mReviewAdapter);
 
+        // Setup FAB onClick
+        fab.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getContext(), "Click", Toast.LENGTH_SHORT).show();
+                // need to update here
+            }
+        });
+
         return rootView;
     }
+
+
 
     @Override
     public void onDestroyView() {
@@ -301,4 +319,29 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
                     Uri.parse("http://www.youtube.com/watch?v=" + youtubeKey)));
         }
     }
+
+    /**
+     * Deal with Floating Action Button to add/remove to favorites SQLite database.
+     *  It retrieves the movie's information and adds it to the underlying database.
+     *
+     * @param view
+     */
+//    public void onClickAddFavorite(View view){
+//        // Create new ContentValues object to place this favorite's data into
+//        ContentValues values = new ContentValues();
+//
+//        // Place favorite movie data into ContentValues object
+//        values.put(FavoriteEntry.COLUMN_NAME_TITLE, mMovie.getTitle());
+//        values.put(FavoriteEntry.COLUMN_NAME_POSTER, mMovie.getPosterPath());
+//        values.put(FavoriteEntry.COLUMN_NAME_RATING, mMovie.getVoteAverage());
+//        values.put(FavoriteEntry.COLUMN_NAME_RELEASE_DATE, mMovie.getReleaseDate());
+//        values.put(FavoriteEntry.COLUMN_NAME_SYNOPSIS, mMovie.getOverview());
+//
+//        // Insert new favorite data via a ContentResolver
+//        Uri uri = getContext().getContentResolver().insert(FavoriteEntry.CONTENT_URI, values);
+//
+//        if(uri != null){
+//            Toast.makeText(getContext(), uri.toString(), Toast.LENGTH_SHORT).show();
+//        }
+//    }
 }
