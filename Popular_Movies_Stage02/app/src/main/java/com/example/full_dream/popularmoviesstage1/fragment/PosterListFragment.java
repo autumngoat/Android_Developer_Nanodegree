@@ -97,28 +97,29 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
     public  PosterListFragment(){}
 
     /**
-     * Setup the data component of the Fragment.
+     * Called to do the initial creation of the fragment.
      *
-     * @param savedInstanceState
+     * @param savedInstanceState If the fragment is being re-created from a previous
+     *                           saved state, this is the state.
      */
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        //
-        setHasOptionsMenu(true);
 
         // Fill the PosterAdapter with the initial data from the network call
         callRetrofit();
     }
 
     /**
-     * Setup the UI component of the Fragment.
+     * Creates and returns the view hierarchy associated with the fragment.
      *
-     * @param inflater
-     * @param container
-     * @param savedInstanceState
-     * @return
+     * @param inflater The Layoutinflater object that can be used to inflate any views
+     *                 in the fragment.
+     * @param container If not null, this is the parent view that the fragment's UI
+     *                  should be attached to.
+     * @param savedInstanceState If not null, this fragment is being re-constructed from
+     *                           a previous saved state as given here.
+     * @return Return the view for the fragment's UI, or null.
      */
     @Nullable
     @Override
@@ -191,6 +192,28 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
         return rootView;
     }
 
+    /**
+     * Tells the fragment that its activity has completed its own Activity.onCreate().
+     *
+     * @param savedInstanceState If the fragment is being re-created from a previous
+     *                           saved state, this is the state.
+     */
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        // Recommended to place call to sethasOptionsMenu(true) in
+        // onActivityCreated() for consistent calls after onCreateView()
+        // Source:
+        //  https://github.com/JakeWharton/ActionBarSherlock/issues/935
+        setHasOptionsMenu(true);
+    }
+
+    /**
+     * Called when the fragment is no longer in use. This is called after onStop() and
+     * before onDetach().
+     * If you override this method you must call through the superclass implementation.
+     */
     @Override
     public void onDestroyView() {
         super.onDestroyView();
@@ -266,14 +289,23 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
      * Inflate the menu for this Activity, only called once.
      *
      * @param menu Menu resource file to inflate for this activity
-     * @return Must return true for menu to appear
      */
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        // Remove existing menu before inflating another menu
+        // Source:
+        //  https://stackoverflow.com/questions/8472776/fragments-with-the-same-menu-on-the-same-layout-cause-duplicated-menuitem/8495697#8495697
+        menu.clear();
         inflater.inflate(R.menu.settings, menu);
         super.onCreateOptionsMenu(menu,inflater);
     }
 
+    /**
+     * Report that this fragment would like to populate the options menu by receiving
+     * a call to onCreateOptionsMenu().
+     *
+     * @param hasMenu If true, then the fragment has menu options to contribute.
+     */
     @Override
     public void setHasOptionsMenu(boolean hasMenu) {
         super.setHasOptionsMenu(hasMenu);
