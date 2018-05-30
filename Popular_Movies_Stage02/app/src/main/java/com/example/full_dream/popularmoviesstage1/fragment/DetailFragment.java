@@ -48,8 +48,8 @@
 package com.example.full_dream.popularmoviesstage1.fragment;
 
 import android.content.ActivityNotFoundException;
-import android.content.ContentValues;
 import android.content.Intent;
+import android.graphics.drawable.AnimatedVectorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -68,11 +68,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.full_dream.popularmoviesstage1.BuildConfig;
-import com.example.full_dream.popularmoviesstage1.MainActivity;
 import com.example.full_dream.popularmoviesstage1.R;
 import com.example.full_dream.popularmoviesstage1.adapter.ReviewAdapter;
 import com.example.full_dream.popularmoviesstage1.adapter.TrailerAdapter;
-import com.example.full_dream.popularmoviesstage1.data.FavoriteContract.*;
 import com.example.full_dream.popularmoviesstage1.model.Movie;
 import com.example.full_dream.popularmoviesstage1.model.Review;
 import com.example.full_dream.popularmoviesstage1.model.ReviewResponse;
@@ -209,8 +207,17 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
         fab.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), "Click", Toast.LENGTH_SHORT).show();
-                // need to update here
+                // Set/toggle favorite status of Movie object on click
+                mMovie.setFavorite(!mMovie.isFavorite());
+
+                // Set/toggle FAB image resource on click
+                if(mMovie.isFavorite()){
+                    Toast.makeText(getContext(), "Favorited", Toast.LENGTH_SHORT).show();
+                    fab.setImageResource(R.drawable.ic_favorite_red);
+                } else {
+                    Toast.makeText(getContext(), "Unfavorited", Toast.LENGTH_SHORT).show();
+                    fab.setImageResource(R.drawable.ic_favorite_white);
+                }
             }
         });
 
