@@ -94,6 +94,9 @@ public class Movie implements Parcelable{
     private static final String TMDB_IMG_BASE_URL = "https://image.tmdb.org/t/p/";
     private static final String IMAGE_FILE_SIZE = "w780";
 
+    // Default constructor
+    public Movie(){}
+
     /**
      * Interface that must be implemented and provided as a public CREATOR field that
      * generates instances of your Parcelable class from a Parcel.

@@ -48,8 +48,9 @@
 package com.example.full_dream.popularmoviesstage1.fragment;
 
 import android.content.ActivityNotFoundException;
+import android.content.ContentValues;
 import android.content.Intent;
-import android.graphics.drawable.AnimatedVectorDrawable;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -78,6 +79,7 @@ import com.example.full_dream.popularmoviesstage1.model.Trailer;
 import com.example.full_dream.popularmoviesstage1.model.TrailerResponse;
 import com.example.full_dream.popularmoviesstage1.utils.RetrofitClient;
 import com.example.full_dream.popularmoviesstage1.utils.TheMovieDBService;
+import com.example.full_dream.popularmoviesstage1.data.FavoriteContract.*;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -203,6 +205,13 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
         mReviewAdapter = new ReviewAdapter();
         mReviewRecyclerView.setAdapter(mReviewAdapter);
 
+        // Setup initial FAB image resource based on favorite status
+        if(mMovie.isFavorite()){
+            fab.setImageResource(R.drawable.ic_favorite_red);
+        } else {
+            fab.setImageResource(R.drawable.ic_favorite_white);
+        }
+
         // Setup FAB onClick
         fab.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -212,10 +221,33 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
 
                 // Set/toggle FAB image resource on click
                 if(mMovie.isFavorite()){
-                    Toast.makeText(getContext(), "Favorited", Toast.LENGTH_SHORT).show();
+                    // Insert Movie into favorites table
+
+                    // Create new ContentValues object to place this favorite's data into
+                    ContentValues values = new ContentValues();
+
+                    // Place favorite movie data into ContentValues object
+                    values.put(FavoriteEntry.COLUMN_NAME_TITLE, mMovie.getTitle());
+                    values.put(FavoriteEntry.COLUMN_NAME_MOVIE_ID, mMovie.getId());
+                    values.put(FavoriteEntry.COLUMN_NAME_POSTER, mMovie.getPosterPath());
+                    values.put(FavoriteEntry.COLUMN_NAME_RATING, mMovie.getVoteAverage());
+                    values.put(FavoriteEntry.COLUMN_NAME_RELEASE_DATE, mMovie.getReleaseDate());
+                    values.put(FavoriteEntry.COLUMN_NAME_SYNOPSIS, mMovie.getOverview());
+
+                    // Insert new favorite data via a ContentResolver
+                    Uri uri = getContext().getContentResolver().insert(FavoriteEntry.CONTENT_URI, values);
+
+                    if(uri != null){
+                        Toast.makeText(getContext(), "Favorited: " + uri.toString(), Toast.LENGTH_SHORT).show();
+                    }
+
+                    // Toggle FAB image resource based on favorite status
                     fab.setImageResource(R.drawable.ic_favorite_red);
                 } else {
+                    // Delete Movie from favorites table
                     Toast.makeText(getContext(), "Unfavorited", Toast.LENGTH_SHORT).show();
+
+                    // Toggle FAB image resource based on favorite status
                     fab.setImageResource(R.drawable.ic_favorite_white);
                 }
             }
@@ -326,29 +358,4 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
                     Uri.parse("http://www.youtube.com/watch?v=" + youtubeKey)));
         }
     }
-
-    /**
-     * Deal with Floating Action Button to add/remove to favorites SQLite database.
-     *  It retrieves the movie's information and adds it to the underlying database.
-     *
-     * @param view
-     */
-//    public void onClickAddFavorite(View view){
-//        // Create new ContentValues object to place this favorite's data into
-//        ContentValues values = new ContentValues();
-//
-//        // Place favorite movie data into ContentValues object
-//        values.put(FavoriteEntry.COLUMN_NAME_TITLE, mMovie.getTitle());
-//        values.put(FavoriteEntry.COLUMN_NAME_POSTER, mMovie.getPosterPath());
-//        values.put(FavoriteEntry.COLUMN_NAME_RATING, mMovie.getVoteAverage());
-//        values.put(FavoriteEntry.COLUMN_NAME_RELEASE_DATE, mMovie.getReleaseDate());
-//        values.put(FavoriteEntry.COLUMN_NAME_SYNOPSIS, mMovie.getOverview());
-//
-//        // Insert new favorite data via a ContentResolver
-//        Uri uri = getContext().getContentResolver().insert(FavoriteEntry.CONTENT_URI, values);
-//
-//        if(uri != null){
-//            Toast.makeText(getContext(), uri.toString(), Toast.LENGTH_SHORT).show();
-//        }
-//    }
 }

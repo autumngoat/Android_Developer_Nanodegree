@@ -14,6 +14,8 @@ import android.support.annotation.Nullable;
 
 import com.example.full_dream.popularmoviesstage1.data.FavoriteContract.*;
 
+import java.nio.file.Path;
+
 /**
  * Followed the Udacity course "Developing Android Apps" >>
  * Lesson 11: Building a Content Provider >>
@@ -24,6 +26,8 @@ import com.example.full_dream.popularmoviesstage1.data.FavoriteContract.*;
  * 11. Build the URIMatcher
  * 19. Insert
  * 20. Hook it up to the UI
+ * 22. Query
+ * 28. Implement Delete
  */
 public class FavoriteContentProvider extends ContentProvider {
 
@@ -109,15 +113,44 @@ public class FavoriteContentProvider extends ContentProvider {
         return returnUri;
     }
 
-    @Override
-    public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection, @Nullable String[] selectionArgs) {
-        return 0;
-    }
-
     @Nullable
     @Override
     public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection, @Nullable String[] selectionArgs, @Nullable String sortOrder) {
-        return null;
+        // Get access to the underlying database (read-only for query)
+        final SQLiteDatabase db = mFavoriteDbHelper.getReadableDatabase();
+
+        // URI match code
+        int match = sUriMatcher.match(uri);
+
+        // Write a query for the favorites directory and default case
+        Cursor returnCursor;
+        switch(match){
+            // Query for the favorites directory
+            case FAVORITES:
+                returnCursor = db.query(FavoriteEntry.TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder);
+                break;
+            // Default exception
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+
+        // Set a notification URI on the Cursor
+        //  The notification tells the Cursor what content URI it was created for so that
+        //  if anything changes in the URI, the Cursor will know
+        returnCursor.setNotificationUri(getContext().getContentResolver(), uri);
+
+        return returnCursor;
+    }
+
+    @Override
+    public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection, @Nullable String[] selectionArgs) {
+        return 0;
     }
 
     @Override

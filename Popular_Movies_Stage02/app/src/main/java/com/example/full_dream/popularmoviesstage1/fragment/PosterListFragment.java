@@ -47,12 +47,16 @@
 
 package com.example.full_dream.popularmoviesstage1.fragment;
 
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -65,11 +69,13 @@ import android.view.ViewGroup;
 import com.example.full_dream.popularmoviesstage1.BuildConfig;
 import com.example.full_dream.popularmoviesstage1.R;
 import com.example.full_dream.popularmoviesstage1.adapter.PosterAdapter;
+import com.example.full_dream.popularmoviesstage1.data.FavoriteContract.*;
 import com.example.full_dream.popularmoviesstage1.model.Movie;
 import com.example.full_dream.popularmoviesstage1.model.MovieResponse;
 import com.example.full_dream.popularmoviesstage1.utils.RetrofitClient;
 import com.example.full_dream.popularmoviesstage1.utils.TheMovieDBService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -79,8 +85,16 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-
-public class PosterListFragment extends Fragment implements PosterAdapter.PosterAdapterOnClickHandler {
+/**
+ * Followed the Udacity course "Developing Android Apps" >>
+ * Lesson 11: Building a Content Provider >>
+ * 24. Implement Query
+ *
+ * Other source(s):
+ *  https://developer.android.com/reference/android/support/v4/content/CursorLoader
+ */
+public class PosterListFragment extends Fragment implements PosterAdapter.PosterAdapterOnClickHandler,
+        LoaderManager.LoaderCallbacks<Cursor> {
 
     private boolean mToggleSearchOption =  true;
     private Unbinder mUnbinder;
@@ -90,6 +104,7 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
     private PosterAdapter mPosterAdapter;
     @BindView(R.id.rv_poster_list)
     RecyclerView mRecyclerView;
+    private static final int FAVORITE_LOADER_ID = 1000;
 
     /**
      * Mandatory empty constructor for the Fragment Manager to instantiate the fragment.
@@ -210,6 +225,18 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
     }
 
     /**
+     * Makes the fragment begin interacting with the user (based on its containing
+     * activity being resumed).
+     */
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        // Re-queries for all favorites
+        getLoaderManager().restartLoader(FAVORITE_LOADER_ID, null, this);
+    }
+
+    /**
      * Called when the fragment is no longer in use. This is called after onStop() and
      * before onDetach().
      * If you override this method you must call through the superclass implementation.
@@ -323,18 +350,97 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
             case R.id.action_popular:
                 mToggleSearchOption = true;
                 item.setChecked(!item.isChecked());
+                // Stop Favorite Loader
+                getLoaderManager().destroyLoader(FAVORITE_LOADER_ID);
                 callRetrofit();
-                return true;
+                break;
             case R.id.action_top_rated:
                 mToggleSearchOption = false;
                 item.setChecked(!item.isChecked());
+                // Stop Favorite Loader
+                getLoaderManager().destroyLoader(FAVORITE_LOADER_ID);
                 callRetrofit();
-                return true;
+                break;
             case R.id.action_favorites:
                 item.setChecked(!item.isChecked());
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+                // Ensure a loader is initialized and active.  If the loader DNE, one is created,
+                // otherwise the last created loader is re-used.
+                getLoaderManager().initLoader(FAVORITE_LOADER_ID, null, this);
+                break;
         }
+        // Reset scroll position to the top
+        mRecyclerView.smoothScrollToPosition(0);
+        return super.onOptionsItemSelected(item);
+    }
+
+    //////////////////////
+    // Loader Callbacks //
+    //////////////////////
+
+    /**
+     * Instantiate and return a new Loader for the given ID.
+     *
+     * @param id The ID whose loader is to be created.
+     * @param args Any arguments supplied by the caller.
+     * @return Return a new Loader instance that is ready to start loading.
+     */
+    @NonNull
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
+        // Creates a fully-specified CursorLoader
+        return new CursorLoader(getContext(),
+                FavoriteEntry.CONTENT_URI,
+                null,
+                null,
+                null,
+                null);
+    }
+
+    /**
+     * Called when a previously created loader has finished its load.
+     *
+     * @param loader The Loader that has finished.
+     * @param data The data generated by the Loader.
+     */
+    @Override
+    public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
+        List<Movie> movies = new ArrayList<>();
+        if(data.getCount() > 0) {
+            // Iterate over rows and create Movie objects using Cursor data,
+            // and add to List of Movie objects
+            while(data.moveToNext()) {
+                Movie movie = new Movie();
+
+                // As required by the rubric
+                //  movieId required for Reviews and Trailers
+                movie.setTitle(data.getString(data.getColumnIndex(FavoriteEntry.COLUMN_NAME_TITLE)));
+                movie.setId(data.getInt(data.getColumnIndex(FavoriteEntry.COLUMN_NAME_MOVIE_ID)));
+                // As mentioned as bonus on the rubric
+                movie.setReleaseDate(data.getString(data.getColumnIndex(FavoriteEntry.COLUMN_NAME_RELEASE_DATE)));
+                movie.setOverview(data.getString(data.getColumnIndex(FavoriteEntry.COLUMN_NAME_SYNOPSIS)));
+                movie.setVoteAverage(data.getDouble(data.getColumnIndex(FavoriteEntry.COLUMN_NAME_RATING)));
+                movie.setPosterPath(data.getString(data.getColumnIndex(FavoriteEntry.COLUMN_NAME_POSTER)));
+
+                movies.add(movie);
+            }
+
+            // Close the Cursor
+            data.close();
+        }
+        // Set Adapter to new data
+        mPosterAdapter.setMovieData(movies);
+        // Notify Adapter of data set change to update UI
+        mPosterAdapter.notifyDataSetChanged();
+    }
+
+    /**
+     * Called when the previously created loader is being reset, and thus making its data unavailable.
+     *
+     * @param loader The Loader that is being reset.
+     */
+    @Override
+    public void onLoaderReset(@NonNull Loader<Cursor> loader) {
+        // Remove any references to the Loader's data
+        mPosterAdapter.setMovieData(null);
     }
 }
