@@ -49,10 +49,18 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
+        <!-- Color for the app bar and other primary UI elements -->
         <item name="colorPrimary">@color/colorPrimary</item>
+        <!-- A darker variant of the primary color, used for the status
+         bar (on Android 5.0+) and contextual app bars -->
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <!-- A secondary color for controls like checkboxes and fields -->
         <item name="colorAccent">@color/colorAccent</item>
+        <!-- Overrides colorAccent as the activated or checked state for Checkboxes and RadioButtons -->
+         <!-- Overrode colorAccent so that FAB could stay colorAccent color while preserving the
+          color colorControlActivated of the RadioButtons when selecting different menu options-->
+         <!-- Source: https://medium.com/google-developers/theming-with-appcompat-1a292b754b35 -->
+        <item name="colorControlActivated">@color/colorControlActivated</item>
     </style>
 
     <!-- Label Style -->
