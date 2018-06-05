@@ -14,20 +14,20 @@ import android.support.annotation.Nullable;
 
 import com.example.full_dream.popularmoviesstage1.data.FavoriteContract.*;
 
-import java.nio.file.Path;
 
 /**
  * Followed the Udacity course "Developing Android Apps" >>
  * Lesson 11: Building a Content Provider >>
  * 4. Steps to Create a Provider
  * 5. Create  Content Provider
- * 6. Create and Register a ContentProvider
+ * 6. Exercise: Create and Register a ContentProvider >> T09.01-SetupContentProvider
  * 7. Define the URI Structure
  * 11. Build the URIMatcher
  * 19. Insert
  * 20. Hook it up to the UI
  * 22. Query
- * 28. Implement Delete
+ * 28. Exercise: Implement Delete >> T09.06-Exercise-Delete
+ * 29.
  */
 public class FavoriteContentProvider extends ContentProvider {
 
@@ -149,12 +149,40 @@ public class FavoriteContentProvider extends ContentProvider {
     }
 
     @Override
-    public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection, @Nullable String[] selectionArgs) {
-        return 0;
+    public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
+        // Get access to the underlying database
+        final SQLiteDatabase db = mFavoriteDbHelper.getWritableDatabase();
+
+        // URI match code
+        int match = sUriMatcher.match(uri);
+
+        // Write a delete for a single row of data by its row ID and default case
+        int favoritesDeleted;
+        switch(match){
+            // Handle the single item case, recognized by the ID in the URI path
+            case FAVORITE_WITH_ID:
+                // Get the favorite ID from the URI path
+                String id = uri.getPathSegments().get(1);
+                // Use selection and selectionArgs to filter for this ID
+                favoritesDeleted = db.delete(FavoriteEntry.TABLE_NAME, "_id=?", new String[]{id});
+                break;
+            // Default exception
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+
+        // Notify the resolver if the uri has been changed so that it can update the database and
+        // any associated UI accordingly
+        if(favoritesDeleted != 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+
+        // Return the number of favorites deleted
+        return favoritesDeleted;
     }
 
     @Override
-    public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
+    public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection, @Nullable String[] selectionArgs) {
         return 0;
     }
 

@@ -88,7 +88,7 @@ import retrofit2.Response;
 /**
  * Followed the Udacity course "Developing Android Apps" >>
  * Lesson 11: Building a Content Provider >>
- * 24. Implement Query
+ * 24. Exercise: Implement Query >> T09.05-Exercise-QueryAllTasks
  *
  * Other source(s):
  *  https://developer.android.com/reference/android/support/v4/content/CursorLoader
