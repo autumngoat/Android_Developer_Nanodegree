@@ -203,6 +203,11 @@ public class Movie implements Parcelable{
         this.overview = plotSynopsis;
     }
 
+    /**
+     * Formatted String representation of Movie object for better debugging purposes.
+     *
+     * @return Return String representation of Movie object.
+     */
     @Override
     public String toString() {
         return "\ntitle: " + this.title +
