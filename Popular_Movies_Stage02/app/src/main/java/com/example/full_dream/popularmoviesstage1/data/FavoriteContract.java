@@ -19,7 +19,7 @@ public class FavoriteContract {
     // The base content URI = "content://" + <authority>
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + AUTHORITY);
     // This is the path for the "favorites" directory
-    public static final String PATH_FAVORITE = "favorite";
+    public static final String PATH_FAVORITES = "favorites";
 
     /**
      * Prevent someone from accidentally making an instance of FavoriteContract.
@@ -35,7 +35,7 @@ public class FavoriteContract {
         // FavoriteEntry content URI = base content URI + path
         public static final Uri CONTENT_URI = BASE_CONTENT_URI
                 .buildUpon()
-                .appendPath(PATH_FAVORITE)
+                .appendPath(PATH_FAVORITES)
                 .build();
 
         public static final String TABLE_NAME = "favorite";

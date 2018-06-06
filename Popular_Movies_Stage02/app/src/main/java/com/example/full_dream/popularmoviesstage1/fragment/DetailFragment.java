@@ -206,6 +206,9 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
         mReviewRecyclerView.setAdapter(mReviewAdapter);
 
         // Setup initial FAB image resource based on favorite status
+        //  Query database for favorite status
+
+        Log.e("rabbit", "is favorite null? " + mMovie.isFavorite());
         if(mMovie.isFavorite()){
             fab.setImageResource(R.drawable.ic_favorite_red);
         } else {
@@ -219,7 +222,7 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
                 // Set/toggle favorite status of Movie object on click
                 mMovie.setFavorite(!mMovie.isFavorite());
 
-                // Set/toggle FAB image resource on click
+                // Query database for favorite status
                 if(mMovie.isFavorite()){
                     // Insert Movie into favorites table
 
@@ -245,6 +248,26 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
                     fab.setImageResource(R.drawable.ic_favorite_red);
                 } else {
                     // Delete Movie from favorites table
+                    /**
+                     * Source:
+                     * Followed the Udacity course "Developing Android Apps" >>
+                     * Lesson 11: Building a Content Provider >>
+                     * 29. Exercise: Swipe to Delete >> T09.07-Exercise-SwipeToDelete
+                     */
+
+                    // Get movie ID and append to URI path for delete() method in ContentProvider to
+                    // use to delete the proper row of data
+                    String movieId = mMovie.getId().toString();
+                    Uri uri = FavoriteEntry.CONTENT_URI;
+                    uri = uri.buildUpon().appendPath(movieId).build();
+
+                    // Call the ContentResolver to use the above URI which is pointing to a specific
+                    // favorite filtered by movie ID
+                    //  The where/selection and selectionArgs arguments are set to null since they
+                    //  will be constructed later inside the delete() method in the ContentProvider
+                    //  based on the URI path
+                    getContext().getContentResolver().delete(uri, null, null);
+
                     Toast.makeText(getContext(), "Unfavorited", Toast.LENGTH_SHORT).show();
 
                     // Toggle FAB image resource based on favorite status

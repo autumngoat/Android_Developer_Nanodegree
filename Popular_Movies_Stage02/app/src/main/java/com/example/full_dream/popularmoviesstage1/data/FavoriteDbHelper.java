@@ -21,7 +21,7 @@ public class FavoriteDbHelper extends SQLiteOpenHelper {
     //  of our data
     private static final String DATABASE_NAME = "favorite.db";
     // Current database version number which should always start at 1
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
 
     // The constructor shouldn't do anything special so just call the parent constructor
     public FavoriteDbHelper(Context context){

@@ -59,6 +59,7 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -69,6 +70,7 @@ import android.view.ViewGroup;
 import com.example.full_dream.popularmoviesstage1.BuildConfig;
 import com.example.full_dream.popularmoviesstage1.R;
 import com.example.full_dream.popularmoviesstage1.adapter.PosterAdapter;
+import com.example.full_dream.popularmoviesstage1.data.FavoriteContentProvider;
 import com.example.full_dream.popularmoviesstage1.data.FavoriteContract.*;
 import com.example.full_dream.popularmoviesstage1.model.Movie;
 import com.example.full_dream.popularmoviesstage1.model.MovieResponse;
@@ -427,6 +429,7 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
             // Close the Cursor
             data.close();
         }
+        Log.e("rabbit", "cursor: " + movies.toString());
         // Set Adapter to new data
         mPosterAdapter.setMovieData(movies);
         // Notify Adapter of data set change to update UI

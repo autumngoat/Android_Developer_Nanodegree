@@ -22,12 +22,7 @@ import com.example.full_dream.popularmoviesstage1.data.FavoriteContract.*;
  * 5. Create  Content Provider
  * 6. Exercise: Create and Register a ContentProvider >> T09.01-SetupContentProvider
  * 7. Define the URI Structure
- * 11. Build the URIMatcher
- * 19. Insert
  * 20. Hook it up to the UI
- * 22. Query
- * 28. Exercise: Implement Delete >> T09.06-Exercise-Delete
- * 29.
  */
 public class FavoriteContentProvider extends ContentProvider {
 
@@ -44,6 +39,11 @@ public class FavoriteContentProvider extends ContentProvider {
     /**
      * Match URI patterns to integer constants.
      *
+     * Source:
+     * Followed the Udacity course "Developing Android Apps" >>
+     * Lesson 11: Building a Content Provider >>
+     * 11. Build the URIMatcher
+     *
      * @return A UriMatcher that will help the ContentProvider recognize and respond correctly to
      * different types of URIs.
      */
@@ -52,9 +52,9 @@ public class FavoriteContentProvider extends ContentProvider {
         UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
         // directory
-        uriMatcher.addURI(FavoriteContract.AUTHORITY, FavoriteContract.PATH_FAVORITE, FAVORITES);
+        uriMatcher.addURI(FavoriteContract.AUTHORITY, FavoriteContract.PATH_FAVORITES, FAVORITES);
         // single item
-        uriMatcher.addURI(FavoriteContract.AUTHORITY, FavoriteContract.PATH_FAVORITE + "/#", FAVORITE_WITH_ID);
+        uriMatcher.addURI(FavoriteContract.AUTHORITY, FavoriteContract.PATH_FAVORITES + "/#", FAVORITE_WITH_ID);
 
         return uriMatcher;
     }
@@ -71,6 +71,11 @@ public class FavoriteContentProvider extends ContentProvider {
 
     /**
      * Insert a row of new data into the ContentProvider.
+     *
+     * Source:
+     * Followed the Udacity course "Developing Android Apps" >>
+     * Lesson 11: Building a Content Provider >>
+     * 19. Insert
      *
      * @param uri Identifies the correct directory to insert data into.
      * @param values Object with new data to insert.
@@ -113,6 +118,22 @@ public class FavoriteContentProvider extends ContentProvider {
         return returnUri;
     }
 
+    /**
+     *
+     *
+     * Source:
+     * Followed the Udacity course "Developing Android Apps" >>
+     * Lesson 11: Building a Content Provider >>
+     * 22. Query
+     * 26. Query for One Item Part Two
+     *
+     * @param uri
+     * @param projection
+     * @param selection
+     * @param selectionArgs
+     * @param sortOrder
+     * @return
+     */
     @Nullable
     @Override
     public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection, @Nullable String[] selectionArgs, @Nullable String sortOrder) {
@@ -135,6 +156,29 @@ public class FavoriteContentProvider extends ContentProvider {
                         null,
                         sortOrder);
                 break;
+            // Query for a single row of data by ID
+            case FAVORITE_WITH_ID:
+                // Using selection and selectionArgs
+                //  URI: content://<authority>/favorite/#
+                //   get(0): favorite
+                //   get(1): #
+                String id = uri.getPathSegments().get(1);
+
+                // Create selection and selectionArgs for this ID
+                //  Selection is the _ID column = ?
+                //  SelectionArgs = the row ID from the URI
+                String mSelection = "_id=?";
+                String[] mSelectionArgs = new String[]{id};
+
+                // Use the same returnCursor as the previous query case except with custom arguments
+                returnCursor = db.query(FavoriteEntry.TABLE_NAME,
+                        projection,
+                        mSelection,
+                        mSelectionArgs,
+                        null,
+                        null,
+                        sortOrder);
+                break;
             // Default exception
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -148,6 +192,19 @@ public class FavoriteContentProvider extends ContentProvider {
         return returnCursor;
     }
 
+    /**
+     *
+     *
+     * Source:
+     * Followed the Udacity course "Developing Android Apps" >>
+     * Lesson 11: Building a Content Provider >>
+     * 28. Exercise: Implement Delete >> T09.06-Exercise-Delete
+     *
+     * @param uri
+     * @param selection
+     * @param selectionArgs
+     * @return
+     */
     @Override
     public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
         // Get access to the underlying database
