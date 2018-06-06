@@ -50,7 +50,6 @@ package com.example.full_dream.popularmoviesstage1.fragment;
 import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -79,7 +78,6 @@ import com.example.full_dream.popularmoviesstage1.model.Trailer;
 import com.example.full_dream.popularmoviesstage1.model.TrailerResponse;
 import com.example.full_dream.popularmoviesstage1.utils.RetrofitClient;
 import com.example.full_dream.popularmoviesstage1.utils.TheMovieDBService;
-import com.example.full_dream.popularmoviesstage1.data.FavoriteContract.*;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -155,7 +153,7 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
         //  source: http://jakewharton.github.io/butterknife/
         mUnbinder = ButterKnife.bind(this, rootView);
 
-        // Icons made by "https://www.flaticon.com/authors/freprikepik"
+        // Icons made by "https://www.flaticon.com/authors/freepik"
         // Title: "Popcorn"
         // Licensed by Creative Commons BY 3.0
         Picasso.get()
@@ -207,7 +205,9 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
 
         // Setup initial FAB image resource based on favorite status
         //  Query database for favorite status
-
+        // Icons made by "https://www.flaticon.com/authors/freepik"
+        // Title: "Favorite"
+        // Licensed by Creative Commons BY 3.0
         Log.e("rabbit", "is favorite null? " + mMovie.isFavorite());
         if(mMovie.isFavorite()){
             fab.setImageResource(R.drawable.ic_favorite_red);
@@ -226,47 +226,11 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
                 if(mMovie.isFavorite()){
                     // Insert Movie into favorites table
 
-                    // Create new ContentValues object to place this favorite's data into
-                    ContentValues values = new ContentValues();
-
-                    // Place favorite movie data into ContentValues object
-                    values.put(FavoriteEntry.COLUMN_NAME_TITLE, mMovie.getTitle());
-                    values.put(FavoriteEntry.COLUMN_NAME_MOVIE_ID, mMovie.getId());
-                    values.put(FavoriteEntry.COLUMN_NAME_POSTER, mMovie.getPosterPath());
-                    values.put(FavoriteEntry.COLUMN_NAME_RATING, mMovie.getVoteAverage());
-                    values.put(FavoriteEntry.COLUMN_NAME_RELEASE_DATE, mMovie.getReleaseDate());
-                    values.put(FavoriteEntry.COLUMN_NAME_SYNOPSIS, mMovie.getOverview());
-
-                    // Insert new favorite data via a ContentResolver
-                    Uri uri = getContext().getContentResolver().insert(FavoriteEntry.CONTENT_URI, values);
-
-                    if(uri != null){
-                        Toast.makeText(getContext(), "Favorited: " + uri.toString(), Toast.LENGTH_SHORT).show();
-                    }
+                    Toast.makeText(getContext(), "Favorited: ", Toast.LENGTH_SHORT).show();
 
                     // Toggle FAB image resource based on favorite status
                     fab.setImageResource(R.drawable.ic_favorite_red);
                 } else {
-                    // Delete Movie from favorites table
-                    /**
-                     * Source:
-                     * Followed the Udacity course "Developing Android Apps" >>
-                     * Lesson 11: Building a Content Provider >>
-                     * 29. Exercise: Swipe to Delete >> T09.07-Exercise-SwipeToDelete
-                     */
-
-                    // Get movie ID and append to URI path for delete() method in ContentProvider to
-                    // use to delete the proper row of data
-                    String movieId = mMovie.getId().toString();
-                    Uri uri = FavoriteEntry.CONTENT_URI;
-                    uri = uri.buildUpon().appendPath(movieId).build();
-
-                    // Call the ContentResolver to use the above URI which is pointing to a specific
-                    // favorite filtered by movie ID
-                    //  The where/selection and selectionArgs arguments are set to null since they
-                    //  will be constructed later inside the delete() method in the ContentProvider
-                    //  based on the URI path
-                    getContext().getContentResolver().delete(uri, null, null);
 
                     Toast.makeText(getContext(), "Unfavorited", Toast.LENGTH_SHORT).show();
 

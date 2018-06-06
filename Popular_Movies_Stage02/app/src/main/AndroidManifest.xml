@@ -66,12 +66,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        
-        <provider
-            android:authorities="com.example.full_dream.popularmoviesstage1"
-            android:name="com.example.full_dream.popularmoviesstage1.data.FavoriteContentProvider"
-            android:exported="false">
-        </provider>
+
     </application>
 
 </manifest>
