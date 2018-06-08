@@ -49,6 +49,7 @@ package com.example.full_dream.popularmoviesstage1.model;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -67,17 +68,25 @@ import com.squareup.moshi.Json;
  *
  * Followed the Udacity course "Developing Android Apps" >>
  * Lesson 12: Android Architecture Components >>
- * 04. Exercise: Creating an Entity >> T09b.01-Exercise-CreateEntity
+ * 04. Exercise: Creating an Entity
+ *
+ * Annotate the class with Entity and use "movie" for the table name.
+ *  This annotation marks a class as a database row.
+ *   For each Entity, a database table is created to hold the items.
+ *
+ * Comments Source:
+ * https://developer.android.com/reference/android/arch/persistence/room/package-summary
+ * https://developer.android.com/reference/android/arch/persistence/room/Entity
  */
-
-// Annotate the class with Entity and use "favorites" for the table name
-@Entity(tableName = "favorites")
+@Entity(tableName = "movie")
 public class Movie implements Parcelable{
 
     private boolean favorite = false;
     @Json(name = "vote_count")
     private int voteCount;
+    // Each Entity class MUST have at least 1 field annotated with PrimaryKey
     @Json(name = "id")
+    @PrimaryKey
     private int id;
     @Json(name = "video")
     private boolean video;

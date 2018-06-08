@@ -11,6 +11,18 @@ import com.example.full_dream.popularmoviesstage1.model.Movie;
 
 import java.util.List;
 
+/**
+ * Marks the class as a Data Access Object.
+ *  DAO are the main classes where you define your database interactions.
+ *   They can include a variety of query methods.
+ *
+ * Comments Source:
+ * https://developer.android.com/reference/android/arch/persistence/room/Dao
+ *
+ * Followed the Udacity course "Developing Android Apps" >>
+ * Lesson 12: Android Architecture Components >>
+ * 06. Creating a DAO
+ */
 @Dao
 public interface MovieDao {
 
@@ -19,7 +31,7 @@ public interface MovieDao {
     void insertMovie(Movie movie);
 
     // Read
-    @Query("SELECT * FROM favorites")
+    @Query("SELECT * FROM movie")
     List<Movie> loadAllMovies();
 
     // Update
