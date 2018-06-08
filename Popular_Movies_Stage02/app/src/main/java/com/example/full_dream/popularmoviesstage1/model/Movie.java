@@ -85,8 +85,8 @@ public class Movie implements Parcelable{
     @Json(name = "vote_count")
     private int voteCount;
     // Each Entity class MUST have at least 1 field annotated with PrimaryKey
-    @Json(name = "id")
     @PrimaryKey
+    @Json(name = "id")
     private int id;
     @Json(name = "video")
     private boolean video;
@@ -114,8 +114,6 @@ public class Movie implements Parcelable{
     private static final String IMAGE_FILE_SIZE = "w780";
 
     // Default constructor
-    //  Use the Ignore annotation so Room knows that it has to use the other constructor instead
-    @Ignore
     public Movie(){}
 
     /**
@@ -155,6 +153,8 @@ public class Movie implements Parcelable{
      * @param in Container for a message (data and object references) that can be sent through an
      *           IBinder
      */
+    //  Use the Ignore annotation so Room knows that it has to use the other constructor instead
+    @Ignore
     private Movie(Parcel in) {
         // in.readInt() - Read an integer value from the parcel at the current dataPosition()
         //  Kept having ClassCastExceptions with casting ClassLoader until I stopped using object
