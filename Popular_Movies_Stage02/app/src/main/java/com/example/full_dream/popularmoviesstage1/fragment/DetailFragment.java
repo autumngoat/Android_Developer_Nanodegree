@@ -48,7 +48,6 @@
 package com.example.full_dream.popularmoviesstage1.fragment;
 
 import android.content.ActivityNotFoundException;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;

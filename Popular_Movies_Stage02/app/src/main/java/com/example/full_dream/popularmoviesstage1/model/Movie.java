@@ -47,6 +47,8 @@
 
 package com.example.full_dream.popularmoviesstage1.model;
 
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -62,8 +64,16 @@ import com.squareup.moshi.Json;
  *
  * Used https://medium.com/@adetayo_james/implement-parcelable-in-android-4d20994f0510
  * to troubleshoot the buggy auto-generate mess received from jsonschema2pojo.com.
+ *
+ * Followed the Udacity course "Developing Android Apps" >>
+ * Lesson 12: Android Architecture Components >>
+ * 04. Exercise: Creating an Entity >> T09b.01-Exercise-CreateEntity
  */
+
+// Annotate the class with Entity and use "favorites" for the table name
+@Entity(tableName = "favorites")
 public class Movie implements Parcelable{
+
     private boolean favorite = false;
     @Json(name = "vote_count")
     private int voteCount;
@@ -95,6 +105,8 @@ public class Movie implements Parcelable{
     private static final String IMAGE_FILE_SIZE = "w780";
 
     // Default constructor
+    //  Use the Ignore annotation so Room knows that it has to use the other constructor instead
+    @Ignore
     public Movie(){}
 
     /**

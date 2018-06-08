@@ -79,14 +79,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-/**
- * Followed the Udacity course "Developing Android Apps" >>
- * Lesson 11: Building a Content Provider >>
- * 24. Exercise: Implement Query >> T09.05-Exercise-QueryAllTasks
- *
- * Other source(s):
- *  https://developer.android.com/reference/android/support/v4/content/CursorLoader
- */
 public class PosterListFragment extends Fragment implements PosterAdapter.PosterAdapterOnClickHandler {
 
     private boolean mToggleSearchOption =  true;
@@ -97,7 +89,6 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
     private PosterAdapter mPosterAdapter;
     @BindView(R.id.rv_poster_list)
     RecyclerView mRecyclerView;
-    private static final int FAVORITE_LOADER_ID = 1000;
 
     /**
      * Mandatory empty constructor for the Fragment Manager to instantiate the fragment.
