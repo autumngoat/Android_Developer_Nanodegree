@@ -113,8 +113,26 @@ public class Movie implements Parcelable{
     private static final String TMDB_IMG_BASE_URL = "https://image.tmdb.org/t/p/";
     private static final String IMAGE_FILE_SIZE = "w780";
 
-    // Default constructor
+    // Constructor for use by Entity
+    //  Constructor must be public and either empty or have parameters that match the fields by type
+    //  and name (a.k.a., cannot change 'video' to 'hasVideo' or 'voteAverage' to 'rating'
     public Movie(){}
+//    public Movie(int voteCount, int id, boolean video, double voteAverage, String title,
+//                 double popularity, String posterPath, String originalLanguage, String originalTitle,
+//                 String backdropPath, String overview, String releaseDate){
+//        this.voteCount = voteCount;
+//        this.id = id;
+//        this.video = video;
+//        this.voteAverage = voteAverage;
+//        this.title = title;
+//        this.popularity = popularity;
+//        this.posterPath = posterPath;
+//        this.originalLanguage = originalLanguage;
+//        this.originalTitle = originalTitle;
+//        this.backdropPath = backdropPath;
+//        this.overview = overview;
+//        this.releaseDate = releaseDate;
+//    }
 
     /**
      * Interface that must be implemented and provided as a public CREATOR field that

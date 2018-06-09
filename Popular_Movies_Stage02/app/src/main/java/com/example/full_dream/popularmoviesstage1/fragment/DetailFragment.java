@@ -70,6 +70,7 @@ import com.example.full_dream.popularmoviesstage1.BuildConfig;
 import com.example.full_dream.popularmoviesstage1.R;
 import com.example.full_dream.popularmoviesstage1.adapter.ReviewAdapter;
 import com.example.full_dream.popularmoviesstage1.adapter.TrailerAdapter;
+import com.example.full_dream.popularmoviesstage1.database.AppDatabase;
 import com.example.full_dream.popularmoviesstage1.model.Movie;
 import com.example.full_dream.popularmoviesstage1.model.Review;
 import com.example.full_dream.popularmoviesstage1.model.ReviewResponse;
@@ -88,6 +89,11 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+/**
+ *
+ *
+ *
+ */
 public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAdapterOnClickHandler {
 
     private Movie mMovie;
@@ -95,6 +101,8 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
     private String API_KEY = BuildConfig.API_KEY;
     private ReviewAdapter mReviewAdapter;
     private TrailerAdapter mTrailerAdapter;
+    // Member variable for the Database
+    private AppDatabase mDb;
     @BindView(R.id.iv_background_poster)
     ImageView mBackgroundPoster;
     @BindView(R.id.tv_rating)
@@ -134,6 +142,9 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
         if(mMovie == null){
             Log.e("rabbit", "not again");
         }
+
+        // Initialize the Database
+        mDb = AppDatabase.getInstance(getContext());
 
         callRetrofitForTrailers();
         callRetrofitForReviews();
@@ -202,19 +213,10 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
         mReviewAdapter = new ReviewAdapter();
         mReviewRecyclerView.setAdapter(mReviewAdapter);
 
-        // Setup initial FAB image resource based on favorite status
-        //  Query database for favorite status
-        // Icons made by "https://www.flaticon.com/authors/freepik"
-        // Title: "Favorite"
-        // Licensed by Creative Commons BY 3.0
-        Log.e("rabbit", "is favorite null? " + mMovie.isFavorite());
-        if(mMovie.isFavorite()){
-            fab.setImageResource(R.drawable.ic_favorite_red);
-        } else {
-            fab.setImageResource(R.drawable.ic_favorite_white);
-        }
-
         // Setup FAB onClick
+        //  Icons made by "https://www.flaticon.com/authors/freepik"
+        //  Title: "Favorite"
+        //  Licensed by Creative Commons BY 3.0
         fab.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
@@ -223,15 +225,25 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
 
                 // Query database for favorite status
                 if(mMovie.isFavorite()){
-                    // Insert Movie into favorites table
+                    // Insert Movie to Database
 
-                    Toast.makeText(getContext(), "Favorited: ", Toast.LENGTH_SHORT).show();
+                    // 1) Get fields
+                    // 2) Create Movie object with fields as parameters
+                    // 3) mDb.movieDao().insertMovie(movie);
+                    //  Followed the Udacity course "Developing Android Apps" >>
+                    //  Lesson 12: Android Architecture Components >>
+                    //  10. Exercise: Save the Task
+
+                    mDb.movieDao().insertMovie(mMovie);
+
+                    Toast.makeText(getContext(), "Favorited " + mMovie.getTitle(), Toast.LENGTH_SHORT).show();
 
                     // Toggle FAB image resource based on favorite status
                     fab.setImageResource(R.drawable.ic_favorite_red);
                 } else {
+                    // Delete Movie from Database
 
-                    Toast.makeText(getContext(), "Unfavorited", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Unfavorited " + mMovie.getTitle(), Toast.LENGTH_SHORT).show();
 
                     // Toggle FAB image resource based on favorite status
                     fab.setImageResource(R.drawable.ic_favorite_white);
@@ -241,8 +253,6 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
 
         return rootView;
     }
-
-
 
     @Override
     public void onDestroyView() {

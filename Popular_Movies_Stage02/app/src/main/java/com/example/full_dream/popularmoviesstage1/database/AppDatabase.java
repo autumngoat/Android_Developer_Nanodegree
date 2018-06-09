@@ -48,6 +48,12 @@ public abstract class AppDatabase extends RoomDatabase {
                 Log.d(LOG_TAG, "Creating a new database instance");
                 sInstance = Room.databaseBuilder(context.getApplicationContext(),
                         AppDatabase.class, AppDatabase.DATABASE_NAME)
+                        // Queries should be done in a separate thread to avoid locking the UI
+                        //  Only doing this to see that the Database implementation is working
+                        // Followed the Udacity course "Developing Android Apps" >>
+                        // Lesson 12: Android Architecture Components >>
+                        // 10. Exercise: Save the Task
+                        .allowMainThreadQueries()
                         .build();
             }
         }

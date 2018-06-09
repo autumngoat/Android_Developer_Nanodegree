@@ -65,6 +65,7 @@ import android.view.ViewGroup;
 import com.example.full_dream.popularmoviesstage1.BuildConfig;
 import com.example.full_dream.popularmoviesstage1.R;
 import com.example.full_dream.popularmoviesstage1.adapter.PosterAdapter;
+import com.example.full_dream.popularmoviesstage1.database.AppDatabase;
 import com.example.full_dream.popularmoviesstage1.model.Movie;
 import com.example.full_dream.popularmoviesstage1.model.MovieResponse;
 import com.example.full_dream.popularmoviesstage1.utils.RetrofitClient;
@@ -87,6 +88,8 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
     private static final String TOP_RATED = "top_rated";
     private String API_KEY = BuildConfig.API_KEY;
     private PosterAdapter mPosterAdapter;
+    // Member variable for the Database
+    private AppDatabase mDb;
     @BindView(R.id.rv_poster_list)
     RecyclerView mRecyclerView;
 
@@ -104,6 +107,9 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Initialize the Database
+        mDb = AppDatabase.getInstance(getContext());
 
         // Fill the PosterAdapter with the initial data from the network call
         callRetrofit();
@@ -211,6 +217,7 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
     /**
      * Makes the fragment begin interacting with the user (based on its containing
      * activity being resumed).
+     *  Called after Fragment has been paused or restarted.
      */
     @Override
     public void onResume() {
@@ -340,6 +347,11 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
                 break;
             case R.id.action_favorites:
                 item.setChecked(!item.isChecked());
+                // Re-queries the database data for any changes.
+                // Followed the Udacity course "Developing Android Apps" >>
+                // Lesson 12: Android Architecture Components >>
+                // 11. Exercise: Query All Tasks in MainActivity
+                mPosterAdapter.setMovieData(mDb.movieDao().loadAllMovies());
                 break;
         }
         // Reset scroll position to the top
