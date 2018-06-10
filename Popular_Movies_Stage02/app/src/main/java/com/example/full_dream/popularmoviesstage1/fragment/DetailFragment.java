@@ -213,6 +213,17 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
         mReviewAdapter = new ReviewAdapter();
         mReviewRecyclerView.setAdapter(mReviewAdapter);
 
+        // DetailFragment for 'most popular' and 'highest rated' return 'WHITE and fav status is false' for all movies
+        // DetailFragment for 'favorites' returns 'RED and fav status is true' for all movies
+        //  This is a problem
+        if(mMovie.isFavorite()){
+            fab.setImageResource(R.drawable.ic_favorite_red);
+            Toast.makeText(getContext(), "RED and fav status is " + mMovie.isFavorite(), Toast.LENGTH_SHORT).show();
+        } else {
+            fab.setImageResource(R.drawable.ic_favorite_white);
+            Toast.makeText(getContext(), "WHITE and fav status is " + mMovie.isFavorite(), Toast.LENGTH_SHORT).show();
+        }
+
         // Setup FAB onClick
         //  Icons made by "https://www.flaticon.com/authors/freepik"
         //  Title: "Favorite"
@@ -233,17 +244,21 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
                     //  Followed the Udacity course "Developing Android Apps" >>
                     //  Lesson 12: Android Architecture Components >>
                     //  10. Exercise: Save the Task
-
                     mDb.movieDao().insertMovie(mMovie);
 
-                    Toast.makeText(getContext(), "Favorited " + mMovie.getTitle(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Favorited " + mMovie.getTitle() + " and fav status is " + mMovie.isFavorite(), Toast.LENGTH_SHORT).show();
 
                     // Toggle FAB image resource based on favorite status
                     fab.setImageResource(R.drawable.ic_favorite_red);
                 } else {
                     // Delete Movie from Database
 
-                    Toast.makeText(getContext(), "Unfavorited " + mMovie.getTitle(), Toast.LENGTH_SHORT).show();
+                    //  Followed the Udacity course "Developing Android Apps" >>
+                    //  Lesson 12: Android Architecture Components >>
+                    //  14. Exercise: Delete Task
+                    mDb.movieDao().deleteMovie(mMovie);
+
+                    Toast.makeText(getContext(), "Unfavorited " + mMovie.getTitle() + " and fav status is " + mMovie.isFavorite(), Toast.LENGTH_SHORT).show();
 
                     // Toggle FAB image resource based on favorite status
                     fab.setImageResource(R.drawable.ic_favorite_white);

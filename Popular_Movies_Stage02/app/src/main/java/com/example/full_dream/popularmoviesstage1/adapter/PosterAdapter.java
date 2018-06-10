@@ -128,6 +128,10 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
         notifyDataSetChanged();
     }
 
+    public List<Movie> getMovieData(){
+        return mMovieData;
+    }
+
     /**
      * The interface that receives onClick messages.
      */
