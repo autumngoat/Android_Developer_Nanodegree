@@ -304,9 +304,16 @@ public class Movie implements Parcelable{
         this.popularity = popularity;
     }
 
-    // Return a complete URL link to poster image
     public String getPosterPath() {
-        return TMDB_IMG_BASE_URL + IMAGE_FILE_SIZE + posterPath;
+        // Most Popular and Top Rated always get their path from a network call so no issue there,
+        // but Favorites would save the path as 'TMDB_IMG_BASE_URL + IMAGE_FILE_SIZE + posterPath'
+        // and then return getBackdropPath as 'TMDB_IMG_BASE_URL + IMAGE_FILE_SIZE +
+        // TMDB_IMG_BASE_URL + IMAGE_FILE_SIZE + posterPath' which is obviously wrong.
+        if(posterPath.startsWith("http")){
+            return posterPath;
+        } else {
+            return TMDB_IMG_BASE_URL + IMAGE_FILE_SIZE + posterPath;
+        }
     }
 
     public void setPosterPath(String posterPath) {
@@ -330,7 +337,15 @@ public class Movie implements Parcelable{
     }
 
     public String getBackdropPath() {
-        return TMDB_IMG_BASE_URL + IMAGE_FILE_SIZE + backdropPath;
+        // Most Popular and Top Rated always get their path from a network call so no issue there,
+        // but Favorites would save the path as 'TMDB_IMG_BASE_URL + IMAGE_FILE_SIZE + backdropPath'
+        // and then return getBackdropPath as 'TMDB_IMG_BASE_URL + IMAGE_FILE_SIZE +
+        // TMDB_IMG_BASE_URL + IMAGE_FILE_SIZE + backdropPath' which is obviously wrong.
+        if(backdropPath.startsWith("http")){
+            return backdropPath;
+        } else {
+            return TMDB_IMG_BASE_URL + IMAGE_FILE_SIZE + backdropPath;
+        }
     }
 
     public void setBackdropPath(String backdropPath) {
