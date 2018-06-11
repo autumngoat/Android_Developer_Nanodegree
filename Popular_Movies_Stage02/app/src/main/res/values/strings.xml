@@ -66,4 +66,7 @@
 
     <!-- Network connection message -->
     <string name="network_connection_msg">Please check your network connection.</string>
+
+    <!-- Placeholder -->
+    <string name="placeholder">Empty</string>
 </resources>

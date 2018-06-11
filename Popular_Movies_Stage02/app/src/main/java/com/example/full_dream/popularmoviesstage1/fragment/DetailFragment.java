@@ -47,6 +47,8 @@
 
 package com.example.full_dream.popularmoviesstage1.fragment;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -229,24 +231,18 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
         // If movie is in favorites database then movie is a favorite, else not a favorite
         //  Followed the Udacity course "Developing Android Apps" >>
         //  Lesson 12: Android Architecture Components >>
-        //  13. Exercise: Executors
-        AppExecutors.getsInstance().diskIO().execute(new Runnable() {
+        //  20. Exercise: Adding LiveData to AddTaskActivity
+        final LiveData<Movie> favorite = mDb.movieDao().loadMovieById(mMovie.getId());
+        favorite.observe(this, new Observer<Movie>() {
             @Override
-            public void run() {
-                final Movie favorite = mDb.movieDao().loadMovieById(mMovie.getId());
-                // runOnUiThread is an Activity class method
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if(favorite != null){
-                            fab.setImageResource(R.drawable.ic_favorite_red);
-                            favor = true;
-                        } else {
-                            fab.setImageResource(R.drawable.ic_favorite_white);
-                            favor = false;
-                        }
-                    }
-                });
+            public void onChanged(@Nullable Movie movieEntry) {
+                if(movieEntry != null){
+                    fab.setImageResource(R.drawable.ic_favorite_red);
+                    favor = true;
+                } else {
+                    fab.setImageResource(R.drawable.ic_favorite_white);
+                    favor = false;
+                }
             }
         });
 
@@ -257,7 +253,6 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
         fab.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-
                 // Query database for favorite status
                 if(favor){
                     // Delete Movie from Database

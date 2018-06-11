@@ -78,7 +78,7 @@ public interface MovieDao {
     @Insert
     void insertMovie(Movie movie);
 
-    // Read
+    // Read all
     // Followed the Udacity course "Developing Android Apps" >>
     // Lesson 12: Android Architecture Components >>
     // 19. Exercise: Adding LiveData
@@ -86,8 +86,12 @@ public interface MovieDao {
     @Query("SELECT * FROM movie")
     LiveData<List<Movie>> loadAllMovies();
 
+    // Read by ID
+    // Followed the Udacity course "Developing Android Apps" >>
+    // Lesson 12: Android Architecture Components >>
+    // 20. Exercise: Adding LiveData to AddTaskActivity
     @Query("SELECT * FROM movie WHERE id = :id")
-    Movie loadMovieById(int id);
+    LiveData<Movie> loadMovieById(int id);
 
     // Update
     @Update(onConflict = OnConflictStrategy.REPLACE)

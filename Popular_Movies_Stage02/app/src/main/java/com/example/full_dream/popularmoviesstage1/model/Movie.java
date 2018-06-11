@@ -52,8 +52,12 @@ import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
+import com.example.full_dream.popularmoviesstage1.R;
 import com.squareup.moshi.Json;
+
+import butterknife.BindString;
 
 /**
  * Provides a data model to represent a Movie POJO to hold parsed JSON data.
@@ -107,6 +111,9 @@ public class Movie implements Parcelable{
     private String overview;
     @Json(name = "release_date")
     private String releaseDate;
+    @Ignore
+    @BindString(R.string.placeholder)
+    String placeholder;
 
     // Image query structure: https://developers.themoviedb.org/3/getting-started/images
     private static final String TMDB_IMG_BASE_URL = "https://image.tmdb.org/t/p/";
@@ -304,11 +311,20 @@ public class Movie implements Parcelable{
     }
 
     public String getPosterPath() {
+        // Null check and empty String check
+        //  Must return non-empty non-null String
+        //   Picasso.load() states that it will throw an IllegalArgumentException if the URL is
+        //   empty or null.
+        //    Source:
+        //    https://square.github.io/picasso/2.x/picasso/
+        if(posterPath == null || posterPath.isEmpty()){
+            return placeholder;
+        }
         // Most Popular and Top Rated always get their path from a network call so no issue there,
         // but Favorites would save the path as 'TMDB_IMG_BASE_URL + IMAGE_FILE_SIZE + posterPath'
         // and then return getBackdropPath as 'TMDB_IMG_BASE_URL + IMAGE_FILE_SIZE +
         // TMDB_IMG_BASE_URL + IMAGE_FILE_SIZE + posterPath' which is obviously wrong.
-        if(posterPath.startsWith("http")){
+        else if(posterPath.startsWith("http")){
             return posterPath;
         } else {
             return TMDB_IMG_BASE_URL + IMAGE_FILE_SIZE + posterPath;
@@ -336,11 +352,20 @@ public class Movie implements Parcelable{
     }
 
     public String getBackdropPath() {
+        // Null check and empty String check
+        //  Must return non-empty non-null String
+        //   Picasso.load() states that it will throw an IllegalArgumentException if the URL is
+        //   empty or null.
+        //    Source:
+        //    https://square.github.io/picasso/2.x/picasso/
+        if(backdropPath == null || backdropPath.isEmpty()){
+            return placeholder;
+        }
         // Most Popular and Top Rated always get their path from a network call so no issue there,
         // but Favorites would save the path as 'TMDB_IMG_BASE_URL + IMAGE_FILE_SIZE + backdropPath'
         // and then return getBackdropPath as 'TMDB_IMG_BASE_URL + IMAGE_FILE_SIZE +
         // TMDB_IMG_BASE_URL + IMAGE_FILE_SIZE + backdropPath' which is obviously wrong.
-        if(backdropPath.startsWith("http")){
+        else if(backdropPath.startsWith("http")){
             return backdropPath;
         } else {
             return TMDB_IMG_BASE_URL + IMAGE_FILE_SIZE + backdropPath;
