@@ -45,12 +45,10 @@
  *
  */
 
-package com.example.full_dream.popularmoviesstage1.utils;
+package com.example.full_dream.popularmoviesstage1.network;
 
 import com.example.full_dream.popularmoviesstage1.model.MovieResponse;
-import com.example.full_dream.popularmoviesstage1.model.Review;
 import com.example.full_dream.popularmoviesstage1.model.ReviewResponse;
-import com.example.full_dream.popularmoviesstage1.model.Trailer;
 import com.example.full_dream.popularmoviesstage1.model.TrailerResponse;
 
 import retrofit2.Call;

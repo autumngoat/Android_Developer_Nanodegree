@@ -72,8 +72,8 @@ import com.example.full_dream.popularmoviesstage1.adapter.PosterAdapter;
 import com.example.full_dream.popularmoviesstage1.database.AppDatabase;
 import com.example.full_dream.popularmoviesstage1.model.Movie;
 import com.example.full_dream.popularmoviesstage1.model.MovieResponse;
-import com.example.full_dream.popularmoviesstage1.utils.RetrofitClient;
-import com.example.full_dream.popularmoviesstage1.utils.TheMovieDBService;
+import com.example.full_dream.popularmoviesstage1.network.RetrofitClient;
+import com.example.full_dream.popularmoviesstage1.network.TheMovieDBService;
 
 import java.util.List;
 

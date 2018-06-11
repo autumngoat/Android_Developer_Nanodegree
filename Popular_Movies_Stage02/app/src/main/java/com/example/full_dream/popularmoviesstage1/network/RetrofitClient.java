@@ -45,7 +45,7 @@
  *
  */
 
-package com.example.full_dream.popularmoviesstage1.utils;
+package com.example.full_dream.popularmoviesstage1.network;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.moshi.MoshiConverterFactory;

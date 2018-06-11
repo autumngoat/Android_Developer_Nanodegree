@@ -77,8 +77,9 @@ import com.example.full_dream.popularmoviesstage1.model.Review;
 import com.example.full_dream.popularmoviesstage1.model.ReviewResponse;
 import com.example.full_dream.popularmoviesstage1.model.Trailer;
 import com.example.full_dream.popularmoviesstage1.model.TrailerResponse;
-import com.example.full_dream.popularmoviesstage1.utils.RetrofitClient;
-import com.example.full_dream.popularmoviesstage1.utils.TheMovieDBService;
+import com.example.full_dream.popularmoviesstage1.network.RetrofitClient;
+import com.example.full_dream.popularmoviesstage1.network.TheMovieDBService;
+import com.example.full_dream.popularmoviesstage1.thread.AppExecutors;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -98,6 +99,7 @@ import retrofit2.Response;
 public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAdapterOnClickHandler {
 
     private static final String TAG = DetailFragment.class.getSimpleName();
+    private boolean favor;
     private Movie mMovie;
     private Unbinder mUnbinder;
     private String API_KEY = BuildConfig.API_KEY;
@@ -225,14 +227,28 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
         mReviewRecyclerView.setAdapter(mReviewAdapter);
 
         // If movie is in favorites database then movie is a favorite, else not a favorite
-        final Movie favorite = mDb.movieDao().loadMovieById(mMovie.getId());
-        if(favorite != null){
-            fab.setImageResource(R.drawable.ic_favorite_red);
-            Toast.makeText(getContext(), "RED and fav status is FAV", Toast.LENGTH_SHORT).show();
-        } else {
-            fab.setImageResource(R.drawable.ic_favorite_white);
-            Toast.makeText(getContext(), "WHITE and fav status is !fav", Toast.LENGTH_SHORT).show();
-        }
+        //  Followed the Udacity course "Developing Android Apps" >>
+        //  Lesson 12: Android Architecture Components >>
+        //  13. Exercise: Executors
+        AppExecutors.getsInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                final Movie favorite = mDb.movieDao().loadMovieById(mMovie.getId());
+                // runOnUiThread is an Activity class method
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(favorite != null){
+                            fab.setImageResource(R.drawable.ic_favorite_red);
+                            favor = true;
+                        } else {
+                            fab.setImageResource(R.drawable.ic_favorite_white);
+                            favor = false;
+                        }
+                    }
+                });
+            }
+        });
 
         // Setup FAB onClick
         //  Icons made by "https://www.flaticon.com/authors/freepik"
@@ -243,7 +259,23 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
             public void onClick(View v) {
 
                 // Query database for favorite status
-                if(favorite == null){
+                if(favor){
+                    // Delete Movie from Database
+
+                    //  Followed the Udacity course "Developing Android Apps" >>
+                    //  Lesson 12: Android Architecture Components >>
+                    //  14. Exercise: Delete Task
+                    //  13. Exercise: Executors
+                    AppExecutors.getsInstance().diskIO().execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            mDb.movieDao().deleteMovie(mMovie);
+                        }
+                    });
+
+                    // Toggle FAB image resource based on favorite status
+                    fab.setImageResource(R.drawable.ic_favorite_white);
+                } else {
                     // Insert Movie to Database
 
                     // 1) Get fields
@@ -252,24 +284,16 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
                     //  Followed the Udacity course "Developing Android Apps" >>
                     //  Lesson 12: Android Architecture Components >>
                     //  10. Exercise: Save the Task
-                    mDb.movieDao().insertMovie(mMovie);
-
-                    Toast.makeText(getContext(), "Favorited " + mMovie.getTitle() + " and fav status is favorite", Toast.LENGTH_SHORT).show();
+                    //  13. Exercise: Executors
+                    AppExecutors.getsInstance().diskIO().execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            mDb.movieDao().insertMovie(mMovie);
+                        }
+                    });
 
                     // Toggle FAB image resource based on favorite status
                     fab.setImageResource(R.drawable.ic_favorite_red);
-                } else {
-                    // Delete Movie from Database
-
-                    //  Followed the Udacity course "Developing Android Apps" >>
-                    //  Lesson 12: Android Architecture Components >>
-                    //  14. Exercise: Delete Task
-                    mDb.movieDao().deleteMovie(mMovie);
-
-                    Toast.makeText(getContext(), "Unfavorited " + mMovie.getTitle() + " and fav status is !favorited", Toast.LENGTH_SHORT).show();
-
-                    // Toggle FAB image resource based on favorite status
-                    fab.setImageResource(R.drawable.ic_favorite_white);
                 }
             }
         });
