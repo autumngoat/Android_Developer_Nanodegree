@@ -86,6 +86,9 @@ public interface MovieDao {
     @Query("SELECT * FROM movie")
     LiveData<List<Movie>> loadAllMovies();
 
+    @Query("SELECT * FROM movie WHERE id = :id")
+    Movie loadMovieById(int id);
+
     // Update
     @Update(onConflict = OnConflictStrategy.REPLACE)
     void updateMovie(Movie movie);

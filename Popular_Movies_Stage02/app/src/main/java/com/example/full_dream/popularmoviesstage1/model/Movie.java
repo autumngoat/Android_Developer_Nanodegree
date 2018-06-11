@@ -81,7 +81,6 @@ import com.squareup.moshi.Json;
 @Entity(tableName = "movie")
 public class Movie implements Parcelable{
 
-    private boolean favorite = false;
     @Json(name = "vote_count")
     private int voteCount;
     // Each Entity class MUST have at least 1 field annotated with PrimaryKey
@@ -366,24 +365,5 @@ public class Movie implements Parcelable{
 
     public void setReleaseDate(String releaseDate) {
         this.releaseDate = releaseDate;
-    }
-
-    /**
-     * Return status of Movie object as favorite or not.
-     *
-     * @return Return Movie object's favorite status.
-     */
-    public boolean isFavorite(){
-        return favorite;
-    }
-
-    /**
-     * Set status of Movie object's favorite status.
-     *
-     * @param favorite Status that indicates whether the Movie object is a favorite
-     *                 or not.
-     */
-    public void setFavorite(boolean favorite){
-        this.favorite = favorite;
     }
 }
