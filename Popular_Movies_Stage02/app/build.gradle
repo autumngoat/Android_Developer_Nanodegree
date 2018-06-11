@@ -71,7 +71,7 @@ android {
 
 dependencies {
     // Version Numbers
-    def live_data_and_view_model_version = "1.1.1"
+    def livedata_and_viewmodel_version = "1.1.1"
     def room_version = "1.1.0"
     def support_library_version = "27.1.1"
     def constraint_layout_version = "1.1.1"
@@ -85,8 +85,8 @@ dependencies {
     implementation "com.android.support:exifinterface:$support_library_version"
 
     // Android Architecture Components - Live Data and View Model
-    implementation "android.arch.lifecycle:extensions:$live_data_and_view_model_version"
-    annotationProcessor "android:arch.lifecycle:compiler:$live_data_and_view_model_version"
+    implementation "android.arch.lifecycle:extensions:$livedata_and_viewmodel_version"
+    annotationProcessor "android.arch.lifecycle:compiler:$livedata_and_viewmodel_version"
 
     // Android Architecture Components - Room
     implementation "android.arch.persistence.room:runtime:$room_version"

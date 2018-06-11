@@ -84,11 +84,16 @@ public class MainActivity extends AppCompatActivity {
      */
     @Override
     public void onBackPressed() {
-        this.getSupportFragmentManager().popBackStack();
-        PosterListFragment posterListFragment = new PosterListFragment();
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.fragment_container, posterListFragment)
-                .commit();
+        int count = getSupportFragmentManager().getBackStackEntryCount();
+        if(count == 0){
+            super.onBackPressed();
+        } else {
+            this.getSupportFragmentManager().popBackStack();
+            PosterListFragment posterListFragment = new PosterListFragment();
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, posterListFragment)
+                    .commit();
+        }
     }
 }

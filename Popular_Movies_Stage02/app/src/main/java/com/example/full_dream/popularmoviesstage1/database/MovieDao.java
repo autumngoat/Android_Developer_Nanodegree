@@ -47,6 +47,7 @@
 
 package com.example.full_dream.popularmoviesstage1.database;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
@@ -78,8 +79,12 @@ public interface MovieDao {
     void insertMovie(Movie movie);
 
     // Read
+    // Followed the Udacity course "Developing Android Apps" >>
+    // Lesson 12: Android Architecture Components >>
+    // 19. Exercise: Adding LiveData
+    //  LiveData runs outside of the main/UI thread by default
     @Query("SELECT * FROM movie")
-    List<Movie> loadAllMovies();
+    LiveData<List<Movie>> loadAllMovies();
 
     // Update
     @Update(onConflict = OnConflictStrategy.REPLACE)

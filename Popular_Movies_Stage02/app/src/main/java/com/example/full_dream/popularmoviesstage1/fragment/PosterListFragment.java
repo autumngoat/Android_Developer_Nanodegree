@@ -47,6 +47,8 @@
 
 package com.example.full_dream.popularmoviesstage1.fragment;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -55,6 +57,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -82,6 +85,7 @@ import retrofit2.Response;
 
 public class PosterListFragment extends Fragment implements PosterAdapter.PosterAdapterOnClickHandler {
 
+    private static final String TAG = PosterListFragment.class.getSimpleName();
     private boolean mToggleSearchOption =  true;
     private Unbinder mUnbinder;
     private static final String MOST_POPULAR = "popular";
@@ -194,6 +198,9 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
 //        }
 
         // Return the fragment view
+
+        Log.e("rabbit", "PosterListFragment -> onCreateView");
+
         return rootView;
     }
 
@@ -351,7 +358,30 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
                 // Followed the Udacity course "Developing Android Apps" >>
                 // Lesson 12: Android Architecture Components >>
                 // 11. Exercise: Query All Tasks in MainActivity
-                mPosterAdapter.setMovieData(mDb.movieDao().loadAllMovies());
+                LiveData<List<Movie>> movies = mDb.movieDao().loadAllMovies();
+                // Followed the Udacity course "Developing Android Apps" >>
+                // Lesson 12: Android Architecture Components >>
+                // 19. Exercise: Adding LiveData
+                // movies is a LiveData object so we can call the observe() method on it
+                //  observer() requires 2 parameters:
+                //   1) A lifecycle owner - something that has a lifecycle
+                //   2) An observer -  a simple callback that can receive from LiveData
+                movies.observe(this, new Observer<List<Movie>>() {
+                    /**
+                     * Logic to update the UI of the observer, which runs on the main/UI thread by
+                     * default, when the data is changed.
+                     *  Every change in the database will trigger the onChanged method of the
+                     *  observer, so there is no need to re-query and update the UI after every
+                     *  delete.
+                     *
+                     * @param movieEntries The new data.
+                     */
+                    @Override
+                    public void onChanged(@Nullable List<Movie> movieEntries) {
+                        Log.d(TAG, "Receiving database update from LiveData");
+                        mPosterAdapter.setMovieData(movieEntries);
+                    }
+                });
                 break;
         }
         // Reset scroll position to the top
