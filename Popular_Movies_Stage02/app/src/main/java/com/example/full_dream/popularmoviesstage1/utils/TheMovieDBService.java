@@ -71,17 +71,25 @@ public interface TheMovieDBService {
     String API_KEY = "api_key";
 
     /**
-     * Make a GET HTTP request for:
-     *  the most popular movies or
-     *  the top rated movies,
+     * Make a GET HTTP request for the most popular movies
      * and returns a HTTP response as a MovieResponse POJO.
      *
      * Source:
      * http://square.github.io/retrofit/2.x/retrofit/retrofit2/http/GET.html
      * http://square.github.io/retrofit/2.x/retrofit/retrofit2/Call.html
      */
-    @GET("movie/{search}/") Call<MovieResponse> getMovies(
-            @Path("search") String searchTerms,
+    @GET("movie/popular/") Call<MovieResponse> getPopularMovies(
+            @Query(API_KEY) String apiKey);
+
+    /**
+     * Make a GET HTTP request for the top rated movies,
+     * and returns a HTTP response as a MovieResponse POJO.
+     *
+     * Source:
+     * http://square.github.io/retrofit/2.x/retrofit/retrofit2/http/GET.html
+     * http://square.github.io/retrofit/2.x/retrofit/retrofit2/Call.html
+     */
+    @GET("movie/top_rated/") Call<MovieResponse> getTopRatedMovies(
             @Query(API_KEY) String apiKey);
 
     /**

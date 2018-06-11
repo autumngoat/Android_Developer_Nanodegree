@@ -48,6 +48,7 @@
 package com.example.full_dream.popularmoviesstage1.fragment;
 
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -96,6 +97,7 @@ import retrofit2.Response;
  */
 public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAdapterOnClickHandler {
 
+    private static final String TAG = DetailFragment.class.getSimpleName();
     private Movie mMovie;
     private Unbinder mUnbinder;
     private String API_KEY = BuildConfig.API_KEY;
@@ -131,6 +133,13 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
      */
     public DetailFragment(){}
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        Log.e(TAG, "onAttach");
+    }
+
     /**
      * Setup the data component of the Fragment.
      */
@@ -148,6 +157,8 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
 
         callRetrofitForTrailers();
         callRetrofitForReviews();
+
+        Log.e(TAG, "onCreate");
     }
 
     /**
@@ -266,13 +277,66 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
             }
         });
 
+        Log.e(TAG, "onCreateView");
+
         return rootView;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        Log.e(TAG, "onActivityCreated");
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        Log.e(TAG, "onStart");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        Log.e(TAG, "onResume");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        Log.e(TAG, "onPause");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        Log.e(TAG, "onStop");
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         mUnbinder.unbind();
+
+        Log.e(TAG, "onDestroyView");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        Log.e(TAG, "onDestroy");
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+
+        Log.e(TAG, "onDetach");
     }
 
     @Override

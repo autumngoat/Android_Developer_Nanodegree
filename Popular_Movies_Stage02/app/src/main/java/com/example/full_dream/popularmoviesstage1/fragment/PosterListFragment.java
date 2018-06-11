@@ -49,6 +49,7 @@ package com.example.full_dream.popularmoviesstage1.fragment;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -86,10 +87,11 @@ import retrofit2.Response;
 public class PosterListFragment extends Fragment implements PosterAdapter.PosterAdapterOnClickHandler {
 
     private static final String TAG = PosterListFragment.class.getSimpleName();
-    private boolean mToggleSearchOption =  true;
     private Unbinder mUnbinder;
-    private static final String MOST_POPULAR = "popular";
-    private static final String TOP_RATED = "top_rated";
+    private int mOption;
+    private static final int MOST_POPULAR = 0;
+    private static final int TOP_RATED = 1;
+    private static final int FAVORITES = 2;
     private String API_KEY = BuildConfig.API_KEY;
     private PosterAdapter mPosterAdapter;
     // Member variable for the Database
@@ -101,6 +103,13 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
      * Mandatory empty constructor for the Fragment Manager to instantiate the fragment.
      */
     public  PosterListFragment(){}
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        Log.e(TAG, "onAttach");
+    }
 
     /**
      * Called to do the initial creation of the fragment.
@@ -115,8 +124,7 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
         // Initialize the Database
         mDb = AppDatabase.getInstance(getContext());
 
-        // Fill the PosterAdapter with the initial data from the network call
-        callRetrofit();
+        Log.e(TAG, "onCreate");
     }
 
     /**
@@ -199,7 +207,8 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
 
         // Return the fragment view
 
-        Log.e("rabbit", "PosterListFragment -> onCreateView");
+        Log.e(TAG, "onCreateView");
+        callRetrofit();
 
         return rootView;
     }
@@ -219,6 +228,15 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
         // Source:
         //  https://github.com/JakeWharton/ActionBarSherlock/issues/935
         setHasOptionsMenu(true);
+
+        Log.e(TAG, "onActivityCreated");
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        Log.e(TAG, "onCreateView");
     }
 
     /**
@@ -229,6 +247,23 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
     @Override
     public void onResume() {
         super.onResume();
+
+        callRetrofit();
+        Log.e(TAG, "onResume");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        Log.e(TAG, "onPause");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        Log.e(TAG, "onStop");
     }
 
     /**
@@ -240,6 +275,22 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
     public void onDestroyView() {
         super.onDestroyView();
         mUnbinder.unbind();
+
+        Log.e(TAG, "onDestroyView");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        Log.e(TAG, "onDestroy");
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+
+        Log.e(TAG, "onDetach");
     }
 
     /**
@@ -257,11 +308,42 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
         // by one of the Converter.Factory instances (Moshi) to JSON to POJO(s).
         Call<MovieResponse> call;
 
-        // Popular or Top Rated?
-        if(mToggleSearchOption){
-            call = service.getMovies(MOST_POPULAR, API_KEY);
-        } else {
-            call = service.getMovies(TOP_RATED, API_KEY);
+        // Popular or Top Rated or Favorites?
+        switch(mOption){
+            case MOST_POPULAR:
+                call = service.getPopularMovies(API_KEY);
+                break;
+            case TOP_RATED:
+                call = service.getTopRatedMovies(API_KEY);
+                break;
+            case FAVORITES:
+                LiveData<List<Movie>> movies = mDb.movieDao().loadAllMovies();
+                // Followed the Udacity course "Developing Android Apps" >>
+                // Lesson 12: Android Architecture Components >>
+                // 19. Exercise: Adding LiveData
+                // movies is a LiveData object so we can call the observe() method on it
+                //  observer() requires 2 parameters:
+                //   1) A lifecycle owner - something that has a lifecycle
+                //   2) An observer -  a simple callback that can receive from LiveData
+                movies.observe(this, new Observer<List<Movie>>() {
+                    /**
+                     * Logic to update the UI of the observer, which runs on the main/UI thread by
+                     * default, when the data is changed.
+                     *  Every change in the database will trigger the onChanged method of the
+                     *  observer, so there is no need to re-query and update the UI after every
+                     *  delete.
+                     *
+                     * @param movieEntries The new data.
+                     */
+                    @Override
+                    public void onChanged(@Nullable List<Movie> movieEntries) {
+                        Log.d(TAG, "Receiving database update from LiveData");
+                        mPosterAdapter.setMovieData(movieEntries);
+                    }
+                });
+                return;
+            default:
+                throw new UnknownError("This is not a CTF, go somewhere else for decompiling fun.");
         }
 
         // Asynchronously send the HTTP request and notify the callback of its HTTP response
@@ -343,16 +425,17 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()){
             case R.id.action_popular:
-                mToggleSearchOption = true;
+                mOption = MOST_POPULAR;
                 item.setChecked(!item.isChecked());
                 callRetrofit();
                 break;
             case R.id.action_top_rated:
-                mToggleSearchOption = false;
+                mOption = TOP_RATED;
                 item.setChecked(!item.isChecked());
                 callRetrofit();
                 break;
             case R.id.action_favorites:
+                mOption = FAVORITES;
                 item.setChecked(!item.isChecked());
                 // Re-queries the database data for any changes.
                 // Followed the Udacity course "Developing Android Apps" >>

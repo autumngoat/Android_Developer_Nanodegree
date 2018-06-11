@@ -89,11 +89,6 @@ public class MainActivity extends AppCompatActivity {
             super.onBackPressed();
         } else {
             this.getSupportFragmentManager().popBackStack();
-            PosterListFragment posterListFragment = new PosterListFragment();
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.fragment_container, posterListFragment)
-                    .commit();
         }
     }
 }

@@ -50,6 +50,7 @@ package com.example.full_dream.popularmoviesstage1.adapter;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -111,6 +112,7 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
                 .placeholder(R.drawable.ic_popcorn)
                 .error(R.drawable.ic_popcorn)
                 .into(posterViewHolder.mPosterImageView);
+        Log.e("fragment", movie.getPosterPath());
     }
 
     /**
