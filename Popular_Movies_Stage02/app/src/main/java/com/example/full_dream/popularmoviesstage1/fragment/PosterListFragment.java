@@ -49,6 +49,8 @@ package com.example.full_dream.popularmoviesstage1.fragment;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProvider;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -74,6 +76,7 @@ import com.example.full_dream.popularmoviesstage1.model.Movie;
 import com.example.full_dream.popularmoviesstage1.model.MovieResponse;
 import com.example.full_dream.popularmoviesstage1.network.RetrofitClient;
 import com.example.full_dream.popularmoviesstage1.network.TheMovieDBService;
+import com.example.full_dream.popularmoviesstage1.viewmodel.PosterListViewModel;
 
 import java.util.List;
 
@@ -294,6 +297,40 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
     }
 
     /**
+     *
+     *
+     * Followed the Udacity course "Developing Android Apps" >>
+     * Lesson 12: Android Architecture Components >>
+     * 22. Exercise: Adding the ViewModel
+     */
+    private void setupViewModel(){
+        PosterListViewModel viewModel = ViewModelProviders.of(this).get(PosterListViewModel.class);
+        viewModel.getMovies().observe(this, new Observer<List<Movie>>() {
+        // Followed the Udacity course "Developing Android Apps" >>
+        // Lesson 12: Android Architecture Components >>
+        // 19. Exercise: Adding LiveData
+        // movies is a LiveData object so we can call the observe() method on it
+        //  observer() requires 2 parameters:
+        //   1) A lifecycle owner - something that has a lifecycle
+        //   2) An observer -  a simple callback that can receive from LiveData
+            /**
+             * Logic to update the UI of the observer, which runs on the main/UI thread by
+             * default, when the data is changed.
+             *  Every change in the database will trigger the onChanged method of the
+             *  observer, so there is no need to re-query and update the UI after every
+             *  delete.
+             *
+             * @param movieEntries The new data.
+             */
+            @Override
+            public void onChanged(@Nullable List<Movie> movieEntries) {
+                Log.d(TAG, "Updating list of movies from LiveData in ViewModel");
+                mPosterAdapter.setMovieData(movieEntries);
+            }
+        });
+    }
+
+    /**
      * Helper function to be able to call Retrofit whenever data needs to be retrieved.
      */
     public void callRetrofit(){
@@ -317,30 +354,7 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
                 call = service.getTopRatedMovies(API_KEY);
                 break;
             case FAVORITES:
-                LiveData<List<Movie>> movies = mDb.movieDao().loadAllMovies();
-                // Followed the Udacity course "Developing Android Apps" >>
-                // Lesson 12: Android Architecture Components >>
-                // 19. Exercise: Adding LiveData
-                // movies is a LiveData object so we can call the observe() method on it
-                //  observer() requires 2 parameters:
-                //   1) A lifecycle owner - something that has a lifecycle
-                //   2) An observer -  a simple callback that can receive from LiveData
-                movies.observe(this, new Observer<List<Movie>>() {
-                    /**
-                     * Logic to update the UI of the observer, which runs on the main/UI thread by
-                     * default, when the data is changed.
-                     *  Every change in the database will trigger the onChanged method of the
-                     *  observer, so there is no need to re-query and update the UI after every
-                     *  delete.
-                     *
-                     * @param movieEntries The new data.
-                     */
-                    @Override
-                    public void onChanged(@Nullable List<Movie> movieEntries) {
-                        Log.d(TAG, "Receiving database update from LiveData");
-                        mPosterAdapter.setMovieData(movieEntries);
-                    }
-                });
+                setupViewModel();
                 return;
             default:
                 throw new UnknownError("This is not a CTF, go somewhere else for decompiling fun.");
@@ -437,34 +451,7 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
             case R.id.action_favorites:
                 mOption = FAVORITES;
                 item.setChecked(!item.isChecked());
-                // Re-queries the database data for any changes.
-                // Followed the Udacity course "Developing Android Apps" >>
-                // Lesson 12: Android Architecture Components >>
-                // 11. Exercise: Query All Tasks in MainActivity
-                LiveData<List<Movie>> movies = mDb.movieDao().loadAllMovies();
-                // Followed the Udacity course "Developing Android Apps" >>
-                // Lesson 12: Android Architecture Components >>
-                // 19. Exercise: Adding LiveData
-                // movies is a LiveData object so we can call the observe() method on it
-                //  observer() requires 2 parameters:
-                //   1) A lifecycle owner - something that has a lifecycle
-                //   2) An observer -  a simple callback that can receive from LiveData
-                movies.observe(this, new Observer<List<Movie>>() {
-                    /**
-                     * Logic to update the UI of the observer, which runs on the main/UI thread by
-                     * default, when the data is changed.
-                     *  Every change in the database will trigger the onChanged method of the
-                     *  observer, so there is no need to re-query and update the UI after every
-                     *  delete.
-                     *
-                     * @param movieEntries The new data.
-                     */
-                    @Override
-                    public void onChanged(@Nullable List<Movie> movieEntries) {
-                        Log.d(TAG, "Receiving database update from LiveData");
-                        mPosterAdapter.setMovieData(movieEntries);
-                    }
-                });
+                setupViewModel();
                 break;
         }
         // Reset scroll position to the top

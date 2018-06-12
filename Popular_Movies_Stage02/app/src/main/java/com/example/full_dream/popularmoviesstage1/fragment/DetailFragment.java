@@ -67,7 +67,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.full_dream.popularmoviesstage1.BuildConfig;
 import com.example.full_dream.popularmoviesstage1.R;
@@ -236,6 +235,9 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
         favorite.observe(this, new Observer<Movie>() {
             @Override
             public void onChanged(@Nullable Movie movieEntry) {
+                // Remove observer from the LiveData object so that we do not receive updates of
+                // database changes
+                favorite.removeObserver(this);
                 if(movieEntry != null){
                     fab.setImageResource(R.drawable.ic_favorite_red);
                     favor = true;
