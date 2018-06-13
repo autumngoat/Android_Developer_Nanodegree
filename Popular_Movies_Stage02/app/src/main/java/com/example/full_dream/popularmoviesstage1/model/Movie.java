@@ -50,9 +50,6 @@ package com.example.full_dream.popularmoviesstage1.model;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
-import android.os.Parcel;
-import android.os.Parcelable;
-import android.util.Log;
 
 import com.example.full_dream.popularmoviesstage1.R;
 import com.squareup.moshi.Json;
@@ -64,11 +61,6 @@ import butterknife.BindString;
  *
  * Used jsonprettyprint.com and jsonschema2pojo.com to auto-generate this POJO
  * from a TMDB JSON HTTP Response.
- *
- * Used jsonschema2pojo.com to auto-generate Parcelable.
- *
- * Used https://medium.com/@adetayo_james/implement-parcelable-in-android-4d20994f0510
- * to troubleshoot the buggy auto-generate mess received from jsonschema2pojo.com.
  *
  * Followed the Udacity course "Developing Android Apps" >>
  * Lesson 12: Android Architecture Components >>
@@ -83,7 +75,7 @@ import butterknife.BindString;
  * https://developer.android.com/reference/android/arch/persistence/room/Entity
  */
 @Entity(tableName = "movie")
-public class Movie implements Parcelable{
+public class Movie {
 
     @Json(name = "vote_count")
     private int voteCount;
@@ -123,130 +115,6 @@ public class Movie implements Parcelable{
     //  Constructor must be public and either empty or have parameters that match the fields by type
     //  and name (a.k.a., cannot change 'video' to 'hasVideo' or 'voteAverage' to 'rating'
     public Movie(){}
-//    public Movie(int voteCount, int id, boolean video, double voteAverage, String title,
-//                 double popularity, String posterPath, String originalLanguage, String originalTitle,
-//                 String backdropPath, String overview, String releaseDate){
-//        this.voteCount = voteCount;
-//        this.id = id;
-//        this.video = video;
-//        this.voteAverage = voteAverage;
-//        this.title = title;
-//        this.popularity = popularity;
-//        this.posterPath = posterPath;
-//        this.originalLanguage = originalLanguage;
-//        this.originalTitle = originalTitle;
-//        this.backdropPath = backdropPath;
-//        this.overview = overview;
-//        this.releaseDate = releaseDate;
-//    }
-
-    /**
-     * Interface that must be implemented and provided as a public CREATOR field that
-     * generates instances of your Parcelable class from a Parcel.
-     */
-    public final static Parcelable.Creator<Movie> CREATOR = new Creator<Movie>() {
-        /**
-         * Create a new instance of the Parcelable class, instantiating it from the given Parcel
-         * whose data had previously been written by Parcelable.writeToParcel().
-         *
-         * @param in The Parcel to read the object's data from.
-         * @return Returns T, a new instance of the Parcelable class.
-         */
-        public Movie createFromParcel(Parcel in) {
-            return new Movie(in);
-        }
-
-        /**
-         * Creates a new array of the Parcelable class.
-         *
-         * @param size Size of the array.
-         * @return Returns an array of the Parcelable class, with every entry initialized to null.
-         */
-        public Movie[] newArray(int size) {
-            return (new Movie[size]);
-        }
-    };
-
-    /**
-     * Parcelable constructor used in createFromParcel() to create a new instance of the Parcelable
-     * class, instantiating it from the given Parcel whose data had previously been written by
-     * Parcelable.writeToParcel().
-     *
-     * https://developer.android.com/reference/android/os/Parcel
-     *
-     * @param in Container for a message (data and object references) that can be sent through an
-     *           IBinder
-     */
-    //  Use the Ignore annotation so Room knows that it has to use the other constructor instead
-    @Ignore
-    private Movie(Parcel in) {
-        // in.readInt() - Read an integer value from the parcel at the current dataPosition()
-        //  Kept having ClassCastExceptions with casting ClassLoader until I stopped using object
-        //  wrappers and used in.readType() methods... and now
-        //  ((Cast) in.readValue((Cast.class.getClassLoader()))) works and I don't know why...
-        this.voteCount = in.readInt();
-        this.id = in.readInt();
-        this.video = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
-        this.voteAverage = in.readDouble();
-        this.title = in.readString();
-        this.popularity = in.readDouble();
-        this.posterPath = in.readString();
-        this.originalLanguage = in.readString();
-        this.originalTitle = in.readString();
-        this.backdropPath = in.readString();
-        this.overview = in.readString();
-        this.releaseDate = in.readString();
-    }
-
-    /**
-     * Flattens this object into a Parcel.
-     *
-     * Source: https://developer.android.com/reference/android/os/Parcelable#writeToParcel(android.os.Parcel,%20int)
-     *
-     * @param dest The Parcel in which object should be written.
-     * @param flags Additional flags about how the object should be written. May be 0
-     *              or PARCELABLE_WRITE_RETURN_VALUE.
-     */
-    public void writeToParcel(Parcel dest, int flags) {
-        // writeValue() - Flatten a generic object in to a parcel.
-        // Using writeValue() seemed to return null values... changed object wrappers to primitives
-        // i.e. Integer to int and used specific writeType() methods and now writeValue() works...
-        //  I don't know why
-        dest.writeInt(voteCount);
-        dest.writeInt(id);
-        dest.writeValue(video);
-        dest.writeDouble(voteAverage);
-        dest.writeString(title);
-        dest.writeDouble(popularity);
-        dest.writeString(posterPath);
-        dest.writeString(originalLanguage);
-        dest.writeString(originalTitle);
-        dest.writeString(backdropPath);
-        dest.writeString(overview);
-        dest.writeString(releaseDate);
-    }
-
-    /**
-     * Indicates that the Parcelable object's flattened representation includes a file descriptor in
-     * the output of writeToParcel(Parcel, int) or returns 0.
-     *
-     * @return 0 or CONTENTS_FILE_DESCRIPTOR bitmask.
-     */
-    public int describeContents() {
-        return 0;
-    }
-
-    /**
-     * Movie contructor with Popular Movies, Stage 1 required details.
-     */
-    public Movie(String title, String releaseDate, String posterPath, double voteAvg,
-                 String plotSynopsis){
-        this.title = title;
-        this.releaseDate = releaseDate;
-        this.posterPath = posterPath;
-        this.voteAverage = voteAvg;
-        this.overview = plotSynopsis;
-    }
 
     /**
      * Formatted String representation of Movie object for better debugging purposes.

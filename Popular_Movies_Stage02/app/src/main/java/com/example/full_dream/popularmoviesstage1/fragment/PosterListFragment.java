@@ -47,9 +47,7 @@
 
 package com.example.full_dream.popularmoviesstage1.fragment;
 
-import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
@@ -77,6 +75,7 @@ import com.example.full_dream.popularmoviesstage1.model.MovieResponse;
 import com.example.full_dream.popularmoviesstage1.network.RetrofitClient;
 import com.example.full_dream.popularmoviesstage1.network.TheMovieDBService;
 import com.example.full_dream.popularmoviesstage1.viewmodel.PosterListViewModel;
+import com.example.full_dream.popularmoviesstage1.viewmodel.SharedViewModel;
 
 import java.util.List;
 
@@ -99,6 +98,7 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
     private PosterAdapter mPosterAdapter;
     // Member variable for the Database
     private AppDatabase mDb;
+    private SharedViewModel model;
     @BindView(R.id.rv_poster_list)
     RecyclerView mRecyclerView;
 
@@ -126,6 +126,10 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
 
         // Initialize the Database
         mDb = AppDatabase.getInstance(getContext());
+
+        //
+        model = ViewModelProviders.of(getActivity()).get(SharedViewModel.class);
+
 
         Log.e(TAG, "onCreate");
     }
@@ -211,6 +215,11 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
         // Return the fragment view
 
         Log.e(TAG, "onCreateView");
+
+        // Initial call to populate the list and to placed here to re-populate the list when the
+        // PosterListFragment is popped off the back stack from DetailsFragment onBackPress
+        //  This is the reason why Favorites is inside callRetrofit even though it has nothing to do
+        //  with a network call (Favorites is involved with a database call)
         callRetrofit();
 
         return rootView;
@@ -297,14 +306,23 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
     }
 
     /**
+     * Sets up a ViewModel to cache a list of Movie LiveData objects.
      *
+     * Comment Sources:
+     * https://developer.android.com/reference/android/arch/lifecycle/ViewModelProvider#get
+     * https://developer.android.com/reference/androidx/lifecycle/ViewModelProviders
+     * https://developer.android.com/reference/android/arch/lifecycle/LiveData#observe
      *
      * Followed the Udacity course "Developing Android Apps" >>
      * Lesson 12: Android Architecture Components >>
      * 22. Exercise: Adding the ViewModel
      */
     private void setupViewModel(){
+        // Creates a ViewModelProvider, which retains existing or creates new ViewModels while a
+        // scope of given Fragment is alive
         PosterListViewModel viewModel = ViewModelProviders.of(this).get(PosterListViewModel.class);
+        // Get the LiveData object(s) and adds the given Observer to the list of observers within
+        // the lifespan of the given Owner
         viewModel.getMovies().observe(this, new Observer<List<Movie>>() {
         // Followed the Udacity course "Developing Android Apps" >>
         // Lesson 12: Android Architecture Components >>
@@ -378,28 +396,19 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
     }
 
     /**
-     * Handle RecyclerView item clicks to launch DetailActivity.
+     * Handle RecyclerView item clicks by replacing the current Fragment with a DetailFragment of
+     * the selected/clicked-on RecyclerView item.
+     *
+     * @param movie The clicked on RecyclerView item.
      */
     @Override
     public void onClick(Movie movie) {
-        // Create a DetailFragment instance
-        DetailFragment detailFragment = new DetailFragment();
-        // Create a Bundle instance
-        Bundle bundle = new Bundle();
-        // Place Movie Parcelable inside the Bundle with "deets" key
-        bundle.putParcelable("deets", movie);
-        // Pass a bundle to the Fragment's constructor
-        detailFragment.setArguments(bundle);
-        // Return the FragmentManager for interacting with Fragments in this Fragment
+        // Set the SharedViewModel to the RecyclerView item click
+        model.select(movie);
         FragmentManager fm = getFragmentManager();
-        // Start a series of Fragment edit operations associated with this FragmentManager
         FragmentTransaction ft = fm.beginTransaction();
-        // Add this transaction to the back stack
         ft.addToBackStack(null);
-        // Replace the PosterListFragment with the DetailsFragment
-        ft.replace(R.id.fragment_container, detailFragment);
-        // Schedules a commit of this transaction (does not happen immediately) to be done
-        // on the main/UI thread when the thread next becomes available
+        ft.replace(R.id.fragment_container, new DetailFragment());
         ft.commit();
     }
 

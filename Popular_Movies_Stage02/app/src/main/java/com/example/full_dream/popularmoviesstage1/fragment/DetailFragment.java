@@ -47,8 +47,8 @@
 
 package com.example.full_dream.popularmoviesstage1.fragment;
 
-import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -81,6 +81,9 @@ import com.example.full_dream.popularmoviesstage1.model.TrailerResponse;
 import com.example.full_dream.popularmoviesstage1.network.RetrofitClient;
 import com.example.full_dream.popularmoviesstage1.network.TheMovieDBService;
 import com.example.full_dream.popularmoviesstage1.thread.AppExecutors;
+import com.example.full_dream.popularmoviesstage1.viewmodel.DetailViewModel;
+import com.example.full_dream.popularmoviesstage1.viewmodel.DetailViewModelFactory;
+import com.example.full_dream.popularmoviesstage1.viewmodel.SharedViewModel;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -93,9 +96,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 /**
- *
- *
- *
+ * UI component that shows off the details of a particular Movie
  */
 public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAdapterOnClickHandler {
 
@@ -150,10 +151,21 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mMovie = getArguments().getParcelable("deets");
-        if(mMovie == null){
-            Log.e("rabbit", "not again");
-        }
+        // Retrieve the common/shared ViewModel to share data between two Fragments
+        //  Both Fragments use getActivity() when getting the ViewModelProvider
+        //   As a result, both Fragments receive the same SharedViewModel instance, which is scoped
+        //   to the Activity
+        // Source: https://developer.android.com/topic/libraries/architecture/viewmodel#sharing
+        SharedViewModel model = ViewModelProviders.of(getActivity()).get(SharedViewModel.class);
+        // Retrieve the selected/clicked-on RecyclerView item
+        mMovie = model.getSelected().getValue();
+        // Will figure this out later
+        model.getSelected().observe(this, new Observer<Movie>() {
+            @Override
+            public void onChanged(@Nullable Movie movie) {
+                // never fires off
+            }
+        });
 
         // Initialize the Database
         mDb = AppDatabase.getInstance(getContext());
@@ -230,14 +242,23 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
         // If movie is in favorites database then movie is a favorite, else not a favorite
         //  Followed the Udacity course "Developing Android Apps" >>
         //  Lesson 12: Android Architecture Components >>
-        //  20. Exercise: Adding LiveData to AddTaskActivity
-        final LiveData<Movie> favorite = mDb.movieDao().loadMovieById(mMovie.getId());
-        favorite.observe(this, new Observer<Movie>() {
+        //  23. Exercise: Adding the ViewModel to AddTaskActivity
+//        final LiveData<Movie> favorite = mDb.movieDao().loadMovieById(mMovie.getId());
+        // Create an instance of the factory by passing the database and the movie ID to its
+        // constructor
+        DetailViewModelFactory factory = new DetailViewModelFactory(mDb, mMovie.getId());
+        // Create a ViewModel (similar to the PosterListViewModel in setupViewModel(), but with
+        // an instance of factory as a parameter)
+        final DetailViewModel viewModel = ViewModelProviders.of(this, factory).get(DetailViewModel.class);
+//        favorite.observe(this, new Observer<Movie>() {
+        // Retrieve the LiveData to observe by calling the getMovie() method on the ViewModel
+        viewModel.getMovie().observe(this, new Observer<Movie>() {
             @Override
             public void onChanged(@Nullable Movie movieEntry) {
                 // Remove observer from the LiveData object so that we do not receive updates of
                 // database changes
-                favorite.removeObserver(this);
+//                favorite.removeObserver(this);
+                viewModel.getMovie().removeObserver(this);
                 if(movieEntry != null){
                     fab.setImageResource(R.drawable.ic_favorite_red);
                     favor = true;

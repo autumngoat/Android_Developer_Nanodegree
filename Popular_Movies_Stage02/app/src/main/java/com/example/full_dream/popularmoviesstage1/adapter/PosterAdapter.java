@@ -112,7 +112,6 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
                 .placeholder(R.drawable.ic_popcorn)
                 .error(R.drawable.ic_popcorn)
                 .into(posterViewHolder.mPosterImageView);
-        Log.e("fragment", movie.getPosterPath());
     }
 
     /**
