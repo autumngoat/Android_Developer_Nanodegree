@@ -47,27 +47,27 @@
 
 package com.example.full_dream.popularmoviesstage1.viewmodel;
 
-import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModel;
+import android.arch.lifecycle.ViewModelProvider;
+import android.support.annotation.NonNull;
 
-import com.example.full_dream.popularmoviesstage1.database.AppDatabase;
-import com.example.full_dream.popularmoviesstage1.model.Movie;
+import com.example.full_dream.popularmoviesstage1.database.MovieRepository;
 
 /**
- * This ViewModel is used to cache the list of Movie objects wrapped in a LiveData object.
- *  Extending AndroidViewModel requires an implementation of it's constructor.
- *   The AndroidViewModel class has a constructor that receives a parameter of type application.
+ * Factory method that creates a ViewModel with a constructor that takes a MovieRepository instance.
  */
-public class DetailViewModel extends ViewModel {
+public class PosterListViewModelFactory extends ViewModelProvider.NewInstanceFactory {
 
-    public static final String TAG = DetailViewModel.class.getSimpleName();
-    private LiveData<Movie> movie;
+    private final MovieRepository mRepository;
 
-    public DetailViewModel(AppDatabase database, int movieId){
-        movie = database.movieDao().loadMovieById(movieId);
+    public PosterListViewModelFactory(MovieRepository repository){
+        this.mRepository = repository;
     }
 
-    public LiveData<Movie> getMovie(){
-        return movie;
+    @NonNull
+    @Override
+    public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
+        // noinspection unchecked
+        return (T) new PosterListViewModel(mRepository);
     }
 }
