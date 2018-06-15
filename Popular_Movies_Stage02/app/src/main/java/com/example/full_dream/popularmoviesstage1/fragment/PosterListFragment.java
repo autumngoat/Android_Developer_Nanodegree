@@ -74,7 +74,9 @@ import com.example.full_dream.popularmoviesstage1.model.Movie;
 import com.example.full_dream.popularmoviesstage1.model.MovieResponse;
 import com.example.full_dream.popularmoviesstage1.network.RetrofitClient;
 import com.example.full_dream.popularmoviesstage1.network.TheMovieDBService;
+import com.example.full_dream.popularmoviesstage1.thread.AppExecutors;
 import com.example.full_dream.popularmoviesstage1.viewmodel.PosterListViewModel;
+import com.example.full_dream.popularmoviesstage1.viewmodel.PosterListViewModelFactory;
 import com.example.full_dream.popularmoviesstage1.viewmodel.SharedViewModel;
 
 import java.util.List;
@@ -94,11 +96,12 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
     private static final int MOST_POPULAR = 0;
     private static final int TOP_RATED = 1;
     private static final int FAVORITES = 2;
-    private String API_KEY = BuildConfig.API_KEY;
+//    private String API_KEY = BuildConfig.API_KEY;
     private PosterAdapter mPosterAdapter;
     // Member variable for the Database
     private AppDatabase mDb;
     private SharedViewModel model;
+    private PosterListViewModel viewModel;
     @BindView(R.id.rv_poster_list)
     RecyclerView mRecyclerView;
 
@@ -127,9 +130,9 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
         // Initialize the Database
         mDb = AppDatabase.getInstance(getContext());
 
-        //
+        // Use ViewModelProviders to associate an instance of PosterListViewModel scoped with the
+        // lifecycle of the UIController MainActivity
         model = ViewModelProviders.of(getActivity()).get(SharedViewModel.class);
-
 
         Log.e(TAG, "onCreate");
     }
@@ -201,6 +204,21 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
         mPosterAdapter = new PosterAdapter(this);
         // Set the view to the empty PosterAdapter
         mRecyclerView.setAdapter(mPosterAdapter);
+        // Use ViewModelProviders to associate an instance of PosterListViewModel scoped with the
+        // lifecyce of the UIController PosterListFragment
+        viewModel = ViewModelProviders.of(this).get(PosterListViewModel.class);
+        // Add an Observer for the LiveDate returned by getMovies() == LiveData<List<Movies>>
+        Log.e(TAG, "OBSERVING: " + viewModel.getMovies().getValue());
+        viewModel.getMovies().observe(this, new Observer<List<Movie>>() {
+            // onChanged() method fires when the observed data changes and the fragment is in the
+            // foreground
+            @Override
+            public void onChanged(@Nullable List<Movie> movies) {
+                // Update UI
+                mPosterAdapter.setMovieData(movies);
+                Log.e(TAG, "onChanged() called");
+            }
+        });
 
         // Checked out https://developer.android.com/training/basics/network-ops/managing
         // for how to check for network status check
@@ -220,7 +238,7 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
         // PosterListFragment is popped off the back stack from DetailsFragment onBackPress
         //  This is the reason why Favorites is inside callRetrofit even though it has nothing to do
         //  with a network call (Favorites is involved with a database call)
-        callRetrofit();
+//        callRetrofit();
 
         return rootView;
     }
@@ -260,7 +278,7 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
     public void onResume() {
         super.onResume();
 
-        callRetrofit();
+//        callRetrofit();
         Log.e(TAG, "onResume");
     }
 
@@ -305,95 +323,95 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
         Log.e(TAG, "onDetach");
     }
 
-    /**
-     * Sets up a ViewModel to cache a list of Movie LiveData objects.
-     *
-     * Comment Sources:
-     * https://developer.android.com/reference/android/arch/lifecycle/ViewModelProvider#get
-     * https://developer.android.com/reference/androidx/lifecycle/ViewModelProviders
-     * https://developer.android.com/reference/android/arch/lifecycle/LiveData#observe
-     *
-     * Followed the Udacity course "Developing Android Apps" >>
-     * Lesson 12: Android Architecture Components >>
-     * 22. Exercise: Adding the ViewModel
-     */
-    private void setupViewModel(){
-        // Creates a ViewModelProvider, which retains existing or creates new ViewModels while a
-        // scope of given Fragment is alive
-        PosterListViewModel viewModel = ViewModelProviders.of(this).get(PosterListViewModel.class);
-        // Get the LiveData object(s) and adds the given Observer to the list of observers within
-        // the lifespan of the given Owner
-        viewModel.getMovies().observe(this, new Observer<List<Movie>>() {
-        // Followed the Udacity course "Developing Android Apps" >>
-        // Lesson 12: Android Architecture Components >>
-        // 19. Exercise: Adding LiveData
-        // movies is a LiveData object so we can call the observe() method on it
-        //  observer() requires 2 parameters:
-        //   1) A lifecycle owner - something that has a lifecycle
-        //   2) An observer -  a simple callback that can receive from LiveData
-            /**
-             * Logic to update the UI of the observer, which runs on the main/UI thread by
-             * default, when the data is changed.
-             *  Every change in the database will trigger the onChanged method of the
-             *  observer, so there is no need to re-query and update the UI after every
-             *  delete.
-             *
-             * @param movieEntries The new data.
-             */
-            @Override
-            public void onChanged(@Nullable List<Movie> movieEntries) {
-                Log.d(TAG, "Updating list of movies from LiveData in ViewModel");
-                mPosterAdapter.setMovieData(movieEntries);
-            }
-        });
-    }
-
-    /**
-     * Helper function to be able to call Retrofit whenever data needs to be retrieved.
-     */
-    public void callRetrofit(){
-        // Instantiate the Retrofit (type safe HTTP) client
-        RetrofitClient client = new RetrofitClient();
-
-        // Pass service interface to create() to generate an implementation of the API endpoint
-        TheMovieDBService service = client.getClient().create(TheMovieDBService.class);
-
-        // Call represents the HTTP request while the generic parameter, in this case
-        // MovieResponse, represents the HTTP response body type which will be converted
-        // by one of the Converter.Factory instances (Moshi) to JSON to POJO(s).
-        Call<MovieResponse> call;
-
-        // Popular or Top Rated or Favorites?
-        switch(mOption){
-            case MOST_POPULAR:
-                call = service.getPopularMovies(API_KEY);
-                break;
-            case TOP_RATED:
-                call = service.getTopRatedMovies(API_KEY);
-                break;
-            case FAVORITES:
-                setupViewModel();
-                return;
-            default:
-                throw new UnknownError("This is not a CTF, go somewhere else for decompiling fun.");
-        }
-
-        // Asynchronously send the HTTP request and notify the callback of its HTTP response
-        // or if an error occurred talking to the server, creating the HTTP request
-        call.enqueue(new Callback<MovieResponse>() {
-            @Override
-            public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
-                List<Movie> movies = response.body().getResults();
-                mPosterAdapter.setMovieData(movies);
-                mPosterAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onFailure(Call<MovieResponse> call, Throwable t) {
-//                Toast.makeText(MainActivity.this, "Failed", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
+//    /**
+//     * Sets up a ViewModel to cache a list of Movie LiveData objects.
+//     *
+//     * Comment Sources:
+//     * https://developer.android.com/reference/android/arch/lifecycle/ViewModelProvider#get
+//     * https://developer.android.com/reference/androidx/lifecycle/ViewModelProviders
+//     * https://developer.android.com/reference/android/arch/lifecycle/LiveData#observe
+//     *
+//     * Followed the Udacity course "Developing Android Apps" >>
+//     * Lesson 12: Android Architecture Components >>
+//     * 22. Exercise: Adding the ViewModel
+//     */
+//    private void setupViewModel(){
+//        // Creates a ViewModelProvider, which retains existing or creates new ViewModels while a
+//        // scope of given Fragment is alive
+//        PosterListViewModel viewModel = ViewModelProviders.of(this).get(PosterListViewModel.class);
+//        // Get the LiveData object(s) and adds the given Observer to the list of observers within
+//        // the lifespan of the given Owner
+//        viewModel.getMovies().observe(this, new Observer<List<Movie>>() {
+//        // Followed the Udacity course "Developing Android Apps" >>
+//        // Lesson 12: Android Architecture Components >>
+//        // 19. Exercise: Adding LiveData
+//        // movies is a LiveData object so we can call the observe() method on it
+//        //  observer() requires 2 parameters:
+//        //   1) A lifecycle owner - something that has a lifecycle
+//        //   2) An observer -  a simple callback that can receive from LiveData
+//            /**
+//             * Logic to update the UI of the observer, which runs on the main/UI thread by
+//             * default, when the data is changed.
+//             *  Every change in the database will trigger the onChanged method of the
+//             *  observer, so there is no need to re-query and update the UI after every
+//             *  delete.
+//             *
+//             * @param movieEntries The new data.
+//             */
+//            @Override
+//            public void onChanged(@Nullable List<Movie> movieEntries) {
+//                Log.d(TAG, "Updating list of movies from LiveData in ViewModel");
+//                mPosterAdapter.setMovieData(movieEntries);
+//            }
+//        });
+//    }
+//
+//    /**
+//     * Helper function to be able to call Retrofit whenever data needs to be retrieved.
+//     */
+//    public void callRetrofit(){
+//        // Instantiate the Retrofit (type safe HTTP) client
+//        RetrofitClient client = new RetrofitClient();
+//
+//        // Pass service interface to create() to generate an implementation of the API endpoint
+//        TheMovieDBService service = client.getClient().create(TheMovieDBService.class);
+//
+//        // Call represents the HTTP request while the generic parameter, in this case
+//        // MovieResponse, represents the HTTP response body type which will be converted
+//        // by one of the Converter.Factory instances (Moshi) to JSON to POJO(s).
+//        Call<MovieResponse> call;
+//
+//        // Popular or Top Rated or Favorites?
+//        switch(mOption){
+//            case MOST_POPULAR:
+//                call = service.getPopularMovies(API_KEY);
+//                break;
+//            case TOP_RATED:
+//                call = service.getTopRatedMovies(API_KEY);
+//                break;
+//            case FAVORITES:
+//                setupViewModel();
+//                return;
+//            default:
+//                throw new UnknownError("This is not a CTF, go somewhere else for decompiling fun.");
+//        }
+//
+//        // Asynchronously send the HTTP request and notify the callback of its HTTP response
+//        // or if an error occurred talking to the server, creating the HTTP request
+//        call.enqueue(new Callback<MovieResponse>() {
+//            @Override
+//            public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
+//                List<Movie> movies = response.body().getResults();
+//                mPosterAdapter.setMovieData(movies);
+//                mPosterAdapter.notifyDataSetChanged();
+//            }
+//
+//            @Override
+//            public void onFailure(Call<MovieResponse> call, Throwable t) {
+////                Toast.makeText(MainActivity.this, "Failed", Toast.LENGTH_SHORT).show();
+//            }
+//        });
+//    }
 
     /**
      * Handle RecyclerView item clicks by replacing the current Fragment with a DetailFragment of
@@ -450,17 +468,17 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
             case R.id.action_popular:
                 mOption = MOST_POPULAR;
                 item.setChecked(!item.isChecked());
-                callRetrofit();
+                viewModel.setMovies(mOption);
                 break;
             case R.id.action_top_rated:
                 mOption = TOP_RATED;
                 item.setChecked(!item.isChecked());
-                callRetrofit();
+                viewModel.setMovies(mOption);
                 break;
             case R.id.action_favorites:
                 mOption = FAVORITES;
                 item.setChecked(!item.isChecked());
-                setupViewModel();
+                viewModel.setMovies(mOption);
                 break;
         }
         // Reset scroll position to the top

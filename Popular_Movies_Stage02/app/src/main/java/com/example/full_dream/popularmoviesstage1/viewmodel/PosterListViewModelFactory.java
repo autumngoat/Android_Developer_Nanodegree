@@ -63,11 +63,11 @@ public class PosterListViewModelFactory extends ViewModelProvider.NewInstanceFac
     public PosterListViewModelFactory(MovieRepository repository){
         this.mRepository = repository;
     }
-
-    @NonNull
-    @Override
-    public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        // noinspection unchecked
-        return (T) new PosterListViewModel(mRepository);
-    }
+//
+//    @NonNull
+//    @Override
+//    public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
+//        // noinspection unchecked
+//        return (T) new PosterListViewModel(mRepository);
+//    }
 }

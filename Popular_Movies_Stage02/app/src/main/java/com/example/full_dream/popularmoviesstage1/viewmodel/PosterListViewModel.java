@@ -50,10 +50,11 @@ package com.example.full_dream.popularmoviesstage1.viewmodel;
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.example.full_dream.popularmoviesstage1.database.AppDatabase;
+import com.example.full_dream.popularmoviesstage1.database.MovieRepository;
 import com.example.full_dream.popularmoviesstage1.model.Movie;
 
 import java.util.List;
@@ -70,7 +71,11 @@ import java.util.List;
 public class PosterListViewModel extends AndroidViewModel {
 
     private static final String TAG = PosterListViewModel.class.getSimpleName();
-    private LiveData<List<Movie>> movies;
+//    // Cache the list of Movie objects
+    private MutableLiveData<List<Movie>> mMovieList;
+    // Hold a reference to the repository
+    private MovieRepository mRepository;
+    private int mOption;
 
     /**
      * Subclasses of AndroidViewModel MUST have a constructor that accepts Application as the ONLY
@@ -81,12 +86,44 @@ public class PosterListViewModel extends AndroidViewModel {
      */
     public PosterListViewModel(@NonNull Application application) {
         super(application);
-        AppDatabase database = AppDatabase.getInstance(this.getApplication());
-        Log.d(TAG, "Actively retrieving the movies from the Database");
-        this.movies = database.movieDao().loadAllMovies();
+//        AppDatabase database = AppDatabase.getInstance(this.getApplication());
+//        Log.d(TAG, "Actively retrieving the movies from the Database");
+//        this.movies = database.movieDao().loadAllMovies();
+        Log.d(TAG, "Actively retrieving the movies from the Repository");
+        mRepository = new MovieRepository(application);
+        mMovieList = mRepository.getMovieList(mOption);
     }
 
-    public LiveData<List<Movie>> getMovies() {
-        return movies;
+    /**
+     * Getter for method for Movie network call that hides the implementation from the UI.
+     *
+     * @return
+     */
+    public MutableLiveData<List<Movie>> getMovies() {
+        Log.e(TAG, "GET MOVIES in PosterListViewModel");
+        Log.e(TAG, "CURRENT MOVIES: " + mRepository.getMovieList(mOption).getValue());
+        return mRepository.getMovieList(mOption);
     }
+
+    public void setMovies(int settingsOption){
+        Log.e(TAG, "SET MOVIES " + settingsOption + " in PosterListViewModel");
+        mRepository.getMovieList(settingsOption);
+        Log.e(TAG, "UPDATED MOVIES: " + mRepository.getMovieList(settingsOption).getValue());
+    }
+
+    /**
+     * Wrapper method that calls the MovieRepository's insertMovie() method, which hides the
+     * implementation from the UI.
+     *
+     * @param movie Movie instance to insert into the AppDatabase.
+     */
+    public void insertMovie(Movie movie){ mRepository.insertMovie(movie); }
+
+    /**
+     * Wrapper method that calls the MovieRepository's deleteMovie() method, which hides the
+     * implementation from the UI.
+     *
+     * @param movie Movie instance to delete from the AppDatabase.
+     */
+    public void deleteMovie(Movie movie){ mRepository.deleteMovie(movie); }
 }

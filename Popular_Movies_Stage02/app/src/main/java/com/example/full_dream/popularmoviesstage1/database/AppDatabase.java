@@ -75,7 +75,7 @@ public abstract class AppDatabase extends RoomDatabase {
 
     private static AppDatabase sInstance;
     private static final Object LOCK = new Object();
-    private static final String LOG_TAG = AppDatabase.class.getSimpleName();
+    private static final String TAG = AppDatabase.class.getSimpleName();
     private static final String DATABASE_NAME = "favorites";
 
     /**
@@ -95,14 +95,14 @@ public abstract class AppDatabase extends RoomDatabase {
      */
     public static AppDatabase getInstance(Context context) {
         if(sInstance == null){
-            synchronized (LOCK) {
-                Log.d(LOG_TAG, "Creating a new database instance");
+            synchronized (LOCK) { // Similar to 'sychronized (AppDatabase.class)
+                Log.d(TAG, "Creating a new database instance");
                 sInstance = Room.databaseBuilder(context.getApplicationContext(),
                         AppDatabase.class, AppDatabase.DATABASE_NAME)
                         .build();
             }
         }
-        Log.d(LOG_TAG, "Getting the database instance");
+        Log.d(TAG, "Getting the database instance");
         return sInstance;
     }
 

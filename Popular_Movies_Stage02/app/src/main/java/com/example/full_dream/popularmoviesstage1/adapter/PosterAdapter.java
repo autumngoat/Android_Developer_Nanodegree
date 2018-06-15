@@ -72,6 +72,7 @@ import java.util.List;
 public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdapterViewHolder> {
     // I adapted much of the Adapter code from my code for S05.01-Exercise-AsyncTaskLoader
     private final PosterAdapterOnClickHandler mClickHandler;
+    // Cached copy of Movies
     private List<Movie> mMovieData;
 
     /**
@@ -124,7 +125,7 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
     }
 
     public void setMovieData(List<Movie> movieData) {
-        mMovieData = null;
+//        mMovieData = null;
         mMovieData = movieData;
         notifyDataSetChanged();
     }

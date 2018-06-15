@@ -79,16 +79,16 @@ public class MainActivity extends AppCompatActivity {
                 .commit();
     }
 
-    /**
-     * Navigate back to the PosterListFragment from the DetailFragment on Back press.
-     */
-    @Override
-    public void onBackPressed() {
-        int count = getSupportFragmentManager().getBackStackEntryCount();
-        if(count == 0){
-            super.onBackPressed();
-        } else {
-            this.getSupportFragmentManager().popBackStack();
-        }
-    }
+//    /**
+//     * Navigate back to the PosterListFragment from the DetailFragment on Back press.
+//     */
+//    @Override
+//    public void onBackPressed() {
+//        int count = getSupportFragmentManager().getBackStackEntryCount();
+//        if(count == 0){
+//            super.onBackPressed();
+//        } else {
+//            this.getSupportFragmentManager().popBackStack();
+//        }
+//    }
 }

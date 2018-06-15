@@ -151,6 +151,9 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Initialize the Database
+        mDb = AppDatabase.getInstance(getContext());
+
         // Retrieve the common/shared ViewModel to share data between two Fragments
         //  Both Fragments use getActivity() when getting the ViewModelProvider
         //   As a result, both Fragments receive the same SharedViewModel instance, which is scoped
@@ -159,16 +162,29 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
         SharedViewModel model = ViewModelProviders.of(getActivity()).get(SharedViewModel.class);
         // Retrieve the selected/clicked-on RecyclerView item
         mMovie = model.getSelected().getValue();
-        // Will figure this out later
-        model.getSelected().observe(this, new Observer<Movie>() {
-            @Override
-            public void onChanged(@Nullable Movie movie) {
-                // never fires off
-            }
-        });
 
-        // Initialize the Database
-        mDb = AppDatabase.getInstance(getContext());
+        populateUI(mMovie);
+
+//        // Create an instance of the factory by passing the database and the movie ID to its
+//        // constructor
+//        DetailViewModelFactory factory = new DetailViewModelFactory(mDb, mMovie.getId());
+//        // Create a ViewModel (similar to the PosterListViewModel in setupViewModel(), but with
+//        // an instance of factory as a parameter)
+//        final DetailViewModel viewModel = ViewModelProviders.of(this, factory).get(DetailViewModel.class);
+//        // Retrieve the LiveData to observe by calling the getMovie() method on the ViewModel
+//        viewModel.getMovie().observe(this, new Observer<Movie>() {
+//            @Override
+//            public void onChanged(@Nullable Movie movieEntry) {
+//                populateUI(mMovie);
+//                if(movieEntry != null){
+//                    fab.setImageResource(R.drawable.ic_favorite_red);
+//                    favor = true;
+//                } else {
+//                    fab.setImageResource(R.drawable.ic_favorite_white);
+//                    favor = false;
+//                }
+//            }
+//        });
 
         callRetrofitForTrailers();
         callRetrofitForReviews();
@@ -183,91 +199,10 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_movie_details, container, false);
-
         // Non-Activity Binding - Fragments
         // Binding Reset - Set views to null in onDestroyView
         //  source: http://jakewharton.github.io/butterknife/
         mUnbinder = ButterKnife.bind(this, rootView);
-
-        // Icons made by "https://www.flaticon.com/authors/freepik"
-        // Title: "Popcorn"
-        // Licensed by Creative Commons BY 3.0
-        Picasso.get()
-                .load(mMovie.getPosterPath())
-                .placeholder(R.drawable.ic_popcorn)
-                .error(R.drawable.ic_popcorn)
-                .into(mBackgroundPoster);
-
-        String rating = Double.toString(mMovie.getVoteAverage());
-        String title = mMovie.getTitle();
-        String originalTitle = mMovie.getOriginalTitle();
-        String date = mMovie.getReleaseDate();
-
-        Picasso.get()
-                .load(mMovie.getBackdropPath())
-                .placeholder(R.drawable.ic_popcorn)
-                .error(R.drawable.ic_popcorn)
-                .into(mBackdrop);
-
-        String originalLanguage = mMovie.getOriginalLanguage();
-        String summary = mMovie.getOverview();
-
-        mRating.setText(rating);
-        mTitle.setText(title);
-        mOriginalTitle.setText(originalTitle);
-        mReleaseDate.setText(date);
-        mOriginalLanguage.setText(originalLanguage);
-        mSummary.setText(summary);
-
-        // Cannot use the same LinearLayoutManager for both Trailer and Review RecyclerViews
-        LinearLayoutManager mTrailerLayoutManager = new LinearLayoutManager(getActivity(),
-                LinearLayoutManager.HORIZONTAL,
-                false);
-
-        // Setup Trailer RecyclerView and Adapter
-        mTrailerRecyclerView.setLayoutManager(mTrailerLayoutManager);
-        mTrailerAdapter = new TrailerAdapter(this);
-        mTrailerRecyclerView.setAdapter(mTrailerAdapter);
-
-        LinearLayoutManager mReviewLayoutManager = new LinearLayoutManager(getActivity(),
-                LinearLayoutManager.HORIZONTAL,
-                false);
-
-        // Setup Review RecyclerView and Adapter
-        mReviewRecyclerView.setLayoutManager(mReviewLayoutManager);
-        // Need to initialize ReviewAdapter or else NPE when running callRetrofitForReviews()
-        mReviewAdapter = new ReviewAdapter();
-        mReviewRecyclerView.setAdapter(mReviewAdapter);
-
-        // If movie is in favorites database then movie is a favorite, else not a favorite
-        //  Followed the Udacity course "Developing Android Apps" >>
-        //  Lesson 12: Android Architecture Components >>
-        //  23. Exercise: Adding the ViewModel to AddTaskActivity
-//        final LiveData<Movie> favorite = mDb.movieDao().loadMovieById(mMovie.getId());
-        // Create an instance of the factory by passing the database and the movie ID to its
-        // constructor
-        DetailViewModelFactory factory = new DetailViewModelFactory(mDb, mMovie.getId());
-        // Create a ViewModel (similar to the PosterListViewModel in setupViewModel(), but with
-        // an instance of factory as a parameter)
-        final DetailViewModel viewModel = ViewModelProviders.of(this, factory).get(DetailViewModel.class);
-//        favorite.observe(this, new Observer<Movie>() {
-        // Retrieve the LiveData to observe by calling the getMovie() method on the ViewModel
-        viewModel.getMovie().observe(this, new Observer<Movie>() {
-            @Override
-            public void onChanged(@Nullable Movie movieEntry) {
-                // Remove observer from the LiveData object so that we do not receive updates of
-                // database changes
-//                favorite.removeObserver(this);
-                viewModel.getMovie().removeObserver(this);
-                if(movieEntry != null){
-                    fab.setImageResource(R.drawable.ic_favorite_red);
-                    favor = true;
-                } else {
-                    fab.setImageResource(R.drawable.ic_favorite_white);
-                    favor = false;
-                }
-            }
-        });
 
         // Setup FAB onClick
         //  Icons made by "https://www.flaticon.com/authors/freepik"
@@ -471,5 +406,63 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
             getActivity().startActivity(new Intent(Intent.ACTION_VIEW,
                     Uri.parse("http://www.youtube.com/watch?v=" + youtubeKey)));
         }
+    }
+
+    /**
+     * Update the UI with Movie instance details.
+     *
+     * @param movie Selected Movie instance.
+     */
+    public void populateUI(Movie movie){
+
+        // Icons made by "https://www.flaticon.com/authors/freepik"
+        // Title: "Popcorn"
+        // Licensed by Creative Commons BY 3.0
+        Picasso.get()
+                .load(movie.getPosterPath())
+                .placeholder(R.drawable.ic_popcorn)
+                .error(R.drawable.ic_popcorn)
+                .into(mBackgroundPoster);
+
+        String rating = Double.toString(movie.getVoteAverage());
+        String title = movie.getTitle();
+        String originalTitle = movie.getOriginalTitle();
+        String date = movie.getReleaseDate();
+
+        Picasso.get()
+                .load(movie.getBackdropPath())
+                .placeholder(R.drawable.ic_popcorn)
+                .error(R.drawable.ic_popcorn)
+                .into(mBackdrop);
+
+        String originalLanguage = movie.getOriginalLanguage();
+        String summary = movie.getOverview();
+
+        mRating.setText(rating);
+        mTitle.setText(title);
+        mOriginalTitle.setText(originalTitle);
+        mReleaseDate.setText(date);
+        mOriginalLanguage.setText(originalLanguage);
+        mSummary.setText(summary);
+
+        // Cannot use the same LinearLayoutManager for both Trailer and Review RecyclerViews
+        LinearLayoutManager mTrailerLayoutManager = new LinearLayoutManager(getActivity(),
+                LinearLayoutManager.HORIZONTAL,
+                false);
+
+        // Setup Trailer RecyclerView and Adapter
+        mTrailerRecyclerView.setLayoutManager(mTrailerLayoutManager);
+        mTrailerAdapter = new TrailerAdapter(this);
+        mTrailerRecyclerView.setAdapter(mTrailerAdapter);
+
+        LinearLayoutManager mReviewLayoutManager = new LinearLayoutManager(getActivity(),
+                LinearLayoutManager.HORIZONTAL,
+                false);
+
+        // Setup Review RecyclerView and Adapter
+        mReviewRecyclerView.setLayoutManager(mReviewLayoutManager);
+        // Need to initialize ReviewAdapter or else NPE when running callRetrofitForReviews()
+        mReviewAdapter = new ReviewAdapter();
+        mReviewRecyclerView.setAdapter(mReviewAdapter);
     }
 }
