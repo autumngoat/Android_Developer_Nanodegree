@@ -328,11 +328,9 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
      * Helper function to be able to call Retrofit whenever data needs to be retrieved.
      */
     public void callRetrofitForTrailers(){
-        // Instantiate the Retrofit (type safe HTTP) client
-        RetrofitClient client = new RetrofitClient();
 
         // Pass service interface to create() to generate an implementation of the API endpoint
-        TheMovieDBService service = client.getClient().create(TheMovieDBService.class);
+        TheMovieDBService service = RetrofitClient.getApiClient();
 
         // Call represents the HTTP request while the generic parameter, in this case
         // MovieResponse, represents the HTTP response body type which will be converted
@@ -363,11 +361,9 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
      * Helper function to be able to call Retrofit whenever data needs to be retrieved.
      */
     public void callRetrofitForReviews(){
-        // Instantiate the Retrofit (type safe HTTP) client
-        RetrofitClient client = new RetrofitClient();
 
         // Pass service interface to create() to generate an implementation of the API endpoint
-        TheMovieDBService service = client.getClient().create(TheMovieDBService.class);
+        TheMovieDBService service = RetrofitClient.getApiClient();
 
         // Call represents the HTTP request while the generic parameter, in this case
         // MovieResponse, represents the HTTP response body type which will be converted

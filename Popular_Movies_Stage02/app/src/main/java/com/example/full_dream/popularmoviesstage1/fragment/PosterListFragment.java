@@ -159,13 +159,6 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
         //  source: http://jakewharton.github.io/butterknife/
         mUnbinder = ButterKnife.bind(this, rootView);
 
-        // Calculate auto-fit number of columns for GridLayoutManager
-        // Source: https://stackoverflow.com/questions/33575731/gridlayoutmanager-how-to-auto-fit-columns
-//        DisplayMetrics displayMetrics = getActivity().getResources().getDisplayMetrics();
-//        float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
-//        int widthOfRecyclerView = 120;
-//        int numberOfColumns = (int) (dpWidth / widthOfRecyclerView);
-
         // Least common multiple of 2 and 3 is 6
         int numberOfColumns = 6;
 
@@ -230,16 +223,9 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
 //            Toast.makeText(this, netConnectMsg, Toast.LENGTH_LONG).show();
 //        }
 
-        // Return the fragment view
-
         Log.e(TAG, "onCreateView");
 
-        // Initial call to populate the list and to placed here to re-populate the list when the
-        // PosterListFragment is popped off the back stack from DetailsFragment onBackPress
-        //  This is the reason why Favorites is inside callRetrofit even though it has nothing to do
-        //  with a network call (Favorites is involved with a database call)
-//        callRetrofit();
-
+        // Return the fragment view
         return rootView;
     }
 
@@ -322,96 +308,6 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
 
         Log.e(TAG, "onDetach");
     }
-
-//    /**
-//     * Sets up a ViewModel to cache a list of Movie LiveData objects.
-//     *
-//     * Comment Sources:
-//     * https://developer.android.com/reference/android/arch/lifecycle/ViewModelProvider#get
-//     * https://developer.android.com/reference/androidx/lifecycle/ViewModelProviders
-//     * https://developer.android.com/reference/android/arch/lifecycle/LiveData#observe
-//     *
-//     * Followed the Udacity course "Developing Android Apps" >>
-//     * Lesson 12: Android Architecture Components >>
-//     * 22. Exercise: Adding the ViewModel
-//     */
-//    private void setupViewModel(){
-//        // Creates a ViewModelProvider, which retains existing or creates new ViewModels while a
-//        // scope of given Fragment is alive
-//        PosterListViewModel viewModel = ViewModelProviders.of(this).get(PosterListViewModel.class);
-//        // Get the LiveData object(s) and adds the given Observer to the list of observers within
-//        // the lifespan of the given Owner
-//        viewModel.getMovies().observe(this, new Observer<List<Movie>>() {
-//        // Followed the Udacity course "Developing Android Apps" >>
-//        // Lesson 12: Android Architecture Components >>
-//        // 19. Exercise: Adding LiveData
-//        // movies is a LiveData object so we can call the observe() method on it
-//        //  observer() requires 2 parameters:
-//        //   1) A lifecycle owner - something that has a lifecycle
-//        //   2) An observer -  a simple callback that can receive from LiveData
-//            /**
-//             * Logic to update the UI of the observer, which runs on the main/UI thread by
-//             * default, when the data is changed.
-//             *  Every change in the database will trigger the onChanged method of the
-//             *  observer, so there is no need to re-query and update the UI after every
-//             *  delete.
-//             *
-//             * @param movieEntries The new data.
-//             */
-//            @Override
-//            public void onChanged(@Nullable List<Movie> movieEntries) {
-//                Log.d(TAG, "Updating list of movies from LiveData in ViewModel");
-//                mPosterAdapter.setMovieData(movieEntries);
-//            }
-//        });
-//    }
-//
-//    /**
-//     * Helper function to be able to call Retrofit whenever data needs to be retrieved.
-//     */
-//    public void callRetrofit(){
-//        // Instantiate the Retrofit (type safe HTTP) client
-//        RetrofitClient client = new RetrofitClient();
-//
-//        // Pass service interface to create() to generate an implementation of the API endpoint
-//        TheMovieDBService service = client.getClient().create(TheMovieDBService.class);
-//
-//        // Call represents the HTTP request while the generic parameter, in this case
-//        // MovieResponse, represents the HTTP response body type which will be converted
-//        // by one of the Converter.Factory instances (Moshi) to JSON to POJO(s).
-//        Call<MovieResponse> call;
-//
-//        // Popular or Top Rated or Favorites?
-//        switch(mOption){
-//            case MOST_POPULAR:
-//                call = service.getPopularMovies(API_KEY);
-//                break;
-//            case TOP_RATED:
-//                call = service.getTopRatedMovies(API_KEY);
-//                break;
-//            case FAVORITES:
-//                setupViewModel();
-//                return;
-//            default:
-//                throw new UnknownError("This is not a CTF, go somewhere else for decompiling fun.");
-//        }
-//
-//        // Asynchronously send the HTTP request and notify the callback of its HTTP response
-//        // or if an error occurred talking to the server, creating the HTTP request
-//        call.enqueue(new Callback<MovieResponse>() {
-//            @Override
-//            public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
-//                List<Movie> movies = response.body().getResults();
-//                mPosterAdapter.setMovieData(movies);
-//                mPosterAdapter.notifyDataSetChanged();
-//            }
-//
-//            @Override
-//            public void onFailure(Call<MovieResponse> call, Throwable t) {
-////                Toast.makeText(MainActivity.this, "Failed", Toast.LENGTH_SHORT).show();
-//            }
-//        });
-//    }
 
     /**
      * Handle RecyclerView item clicks by replacing the current Fragment with a DetailFragment of

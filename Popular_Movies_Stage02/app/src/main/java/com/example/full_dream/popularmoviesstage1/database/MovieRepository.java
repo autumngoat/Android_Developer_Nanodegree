@@ -49,10 +49,7 @@ package com.example.full_dream.popularmoviesstage1.database;
 
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MediatorLiveData;
 import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.Observer;
-import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.example.full_dream.popularmoviesstage1.BuildConfig;
@@ -63,7 +60,6 @@ import com.example.full_dream.popularmoviesstage1.network.TheMovieDBService;
 import com.example.full_dream.popularmoviesstage1.thread.AppExecutors;
 
 import java.util.List;
-import java.util.concurrent.Executor;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -83,37 +79,26 @@ public class MovieRepository {
     private static final int TOP_RATED = 1;
     private static final int FAVORITES = 2;
     private String API_KEY = BuildConfig.API_KEY;
-    private MovieDao mMovieDao;
-    private LiveData<List<Movie>> mMovieList;
-//    private static MovieRepository sInstance;
-//    private final AppDatabase mDb;
-//    private MediatorLiveData<List<Movie>> mMoviesList;
+//    private LiveData<List<Movie>> mMovieList;
 
-//    public static MovieRepository getInstance(final AppDatabase db){
-//        if(sInstance == null){
-//            synchronized (MovieRepository.class){
-//                sInstance = new MovieRepository(db);
-//            }
-//        }
-//    }
+    // For Singleton instantiation
+    private static final Object LOCK = new Object();    // Synch lock
+    private static MovieRepository sInstance;           // Singleton instance
+    private MovieDao mMovieDao;                         // Local Database access
+    private TheMovieDBService tmdbService;              // Remote Network access
 
-//    private MovieRepository(final AppDatabase db){
-//        mDb = db;
-//        mMoviesList = new MediatorLiveData<>();
-//
-//        mMoviesList.addSource(mDb.movieDao().loadAllMovies(), new Observer<List<Movie>>() {
-//            @Override
-//            public void onChanged(@Nullable List<Movie> movieEntries) {
-//                mMoviesList.postValue(movieEntries);
-//            }
-//        });
-//    }
+    // Cache data
+    private MutableLiveData<List<Movie>> popularMovies;
+    private MutableLiveData<List<Movie>> toprateMovies;
+    private LiveData<List<Movie>> favoriteMovies;
+    private MutableLiveData<Integer> settingOption;
 
     public MovieRepository(Application application){
+        // Get local database access
         AppDatabase database = AppDatabase.getInstance(application);
         mMovieDao = database.movieDao();
-//        mMovieList = mMovieDao.loadAllMovies();
-        mMovieList = getMovieList(0);
+        // Get remote network access
+        tmdbService = RetrofitClient.getApiClient();
     }
 
     public MutableLiveData<List<Movie>> getMovieList(int settingOption){
@@ -123,19 +108,21 @@ public class MovieRepository {
         //  methods
         final MutableLiveData<List<Movie>> movieList = new MutableLiveData<>();
 
-        RetrofitClient client = new RetrofitClient();
-        TheMovieDBService service = client.getClient().create(TheMovieDBService.class);
+        // Each Call from the created TheMovieDBService can make a synchronous or asynchronous HTTP
+        // request to the remote webservice
+        //  Each Call instance can only be used once.
+        // Comment Source: http://square.github.io/retrofit/
         Call<MovieResponse> call;
 
         // Popular or Top Rated or Favorites?
         switch(settingOption){
             case MOST_POPULAR:
                 Log.e(TAG, "Retrofit call MOST POPULAR in Repository");
-                call = service.getPopularMovies(API_KEY);
+                call = tmdbService.getPopularMovies(API_KEY);
                 break;
             case TOP_RATED:
                 Log.e(TAG, "Retrofit call TOP RATED in Repository");
-                call = service.getTopRatedMovies(API_KEY);
+                call = tmdbService.getTopRatedMovies(API_KEY);
                 break;
             case FAVORITES:
                 Log.e(TAG, "Database call FAVORITES in Repository");
@@ -161,19 +148,14 @@ public class MovieRepository {
                     if(movies != null){
                         // Set the value and dispatch the value to all the active observers
                         movieList.postValue(movies);
-//                        Log.e(TAG, "MutableLiveData: " + movieList.getValue().toString());
                     }
                 } else {
                     Log.e(TAG, "RESPONSE NOT SUCCESSFUL");
                 }
-//                mPosterAdapter.setMovieData(movies);
-//                mPosterAdapter.notifyDataSetChanged();
             }
 
             @Override
-            public void onFailure(Call<MovieResponse> call, Throwable t) {
-//                Toast.makeText(MainActivity.this, "Failed", Toast.LENGTH_SHORT).show();
-            }
+            public void onFailure(Call<MovieResponse> call, Throwable t) {}
         });
 
         return movieList;
@@ -196,73 +178,4 @@ public class MovieRepository {
             }
         });
     }
-
-//    /**
-//     * Helper function to be able to call Retrofit whenever data needs to be retrieved.
-//     */
-//    public void callRetrofitForTrailers(){
-//        // Instantiate the Retrofit (type safe HTTP) client
-//        RetrofitClient client = new RetrofitClient();
-//
-//        // Pass service interface to create() to generate an implementation of the API endpoint
-//        TheMovieDBService service = client.getClient().create(TheMovieDBService.class);
-//
-//        // Call represents the HTTP request while the generic parameter, in this case
-//        // MovieResponse, represents the HTTP response body type which will be converted
-//        // by one of the Converter.Factory instances (Moshi) to JSON to POJO(s).
-//        Call<TrailerResponse> call;
-//
-//        call = service.getTrailers(mMovie.getId(), API_KEY);
-//
-//        // Asynchronously send the HTTP request and notify the callback of its HTTP response
-//        // or if an error occurred talking to the server, creating the HTTP request
-//        call.enqueue(new Callback<TrailerResponse>() {
-//            @Override
-//            public void onResponse(Call<TrailerResponse> call, Response<TrailerResponse> response) {
-//                List<Trailer> trailers = response.body().getResults();
-//
-//                mTrailerAdapter.setTrailerList(trailers);
-//                mTrailerAdapter.notifyDataSetChanged();
-//            }
-//
-//            @Override
-//            public void onFailure(Call<TrailerResponse> call, Throwable t) {
-//                Log.e("rabbit", "Problems retrieving Trailers");
-//            }
-//        });
-//    }
-//
-//    /**
-//     * Helper function to be able to call Retrofit whenever data needs to be retrieved.
-//     */
-//    public void callRetrofitForReviews(){
-//        // Instantiate the Retrofit (type safe HTTP) client
-//        RetrofitClient client = new RetrofitClient();
-//
-//        // Pass service interface to create() to generate an implementation of the API endpoint
-//        TheMovieDBService service = client.getClient().create(TheMovieDBService.class);
-//
-//        // Call represents the HTTP request while the generic parameter, in this case
-//        // MovieResponse, represents the HTTP response body type which will be converted
-//        // by one of the Converter.Factory instances (Moshi) to JSON to POJO(s).
-//        Call<ReviewResponse> call;
-//        call = service.getReviews(mMovie.getId(), API_KEY);
-//
-//        // Asynchronously send the HTTP request and notify the callback of its HTTP response
-//        // or if an error occurred talking to the server, creating the HTTP request
-//        call.enqueue(new Callback<ReviewResponse>() {
-//            @Override
-//            public void onResponse(Call<ReviewResponse> call, Response<ReviewResponse> response) {
-//                List<Review> review = response.body().getReviews();
-//
-//                mReviewAdapter.setReviewList(review);
-//                mReviewAdapter.notifyDataSetChanged();
-//            }
-//
-//            @Override
-//            public void onFailure(Call<ReviewResponse> call, Throwable t) {
-//                Log.e("rabbit", "Problems retrieving Reviews");
-//            }
-//        });
-//    }
 }

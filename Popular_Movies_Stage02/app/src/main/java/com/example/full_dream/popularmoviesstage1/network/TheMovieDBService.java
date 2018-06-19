@@ -103,7 +103,8 @@ public interface TheMovieDBService {
             @Query(API_KEY) String apiKey);
 
     /**
-     *
+     * Make GET HTTP request for the user reviews related to the selected movie and returns a HTTP
+     * response as a Review POJO.
      *
      * Source:
      * https://developers.themoviedb.org/3/movies/get-movie-reviews

@@ -68,36 +68,28 @@ public class RetrofitClient {
      */
     private static final String TMDB_BASE_URL = "https://api.themoviedb.org/3/";
 
-    public Retrofit retrofit;
-
     /**
-     * Builds a new Retrofit,
-     *  Calling baseUrl() before build() is MANDATORY.
-     *  All other methods are OPTIONAL.
-     *   addConverterFactory() provides a default factory to deserialize the JSON response object
-     *   into a POJO.
-     *    In this case, using the Moshi library.
+     * The Retrofit class generates an implementation of the TheMovieDBService interface.
      *
-     * Source: http://square.github.io/retrofit/2.x/retrofit/retrofit2/Retrofit.Builder.html
+     * Comment Source:
+     * http://square.github.io/retrofit/
+     * https://square.github.io/retrofit/2.x/retrofit/retrofit2/Retrofit.Builder.html
+     * https://square.github.io/retrofit/2.x/retrofit/retrofit2/Retrofit.html
+     *
+     * @return An implementation of the TheMovieDBService interface.
      */
-    public Retrofit getClient(){
-        retrofit = new Retrofit.Builder()
+    public static TheMovieDBService getApiClient(){
+        // Build a new Retrofit object using builder...
+        Retrofit retrofit = new Retrofit.Builder()
+                // Set the API base URL.  Calling baseUrl() before calling build() is required.
                 .baseUrl(TMDB_BASE_URL)
+                // Add a converter factory for serialization and deserialization of objects
                 .addConverterFactory(MoshiConverterFactory.create())
+                // Create the Retrofit instance using the configured values
                 .build();
 
-        return retrofit;
+        // ...and pass TheMovieDBService interface to create(Class<T> service) to generate an
+        // implementation
+        return retrofit.create(TheMovieDBService.class);
     }
-
-//    public TheMovieDBService getClient(){
-//        retrofit = new Retrofit.Builder()
-//                .baseUrl(TMDB_BASE_URL)
-//                .addConverterFactory(MoshiConverterFactory.create())
-//                .build();
-//
-//        // Pass service interface to create() to generate an implementation of the API endpoint
-//        TheMovieDBService service = retrofit.create(TheMovieDBService.class);
-//
-//        return service;
-//    }
 }
