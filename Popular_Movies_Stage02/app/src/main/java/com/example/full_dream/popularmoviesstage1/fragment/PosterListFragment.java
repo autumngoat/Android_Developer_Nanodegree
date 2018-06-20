@@ -66,17 +66,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.full_dream.popularmoviesstage1.BuildConfig;
 import com.example.full_dream.popularmoviesstage1.R;
 import com.example.full_dream.popularmoviesstage1.adapter.PosterAdapter;
-import com.example.full_dream.popularmoviesstage1.database.AppDatabase;
 import com.example.full_dream.popularmoviesstage1.model.Movie;
-import com.example.full_dream.popularmoviesstage1.model.MovieResponse;
-import com.example.full_dream.popularmoviesstage1.network.RetrofitClient;
-import com.example.full_dream.popularmoviesstage1.network.TheMovieDBService;
-import com.example.full_dream.popularmoviesstage1.thread.AppExecutors;
 import com.example.full_dream.popularmoviesstage1.viewmodel.PosterListViewModel;
-import com.example.full_dream.popularmoviesstage1.viewmodel.PosterListViewModelFactory;
 import com.example.full_dream.popularmoviesstage1.viewmodel.SharedViewModel;
 
 import java.util.List;
@@ -84,9 +77,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class PosterListFragment extends Fragment implements PosterAdapter.PosterAdapterOnClickHandler {
 
@@ -319,6 +309,7 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
     public void onClick(Movie movie) {
         // Set the SharedViewModel to the RecyclerView item click
         model.select(movie);
+        Log.e(TAG, "PLFRAGMENT onClick: " + movie.toString());
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         ft.addToBackStack(null);

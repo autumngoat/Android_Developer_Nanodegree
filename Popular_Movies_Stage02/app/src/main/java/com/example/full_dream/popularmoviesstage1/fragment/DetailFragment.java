@@ -141,7 +141,7 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
     public void onAttach(Context context) {
         super.onAttach(context);
 
-        Log.e(TAG, "onAttach");
+        Log.e(TAG, "DETAILFRAGMENT onAttach");
     }
 
     /**
@@ -163,7 +163,9 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
         // Retrieve the selected/clicked-on RecyclerView item
         mMovie = model.getSelected().getValue();
 
-        populateUI(mMovie);
+        Log.e(TAG, "DETAILFRAGMENT model.getSelected().getValue()" + mMovie.toString());
+
+//        populateUI(mMovie);
 
 //        // Create an instance of the factory by passing the database and the movie ID to its
 //        // constructor
@@ -189,7 +191,7 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
         callRetrofitForTrailers();
         callRetrofitForReviews();
 
-        Log.e(TAG, "onCreate");
+        Log.e(TAG, "DETAILFRAGMENT onCreate");
     }
 
     /**
@@ -203,6 +205,8 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
         // Binding Reset - Set views to null in onDestroyView
         //  source: http://jakewharton.github.io/butterknife/
         mUnbinder = ButterKnife.bind(this, rootView);
+
+        populateUI(mMovie);
 
         // Setup FAB onClick
         //  Icons made by "https://www.flaticon.com/authors/freepik"
@@ -251,7 +255,7 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
             }
         });
 
-        Log.e(TAG, "onCreateView");
+        Log.e(TAG, "DETAILFRAGMENT onCreateView");
 
         return rootView;
     }
@@ -260,35 +264,35 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        Log.e(TAG, "onActivityCreated");
+        Log.e(TAG, "DETAILFRAGMENT onActivityCreated");
     }
 
     @Override
     public void onStart() {
         super.onStart();
 
-        Log.e(TAG, "onStart");
+        Log.e(TAG, "DETAILFRAGMENT onStart");
     }
 
     @Override
     public void onResume() {
         super.onResume();
 
-        Log.e(TAG, "onResume");
+        Log.e(TAG, "DETAILFRAGMENT onResume");
     }
 
     @Override
     public void onPause() {
         super.onPause();
 
-        Log.e(TAG, "onPause");
+        Log.e(TAG, "DETAILFRAGMENT onPause");
     }
 
     @Override
     public void onStop() {
         super.onStop();
 
-        Log.e(TAG, "onStop");
+        Log.e(TAG, "DETAILFRAGMENT onStop");
     }
 
     @Override
@@ -296,21 +300,21 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
         super.onDestroyView();
         mUnbinder.unbind();
 
-        Log.e(TAG, "onDestroyView");
+        Log.e(TAG, "DETAILFRAGMENT onDestroyView");
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
 
-        Log.e(TAG, "onDestroy");
+        Log.e(TAG, "DETAILFRAGMENT onDestroy");
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
 
-        Log.e(TAG, "onDetach");
+        Log.e(TAG, "DETAILFRAGMENT onDetach");
     }
 
     @Override
@@ -411,6 +415,8 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
      */
     public void populateUI(Movie movie){
 
+        Log.e(TAG, "DETAILFRAGMENT populateUI poster: " + movie.getPosterPath());
+
         // Icons made by "https://www.flaticon.com/authors/freepik"
         // Title: "Popcorn"
         // Licensed by Creative Commons BY 3.0
@@ -424,6 +430,8 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
         String title = movie.getTitle();
         String originalTitle = movie.getOriginalTitle();
         String date = movie.getReleaseDate();
+
+        Log.e(TAG, "DETAILFRAGMENT populateUI backdrop: " + movie.getBackdropPath());
 
         Picasso.get()
                 .load(movie.getBackdropPath())
