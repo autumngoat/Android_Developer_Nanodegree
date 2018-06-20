@@ -47,6 +47,8 @@
 
 package com.example.full_dream.popularmoviesstage1.network;
 
+import android.util.Log;
+
 import retrofit2.Retrofit;
 import retrofit2.converter.moshi.MoshiConverterFactory;
 

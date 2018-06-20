@@ -49,7 +49,7 @@ package com.example.full_dream.popularmoviesstage1.viewmodel;
 
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
-import android.arch.lifecycle.MutableLiveData;
+import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -71,10 +71,10 @@ public class PosterListViewModel extends AndroidViewModel {
 
     private static final String TAG = PosterListViewModel.class.getSimpleName();
 //    // Cache the list of Movie objects
-    private MutableLiveData<List<Movie>> mMovieList;
+//    private MutableLiveData<List<Movie>> mMovieList;
+    private LiveData<List<Movie>> mMovieList;
     // Hold a reference to the repository
     private MovieRepository mRepository;
-    private int mOption;
 
     /**
      * Subclasses of AndroidViewModel MUST have a constructor that accepts Application as the ONLY
@@ -88,9 +88,10 @@ public class PosterListViewModel extends AndroidViewModel {
 //        AppDatabase database = AppDatabase.getInstance(this.getApplication());
 //        Log.d(TAG, "Actively retrieving the movies from the Database");
 //        this.movies = database.movieDao().loadAllMovies();
-        Log.d(TAG, "Actively retrieving the movies from the Repository");
+//        Log.d(TAG, "Actively retrieving the movies from the Repository");
+        Log.e(TAG, "PLVM constructor");
         mRepository = new MovieRepository(application);
-        mMovieList = mRepository.getMovieList(mOption);
+//        mMovieList = mRepository.getMovieList(0);
     }
 
     /**
@@ -98,16 +99,9 @@ public class PosterListViewModel extends AndroidViewModel {
      *
      * @return
      */
-    public MutableLiveData<List<Movie>> getMovies() {
-        Log.e(TAG, "GET MOVIES in PosterListViewModel");
-        Log.e(TAG, "CURRENT MOVIES: " + mRepository.getMovieList(mOption).getValue());
-        return mRepository.getMovieList(mOption);
-    }
-
-    public void setMovies(int settingsOption){
-        Log.e(TAG, "SET MOVIES " + settingsOption + " in PosterListViewModel");
-        mRepository.getMovieList(settingsOption);
-        Log.e(TAG, "UPDATED MOVIES: " + mRepository.getMovieList(settingsOption).getValue());
+    public LiveData<List<Movie>> getMovies(int settingsOption) {
+        Log.e(TAG, "PLVM getMovies(int) List<Movies>");
+        return mRepository.getMovieList(settingsOption);
     }
 
     /**

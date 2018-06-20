@@ -92,14 +92,12 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
 
     private static final String TAG = PosterListFragment.class.getSimpleName();
     private Unbinder mUnbinder;
-    private int mOption;
     private static final int MOST_POPULAR = 0;
     private static final int TOP_RATED = 1;
     private static final int FAVORITES = 2;
 //    private String API_KEY = BuildConfig.API_KEY;
     private PosterAdapter mPosterAdapter;
     // Member variable for the Database
-    private AppDatabase mDb;
     private SharedViewModel model;
     private PosterListViewModel viewModel;
     @BindView(R.id.rv_poster_list)
@@ -114,7 +112,7 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
     public void onAttach(Context context) {
         super.onAttach(context);
 
-        Log.e(TAG, "onAttach");
+        Log.e(TAG, "PLFRAGMENT onAttach");
     }
 
     /**
@@ -128,13 +126,17 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
         super.onCreate(savedInstanceState);
 
         // Initialize the Database
-        mDb = AppDatabase.getInstance(getContext());
+//        mDb = AppDatabase.getInstance(getContext());
 
         // Use ViewModelProviders to associate an instance of PosterListViewModel scoped with the
         // lifecycle of the UIController MainActivity
         model = ViewModelProviders.of(getActivity()).get(SharedViewModel.class);
 
-        Log.e(TAG, "onCreate");
+        // Use ViewModelProviders to associate an instance of PosterListViewModel scoped with the
+        // lifecyce of the UIController PosterListFragment
+        viewModel = ViewModelProviders.of(this).get(PosterListViewModel.class);
+
+        Log.e(TAG, "PLFRAGMENT onCreate");
     }
 
     /**
@@ -197,19 +199,17 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
         mPosterAdapter = new PosterAdapter(this);
         // Set the view to the empty PosterAdapter
         mRecyclerView.setAdapter(mPosterAdapter);
-        // Use ViewModelProviders to associate an instance of PosterListViewModel scoped with the
-        // lifecyce of the UIController PosterListFragment
-        viewModel = ViewModelProviders.of(this).get(PosterListViewModel.class);
+
         // Add an Observer for the LiveDate returned by getMovies() == LiveData<List<Movies>>
-        Log.e(TAG, "OBSERVING: " + viewModel.getMovies().getValue());
-        viewModel.getMovies().observe(this, new Observer<List<Movie>>() {
+        Log.e(TAG, "PLFRAGMENT observe()");
+        viewModel.getMovies(0).observe(this, new Observer<List<Movie>>() {
             // onChanged() method fires when the observed data changes and the fragment is in the
             // foreground
             @Override
             public void onChanged(@Nullable List<Movie> movies) {
                 // Update UI
                 mPosterAdapter.setMovieData(movies);
-                Log.e(TAG, "onChanged() called");
+                Log.e(TAG, "PLFRAGMENT onChanged() called, 1st movies: " + movies.get(0));
             }
         });
 
@@ -223,7 +223,7 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
 //            Toast.makeText(this, netConnectMsg, Toast.LENGTH_LONG).show();
 //        }
 
-        Log.e(TAG, "onCreateView");
+        Log.e(TAG, "PLFRAGMENT onCreateView");
 
         // Return the fragment view
         return rootView;
@@ -245,14 +245,14 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
         //  https://github.com/JakeWharton/ActionBarSherlock/issues/935
         setHasOptionsMenu(true);
 
-        Log.e(TAG, "onActivityCreated");
+        Log.e(TAG, "PLFRAGMENT onActivityCreated");
     }
 
     @Override
     public void onStart() {
         super.onStart();
 
-        Log.e(TAG, "onCreateView");
+        Log.e(TAG, "PLFRAGMENT onCreateView");
     }
 
     /**
@@ -265,21 +265,21 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
         super.onResume();
 
 //        callRetrofit();
-        Log.e(TAG, "onResume");
+        Log.e(TAG, "PLFRAGMENT onResume");
     }
 
     @Override
     public void onPause() {
         super.onPause();
 
-        Log.e(TAG, "onPause");
+        Log.e(TAG, "PLFRAGMENT onPause");
     }
 
     @Override
     public void onStop() {
         super.onStop();
 
-        Log.e(TAG, "onStop");
+        Log.e(TAG, "PLFRAGMENT onStop");
     }
 
     /**
@@ -292,21 +292,21 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
         super.onDestroyView();
         mUnbinder.unbind();
 
-        Log.e(TAG, "onDestroyView");
+        Log.e(TAG, "PLFRAGMENT onDestroyView");
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
 
-        Log.e(TAG, "onDestroy");
+        Log.e(TAG, "PLFRAGMENT onDestroy");
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
 
-        Log.e(TAG, "onDetach");
+        Log.e(TAG, "PLFRAGMENT onDetach");
     }
 
     /**
@@ -360,22 +360,55 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
+        int settingsOption;
+
         switch(item.getItemId()){
             case R.id.action_popular:
-                mOption = MOST_POPULAR;
+                Log.e(TAG, "PLFRAGMENT menu popular");
+                settingsOption = MOST_POPULAR;
                 item.setChecked(!item.isChecked());
-                viewModel.setMovies(mOption);
+//                viewModel.getMovies(settingsOption).removeObservers(this);
+//                if(mPosterAdapter != null){
+//                    mPosterAdapter.setMovieData(null);
+//                }
+                viewModel.getMovies(settingsOption).observe(this, new Observer<List<Movie>>() {
+                    @Override
+                    public void onChanged(@Nullable List<Movie> movies) {
+                        mPosterAdapter.setMovieData(movies);
+                    }
+                });
                 break;
             case R.id.action_top_rated:
-                mOption = TOP_RATED;
+                Log.e(TAG, "PLFRAGMENT menu toprated");
+                settingsOption = TOP_RATED;
                 item.setChecked(!item.isChecked());
-                viewModel.setMovies(mOption);
+//                viewModel.getMovies(settingsOption).removeObservers(this);
+//                if(mPosterAdapter != null){
+//                    mPosterAdapter.setMovieData(null);
+//                }
+                viewModel.getMovies(settingsOption).observe(this, new Observer<List<Movie>>() {
+                    @Override
+                    public void onChanged(@Nullable List<Movie> movies) {
+                        mPosterAdapter.setMovieData(movies);
+                    }
+                });
                 break;
-            case R.id.action_favorites:
-                mOption = FAVORITES;
-                item.setChecked(!item.isChecked());
-                viewModel.setMovies(mOption);
-                break;
+//            case R.id.action_favorites:
+//            Log.e(TAG, "PLFRAGMENT menu favorited");
+//                settingsOption = FAVORITES;
+//                item.setChecked(!item.isChecked());
+//                viewModel.getMovies(settingsOption).removeObservers(this);
+//                if(mPosterAdapter != null){
+//                    mPosterAdapter.setMovieData(null);
+//                }
+//                viewModel.getMovies(settingsOption).observe(this, new Observer<List<Movie>>() {
+//                    @Override
+//                    public void onChanged(@Nullable List<Movie> movies) {
+//                        mPosterAdapter.setMovieData(movies);
+//                    }
+//                });
+//                break;
         }
         // Reset scroll position to the top
         mRecyclerView.smoothScrollToPosition(0);

@@ -75,7 +75,7 @@ public class DetailViewModelFactory extends ViewModelProvider.NewInstanceFactory
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        // No inspection unchecked
+        // noinspection unchecked - uses unchecked or unsafe operation
         return (T) new DetailViewModel(mDb, mMovieId);
     }
 }

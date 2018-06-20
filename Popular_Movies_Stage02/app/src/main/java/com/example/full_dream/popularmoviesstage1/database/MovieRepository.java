@@ -88,10 +88,14 @@ public class MovieRepository {
     private TheMovieDBService tmdbService;              // Remote Network access
 
     // Cache data
+    //  MutableLiveData is a mutable and thread-safe version of LiveData with public setValue()
+    //  and postValue() methods
+    //   To be clear, LiveData is immutable and does not have public setValue() and postValue()
+    //   methods
     private MutableLiveData<List<Movie>> popularMovies;
     private MutableLiveData<List<Movie>> toprateMovies;
     private LiveData<List<Movie>> favoriteMovies;
-    private MutableLiveData<Integer> settingOption;
+//    private MutableLiveData<Integer> settingOption;
 
     public MovieRepository(Application application){
         // Get local database access
@@ -101,64 +105,144 @@ public class MovieRepository {
         tmdbService = RetrofitClient.getApiClient();
     }
 
-    public MutableLiveData<List<Movie>> getMovieList(int settingOption){
+    public LiveData<List<Movie>> getMovieList(int settingOption){
         // MutableLiveData is a mutable and thread-safe version of LiveData with public setValue()
         // and postValue() methods
         //  To be clear, LiveData is immutable and does not have public setValue() and postValue()
         //  methods
-        final MutableLiveData<List<Movie>> movieList = new MutableLiveData<>();
-
-        // Each Call from the created TheMovieDBService can make a synchronous or asynchronous HTTP
-        // request to the remote webservice
-        //  Each Call instance can only be used once.
-        // Comment Source: http://square.github.io/retrofit/
-        Call<MovieResponse> call;
+//        final MutableLiveData<List<Movie>> movieList = new MutableLiveData<>();
 
         // Popular or Top Rated or Favorites?
         switch(settingOption){
             case MOST_POPULAR:
-                Log.e(TAG, "Retrofit call MOST POPULAR in Repository");
-                call = tmdbService.getPopularMovies(API_KEY);
-                break;
+                // Null check, if null, create new instance and fill it
+                if(popularMovies == null){
+                    Log.e(TAG, "REPOSITORY popularMovies == null");
+                    popularMovies = new MutableLiveData<>();
+                }
+                getPopularMoviesList();
+                Log.e(TAG, "REPOSITORY popularMovies.getValue()");
+                return popularMovies;
             case TOP_RATED:
-                Log.e(TAG, "Retrofit call TOP RATED in Repository");
-                call = tmdbService.getTopRatedMovies(API_KEY);
-                break;
+                // Null check, if null, create new instance and fill it
+                if(toprateMovies == null){
+                    Log.e(TAG, "REPOSITORY toprateMovies == null");
+                    toprateMovies = new MutableLiveData<>();
+                }
+                getTopMoviesList();
+                Log.e(TAG, "REPOSITORY toprateMovies.getValue()");
+                return toprateMovies;
             case FAVORITES:
-                Log.e(TAG, "Database call FAVORITES in Repository");
+                // Null check, if null, create new instance and fill it
+                if(favoriteMovies == null){
+                    Log.e(TAG, "REPOSITORY favoriteMovies == null");
+                    favoriteMovies = new MutableLiveData<>();
+                }
                 // Set the value and dispatch the value to all the active observers
                 //  setValue vs postValue
                 //   setValue MUST be done on the main thread
                 //   postValue is done on a background thread
-                movieList.postValue(mMovieDao.loadAllMovies().getValue());
-                Log.e(TAG, "MutableLiveDta: " + movieList.toString());
-                return movieList;
+//                movieList.postValue(mMovieDao.loadAllMovies().getValue());
+//                Log.e(TAG, "MutableLiveDta: " + movieList.toString());
+//                return movieList;
+                return favoriteMovies = mMovieDao.loadAllMovies();
             default:
                 throw new UnknownError("This is not a CTF, go somewhere else for decompiling fun.");
         }
+    }
+
+    /**
+     * Create a Call using an implementation of the API interface (TheMovieDBService) to
+     * asynchronously send a HTTP request for Popular Movies and process the resulting HTTP response.
+     *
+     * Comment Source:
+     * https://square.github.io/retrofit/2.x/retrofit/retrofit2/Callback.html
+     * https://square.github.io/retrofit/2.x/retrofit/retrofit2/Response.html#isSuccessful--
+     * https://square.github.io/retrofit/2.x/retrofit/retrofit2/Retrofit.html#create-java.lang.Class-
+     * https://square.github.io/retrofit/2.x/retrofit/retrofit2/Call.html
+     */
+    public void getPopularMoviesList(){
+        // A Call represents the HTTP request with a generic parameter representing the response
+        // body type which will be converted by one of the Converter.Factory instances
+        //  Each call yields its own HTTP request and response pair
+        Call<MovieResponse> call = tmdbService.getPopularMovies(API_KEY);
+
+//        Log.e(TAG, "REPOSITORY apiKey " + API_KEY);
 
         // Asynchronously send the HTTP request and notify the callback of its HTTP response
         // or if an error occurred talking to the server, creating the HTTP request
         call.enqueue(new Callback<MovieResponse>() {
+
+            // Invoked for a received HTTP response
+            //  HTTP response may still indicate an application-level failure  such as a 404 or 500
             @Override
             public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
 
+                // Returns true if in the range [200..300)
                 if(response.isSuccessful()){
                     List<Movie> movies = response.body().getResults();
-                    if(movies != null){
-                        // Set the value and dispatch the value to all the active observers
-                        movieList.postValue(movies);
-                    }
+//                    Log.e(TAG, "REPOSITORY response.body(): " + response.body().toString());
+//                    Log.e(TAG, "REPOSITORY response.body().getResults: " + response.body().getResults().toString());
+                    // Set the value and dispatch the value to all the active observers
+//                        movieList.setValue(movies);
+                    popularMovies.setValue(movies);
                 } else {
-                    Log.e(TAG, "RESPONSE NOT SUCCESSFUL");
+                    Log.e(TAG, "REPOSITORY response NOT successful");
                 }
             }
 
+            // Invoked when a network exception occurred talking to the server or when an unexpected
+            // exception occurred creating the request or processing the response
             @Override
-            public void onFailure(Call<MovieResponse> call, Throwable t) {}
+            public void onFailure(Call<MovieResponse> call, Throwable t) {
+                popularMovies = null;
+                Log.e(TAG, "REPOSITORY call.enqueue FAILED");
+            }
         });
+    }
 
-        return movieList;
+    /**
+     * Create a Call using an implementation of the API interface (TheMovieDBService) to
+     * asynchronously send a HTTP request for Top Rated Movies and process the resulting HTTP response.
+     *
+     * Comment Source:
+     * https://square.github.io/retrofit/2.x/retrofit/retrofit2/Callback.html
+     * https://square.github.io/retrofit/2.x/retrofit/retrofit2/Response.html#isSuccessful--
+     * https://square.github.io/retrofit/2.x/retrofit/retrofit2/Retrofit.html#create-java.lang.Class-
+     * https://square.github.io/retrofit/2.x/retrofit/retrofit2/Call.html
+     */
+    public void getTopMoviesList(){
+        // A Call represents the HTTP request with a generic parameter representing the response
+        // body type which will be converted by one of the Converter.Factory instances
+        //  Each call yields its own HTTP request and response pair
+        Call<MovieResponse> call = tmdbService.getTopRatedMovies(API_KEY);
+
+        // Asynchronously send the HTTP request and notify the callback of its HTTP response
+        // or if an error occurred talking to the server, creating the HTTP request
+        call.enqueue(new Callback<MovieResponse>() {
+
+            // Invoked for a received HTTP response
+            //  HTTP response may still indicate an application-level failure  such as a 404 or 500
+            @Override
+            public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
+
+                // Returns true if in the range [200..300)
+                if(response.isSuccessful()){
+                    List<Movie> movies = response.body().getResults();
+                    toprateMovies.setValue(movies);
+                } else {
+                    Log.e(TAG, "REPOSITORY response NOT successful");
+                }
+            }
+
+            // Invoked when a network exception occurred talking to the server or when an unexpected
+            // exception occurred creating the request or processing the response
+            @Override
+            public void onFailure(Call<MovieResponse> call, Throwable t) {
+                toprateMovies = null;
+                Log.e(TAG, "REPOSITORY call.enqueue FAILED");
+            }
+        });
     }
 
     public void insertMovie(final Movie movie){

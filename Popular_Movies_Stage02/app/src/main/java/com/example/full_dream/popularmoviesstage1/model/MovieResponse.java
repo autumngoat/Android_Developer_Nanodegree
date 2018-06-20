@@ -99,4 +99,17 @@ public class MovieResponse {
     public void setResults(List<Movie> results) {
         this.results = results;
     }
+
+    /**
+     * Formatted String representation of MovieResponse object for better debugging purposes.
+     *
+     * @return Return String representation of MovieResponse object.
+     */
+    @Override
+    public String toString() {
+        return "\npage: " + this.page +
+                "\ntotalPages: " + this.totalPages +
+                "\nresults: " + this.results +
+                "\ntotalResults: " + this.totalResults;
+    }
 }
