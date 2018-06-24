@@ -47,6 +47,7 @@
 
 package com.example.full_dream.popularmoviesstage1.viewmodel;
 
+import android.app.Application;
 import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
 import android.support.annotation.NonNull;
@@ -63,19 +64,19 @@ import com.example.full_dream.popularmoviesstage1.database.AppDatabase;
 public class DetailViewModelFactory extends ViewModelProvider.NewInstanceFactory {
 
     // Instance of the database
-    private final AppDatabase mDb;
+    private final Application mApplication;
     // ID of the Movie to update
     private final int mMovieId;
 
-    public DetailViewModelFactory(AppDatabase database, int movieId){
-        mDb = database;
+    public DetailViewModelFactory(Application application, int movieId){
+        mApplication = application;
         mMovieId = movieId;
     }
 
-    @NonNull
-    @Override
-    public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        // noinspection unchecked - uses unchecked or unsafe operation
-        return (T) new DetailViewModel(mDb, mMovieId);
-    }
+//    @NonNull
+//    @Override
+//    public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
+//        // noinspection unchecked
+//        return (T) new DetailViewModel(mApplication, mMovieId);
+//    }
 }

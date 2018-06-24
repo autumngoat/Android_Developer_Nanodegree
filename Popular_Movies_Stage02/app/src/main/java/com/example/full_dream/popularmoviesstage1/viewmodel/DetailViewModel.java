@@ -47,10 +47,15 @@
 
 package com.example.full_dream.popularmoviesstage1.viewmodel;
 
+import android.app.Application;
+import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModel;
+import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.example.full_dream.popularmoviesstage1.database.AppDatabase;
+import com.example.full_dream.popularmoviesstage1.database.MovieRepository;
 import com.example.full_dream.popularmoviesstage1.model.Movie;
 
 /**
@@ -58,16 +63,52 @@ import com.example.full_dream.popularmoviesstage1.model.Movie;
  *  Extending AndroidViewModel requires an implementation of it's constructor.
  *   The AndroidViewModel class has a constructor that receives a parameter of type application.
  */
-public class DetailViewModel extends ViewModel {
+public class DetailViewModel extends AndroidViewModel {
 
     public static final String TAG = DetailViewModel.class.getSimpleName();
-    private LiveData<Movie> movie;
+    // Hold a reference to the repository
+    private MovieRepository mRepository;
 
-    public DetailViewModel(AppDatabase database, int movieId){
-        movie = database.movieDao().loadMovieById(movieId);
+//    public DetailViewModel(AppDatabase database, int movieId){
+    /**
+     * Subclasses of AndroidViewModel MUST have a constructor that accepts Application as the ONLY
+     * parameter, according to:
+     *  https://developer.android.com/reference/android/arch/lifecycle/AndroidViewModel)
+     *
+     * @param application Base class for maintaining global application state.
+     */
+    public DetailViewModel(@NonNull Application application){
+        super(application);
+        Log.e(TAG, "DETAILVM constructor");
+        mRepository = new MovieRepository(application);
     }
 
-    public LiveData<Movie> getMovie(){
-        return movie;
+    /**
+     * Wrapper method that calls the MovieRepository's getMovieById() method, which hides the
+     * implementation from the UI.
+     *
+     * @param movieId Unique Movie ID from TMDB used in the local database as the primary key.
+     * @return Movie object with the unique Movie ID
+     */
+    public LiveData<Movie> getMovieById(int movieId){
+        Log.e(TAG, "DETAILVM getMovieById: id==" + movieId);
+        Log.e(TAG, "DETAILVM getMovieById: " + mRepository.getMovieById(movieId));
+        return mRepository.getMovieById(movieId);
     }
+
+    /**
+     * Wrapper method that calls the MovieRepository's insertMovie() method, which hides the
+     * implementation from the UI.
+     *
+     * @param movie Movie instance to insert into the AppDatabase.
+     */
+    public void insertMovie(Movie movie){ mRepository.insertMovie(movie); }
+
+    /**
+     * Wrapper method that calls the MovieRepository's deleteMovie() method, which hides the
+     * implementation from the UI.
+     *
+     * @param movie Movie instance to delete from the AppDatabase.
+     */
+    public void deleteMovie(Movie movie){ mRepository.deleteMovie(movie); }
 }

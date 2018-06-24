@@ -69,6 +69,7 @@ import android.view.ViewGroup;
 import com.example.full_dream.popularmoviesstage1.R;
 import com.example.full_dream.popularmoviesstage1.adapter.PosterAdapter;
 import com.example.full_dream.popularmoviesstage1.model.Movie;
+import com.example.full_dream.popularmoviesstage1.network.TheMovieDBService;
 import com.example.full_dream.popularmoviesstage1.viewmodel.PosterListViewModel;
 import com.example.full_dream.popularmoviesstage1.viewmodel.SharedViewModel;
 
@@ -80,16 +81,19 @@ import butterknife.Unbinder;
 
 public class PosterListFragment extends Fragment implements PosterAdapter.PosterAdapterOnClickHandler {
 
+    // Constants
     private static final String TAG = PosterListFragment.class.getSimpleName();
-    private Unbinder mUnbinder;
     private static final int MOST_POPULAR = 0;
     private static final int TOP_RATED = 1;
     private static final int FAVORITES = 2;
-//    private String API_KEY = BuildConfig.API_KEY;
-    private PosterAdapter mPosterAdapter;
-    // Member variable for the Database
+
+    // ViewModels
     private SharedViewModel model;
     private PosterListViewModel viewModel;
+
+    // UI related elements
+    private Unbinder mUnbinder;
+    private PosterAdapter mPosterAdapter;
     @BindView(R.id.rv_poster_list)
     RecyclerView mRecyclerView;
 
@@ -114,9 +118,6 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // Initialize the Database
-//        mDb = AppDatabase.getInstance(getContext());
 
         // Use ViewModelProviders to associate an instance of PosterListViewModel scoped with the
         // lifecycle of the UIController MainActivity
@@ -254,7 +255,6 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
     public void onResume() {
         super.onResume();
 
-//        callRetrofit();
         Log.e(TAG, "PLFRAGMENT onResume");
     }
 
@@ -366,6 +366,7 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
                 viewModel.getMovies(settingsOption).observe(this, new Observer<List<Movie>>() {
                     @Override
                     public void onChanged(@Nullable List<Movie> movies) {
+                        // Update UI with popular movies
                         mPosterAdapter.setMovieData(movies);
                     }
                 });
@@ -381,25 +382,28 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
                 viewModel.getMovies(settingsOption).observe(this, new Observer<List<Movie>>() {
                     @Override
                     public void onChanged(@Nullable List<Movie> movies) {
+                        // Update UI with top rated movies
                         mPosterAdapter.setMovieData(movies);
                     }
                 });
                 break;
-//            case R.id.action_favorites:
-//            Log.e(TAG, "PLFRAGMENT menu favorited");
-//                settingsOption = FAVORITES;
-//                item.setChecked(!item.isChecked());
+            case R.id.action_favorites:
+            Log.e(TAG, "PLFRAGMENT menu favorited");
+                settingsOption = FAVORITES;
+                item.setChecked(!item.isChecked());
 //                viewModel.getMovies(settingsOption).removeObservers(this);
 //                if(mPosterAdapter != null){
 //                    mPosterAdapter.setMovieData(null);
 //                }
-//                viewModel.getMovies(settingsOption).observe(this, new Observer<List<Movie>>() {
-//                    @Override
-//                    public void onChanged(@Nullable List<Movie> movies) {
-//                        mPosterAdapter.setMovieData(movies);
-//                    }
-//                });
-//                break;
+                viewModel.getMovies(settingsOption).observe(this, new Observer<List<Movie>>() {
+                    @Override
+                    public void onChanged(@Nullable List<Movie> movies) {
+//                        Log.e(TAG, "PLFRAGMENT favorites menu option" + movies);
+                        // Update UI with favorite movies
+                        mPosterAdapter.setMovieData(movies);
+                    }
+                });
+                break;
         }
         // Reset scroll position to the top
         mRecyclerView.smoothScrollToPosition(0);

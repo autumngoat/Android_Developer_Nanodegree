@@ -70,7 +70,7 @@ import com.example.full_dream.popularmoviesstage1.model.Movie;
  * Other sources:
  * https://developer.android.com/reference/android/arch/persistence/room/package-summary
  */
-@Database(entities = {Movie.class}, version = 2, exportSchema = false)
+@Database(entities = {Movie.class}, version = 1, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
     private static AppDatabase sInstance;

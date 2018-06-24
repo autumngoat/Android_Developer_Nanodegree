@@ -70,9 +70,7 @@ import java.util.List;
 public class PosterListViewModel extends AndroidViewModel {
 
     private static final String TAG = PosterListViewModel.class.getSimpleName();
-//    // Cache the list of Movie objects
-//    private MutableLiveData<List<Movie>> mMovieList;
-    private LiveData<List<Movie>> mMovieList;
+
     // Hold a reference to the repository
     private MovieRepository mRepository;
 
@@ -85,13 +83,8 @@ public class PosterListViewModel extends AndroidViewModel {
      */
     public PosterListViewModel(@NonNull Application application) {
         super(application);
-//        AppDatabase database = AppDatabase.getInstance(this.getApplication());
-//        Log.d(TAG, "Actively retrieving the movies from the Database");
-//        this.movies = database.movieDao().loadAllMovies();
-//        Log.d(TAG, "Actively retrieving the movies from the Repository");
         Log.e(TAG, "PLVM constructor");
         mRepository = new MovieRepository(application);
-//        mMovieList = mRepository.getMovieList(0);
     }
 
     /**
@@ -103,20 +96,4 @@ public class PosterListViewModel extends AndroidViewModel {
         Log.e(TAG, "PLVM getMovies(int) List<Movies>");
         return mRepository.getMovieList(settingsOption);
     }
-
-    /**
-     * Wrapper method that calls the MovieRepository's insertMovie() method, which hides the
-     * implementation from the UI.
-     *
-     * @param movie Movie instance to insert into the AppDatabase.
-     */
-    public void insertMovie(Movie movie){ mRepository.insertMovie(movie); }
-
-    /**
-     * Wrapper method that calls the MovieRepository's deleteMovie() method, which hides the
-     * implementation from the UI.
-     *
-     * @param movie Movie instance to delete from the AppDatabase.
-     */
-    public void deleteMovie(Movie movie){ mRepository.deleteMovie(movie); }
 }

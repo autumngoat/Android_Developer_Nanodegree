@@ -74,70 +74,72 @@ import retrofit2.Response;
  */
 public class MovieRepository {
 
+    // Constants
     private static final String TAG = MovieRepository.class.getSimpleName();
     private static final int MOST_POPULAR = 0;
     private static final int TOP_RATED = 1;
     private static final int FAVORITES = 2;
-    private String API_KEY = BuildConfig.API_KEY;
-//    private LiveData<List<Movie>> mMovieList;
+    private static final String API_KEY = BuildConfig.API_KEY;
 
     // For Singleton instantiation
     private static final Object LOCK = new Object();    // Synch lock
     private static MovieRepository sInstance;           // Singleton instance
     private MovieDao mMovieDao;                         // Local Database access
-    private TheMovieDBService tmdbService;              // Remote Network access
+    private TheMovieDBService mTmdbService;              // Remote Network access
 
     // Cache data
     //  MutableLiveData is a mutable and thread-safe version of LiveData with public setValue()
     //  and postValue() methods
     //   To be clear, LiveData is immutable and does not have public setValue() and postValue()
     //   methods
-    private MutableLiveData<List<Movie>> popularMovies;
-    private MutableLiveData<List<Movie>> toprateMovies;
-    private LiveData<List<Movie>> favoriteMovies;
-//    private MutableLiveData<Integer> settingOption;
+    private MutableLiveData<List<Movie>> mPopularMovies;
+    private MutableLiveData<List<Movie>> mToprateMovies;
+    private LiveData<List<Movie>> mFavoriteMovies;
+    // Cache the favorite Movie for FAB UI changes in the DetailFragment
+    private LiveData<Movie> mMovieById;
 
     public MovieRepository(Application application){
         // Get local database access
         AppDatabase database = AppDatabase.getInstance(application);
         mMovieDao = database.movieDao();
+
         // Get remote network access
-        tmdbService = RetrofitClient.getApiClient();
+        mTmdbService = RetrofitClient.getApiClient();
+
+        // Create each MutableLiveData object
+        mPopularMovies = new MutableLiveData<>();
+        mToprateMovies = new MutableLiveData<>();
+        mFavoriteMovies = new MutableLiveData<>();
     }
 
     public LiveData<List<Movie>> getMovieList(int settingOption){
-        // MutableLiveData is a mutable and thread-safe version of LiveData with public setValue()
-        // and postValue() methods
-        //  To be clear, LiveData is immutable and does not have public setValue() and postValue()
-        //  methods
-//        final MutableLiveData<List<Movie>> movieList = new MutableLiveData<>();
 
         // Popular or Top Rated or Favorites?
         switch(settingOption){
             case MOST_POPULAR:
                 // Null check, if null, create new instance and fill it
-                if(popularMovies == null){
-                    Log.e(TAG, "REPOSITORY popularMovies == null");
-                    popularMovies = new MutableLiveData<>();
-                }
+//                if(mPopularMovies == null){
+//                    Log.e(TAG, "REPOSITORY popularMovies == null");
+//                    mPopularMovies = new MutableLiveData<>();
+//                }
                 getPopularMoviesList();
                 Log.e(TAG, "REPOSITORY popularMovies.getValue()");
-                return popularMovies;
+                return mPopularMovies;
             case TOP_RATED:
                 // Null check, if null, create new instance and fill it
-                if(toprateMovies == null){
-                    Log.e(TAG, "REPOSITORY toprateMovies == null");
-                    toprateMovies = new MutableLiveData<>();
-                }
+//                if(mToprateMovies == null){
+//                    Log.e(TAG, "REPOSITORY toprateMovies == null");
+//                    mToprateMovies = new MutableLiveData<>();
+//                }
                 getTopMoviesList();
                 Log.e(TAG, "REPOSITORY toprateMovies.getValue()");
-                return toprateMovies;
+                return mToprateMovies;
             case FAVORITES:
                 // Null check, if null, create new instance and fill it
-                if(favoriteMovies == null){
-                    Log.e(TAG, "REPOSITORY favoriteMovies == null");
-                    favoriteMovies = new MutableLiveData<>();
-                }
+//                if(mFavoriteMovies == null){
+//                    Log.e(TAG, "REPOSITORY favoriteMovies == null");
+//                    mFavoriteMovies = new MutableLiveData<>();
+//                }
                 // Set the value and dispatch the value to all the active observers
                 //  setValue vs postValue
                 //   setValue MUST be done on the main thread
@@ -145,7 +147,8 @@ public class MovieRepository {
 //                movieList.postValue(mMovieDao.loadAllMovies().getValue());
 //                Log.e(TAG, "MutableLiveDta: " + movieList.toString());
 //                return movieList;
-                return favoriteMovies = mMovieDao.loadAllMovies();
+                Log.e(TAG, "REPOSITORY favorites.getValue(): " + mMovieDao.loadAllMovies().getValue());
+                return mFavoriteMovies = mMovieDao.loadAllMovies();
             default:
                 throw new UnknownError("This is not a CTF, go somewhere else for decompiling fun.");
         }
@@ -161,13 +164,11 @@ public class MovieRepository {
      * https://square.github.io/retrofit/2.x/retrofit/retrofit2/Retrofit.html#create-java.lang.Class-
      * https://square.github.io/retrofit/2.x/retrofit/retrofit2/Call.html
      */
-    public void getPopularMoviesList(){
+    private void getPopularMoviesList(){
         // A Call represents the HTTP request with a generic parameter representing the response
         // body type which will be converted by one of the Converter.Factory instances
         //  Each call yields its own HTTP request and response pair
-        Call<MovieResponse> call = tmdbService.getPopularMovies(API_KEY);
-
-//        Log.e(TAG, "REPOSITORY apiKey " + API_KEY);
+        Call<MovieResponse> call = mTmdbService.getPopularMovies(API_KEY);
 
         // Asynchronously send the HTTP request and notify the callback of its HTTP response
         // or if an error occurred talking to the server, creating the HTTP request
@@ -181,11 +182,8 @@ public class MovieRepository {
                 // Returns true if in the range [200..300)
                 if(response.isSuccessful()){
                     List<Movie> movies = response.body().getResults();
-//                    Log.e(TAG, "REPOSITORY response.body(): " + response.body().toString());
-//                    Log.e(TAG, "REPOSITORY response.body().getResults: " + response.body().getResults().toString());
                     // Set the value and dispatch the value to all the active observers
-//                        movieList.setValue(movies);
-                    popularMovies.setValue(movies);
+                    mPopularMovies.setValue(movies);
                 } else {
                     Log.e(TAG, "REPOSITORY response NOT successful");
                 }
@@ -195,7 +193,7 @@ public class MovieRepository {
             // exception occurred creating the request or processing the response
             @Override
             public void onFailure(Call<MovieResponse> call, Throwable t) {
-                popularMovies = null;
+                mPopularMovies = null;
                 Log.e(TAG, "REPOSITORY call.enqueue FAILED");
             }
         });
@@ -211,11 +209,11 @@ public class MovieRepository {
      * https://square.github.io/retrofit/2.x/retrofit/retrofit2/Retrofit.html#create-java.lang.Class-
      * https://square.github.io/retrofit/2.x/retrofit/retrofit2/Call.html
      */
-    public void getTopMoviesList(){
+    private void getTopMoviesList(){
         // A Call represents the HTTP request with a generic parameter representing the response
         // body type which will be converted by one of the Converter.Factory instances
         //  Each call yields its own HTTP request and response pair
-        Call<MovieResponse> call = tmdbService.getTopRatedMovies(API_KEY);
+        Call<MovieResponse> call = mTmdbService.getTopRatedMovies(API_KEY);
 
         // Asynchronously send the HTTP request and notify the callback of its HTTP response
         // or if an error occurred talking to the server, creating the HTTP request
@@ -229,7 +227,7 @@ public class MovieRepository {
                 // Returns true if in the range [200..300)
                 if(response.isSuccessful()){
                     List<Movie> movies = response.body().getResults();
-                    toprateMovies.setValue(movies);
+                    mToprateMovies.setValue(movies);
                 } else {
                     Log.e(TAG, "REPOSITORY response NOT successful");
                 }
@@ -239,12 +237,17 @@ public class MovieRepository {
             // exception occurred creating the request or processing the response
             @Override
             public void onFailure(Call<MovieResponse> call, Throwable t) {
-                toprateMovies = null;
+                mToprateMovies = null;
                 Log.e(TAG, "REPOSITORY call.enqueue FAILED");
             }
         });
     }
 
+    /**
+     * Create a Movie entry into the 'favorites' database.
+     *
+     * @param movie Movie object to insert into the 'favorites' database.
+     */
     public void insertMovie(final Movie movie){
         AppExecutors.getsInstance().diskIO().execute(new Runnable() {
             @Override
@@ -254,6 +257,11 @@ public class MovieRepository {
         });
     }
 
+    /**
+     * Delete a Movie entry from the 'favorites' database.
+     *
+     * @param movie Movie object to delete from the 'favorites' database.
+     */
     public void deleteMovie(final Movie movie){
         AppExecutors.getsInstance().diskIO().execute(new Runnable() {
             @Override
@@ -261,5 +269,35 @@ public class MovieRepository {
                 mMovieDao.deleteMovie(movie);
             }
         });
+    }
+
+    /**
+     * Read/retrieve Movie object from the 'favorites' database by its primary key.
+     *
+     * @param movieId Unique Movie ID from TMDB being used as the primary key of the 'favorites'
+     *                database.
+     * @return Return either a Movie object that is inside the 'favorites' database or return null.
+     */
+    public LiveData<Movie> getMovieById(final int movieId){
+//        AppExecutors.getsInstance().diskIO().execute(new Runnable() {
+//            @Override
+//            public void run() {
+//                mMovieById = mMovieDao.loadMovieById(movieId);
+//                Log.e(TAG, "REPOSITORY getMovieById: id==" + movieId);
+//                Log.e(TAG, "REPOSITORY getMovieById: " + mMovieById);
+//            }
+//        });
+//
+//        if(mMovieById == null){
+//            Log.e(TAG, "REPOSITORY getMovieById: NULL");
+//            return null;
+//        } else {
+//            Log.e(TAG, "REPOSITORY getMovieById: not NULL");
+//            return mMovieById;
+//        }
+
+        Log.e(TAG, "REPOSITORY getMovieByid: id=="+movieId);
+        Log.e(TAG, "REPOSITORY getMovieById: " + mMovieDao.loadMovieById(movieId));
+        return mMovieDao.loadMovieById(movieId);
     }
 }

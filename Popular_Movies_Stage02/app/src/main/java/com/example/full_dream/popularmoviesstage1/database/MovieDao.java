@@ -94,8 +94,8 @@ public interface MovieDao {
     LiveData<Movie> loadMovieById(int id);
 
     // Update
-    @Update(onConflict = OnConflictStrategy.REPLACE)
-    void updateMovie(Movie movie);
+//    @Update(onConflict = OnConflictStrategy.REPLACE)
+//    void updateMovie(Movie movie);
 
     // Delete
     @Delete
