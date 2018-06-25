@@ -47,9 +47,16 @@
 
 package com.example.full_dream.popularmoviesstage1;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 
 import com.example.full_dream.popularmoviesstage1.fragment.DetailFragment;
@@ -65,6 +72,11 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
 
     private boolean isDetailFragment;
+    // Dynamic IntentFilter
+    private IntentFilter mNetworkConnectionIntentFilter;
+    private BroadcastReceiver mNetworkConnectionBroadcastReceiver;
+    // Network connection status
+    private boolean isConnected;
 
     /**
      * Initialize first (and only) PosterListFragment instance here if first time app is starting.
@@ -74,6 +86,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+        // Instantiate the IntentFilter
+        mNetworkConnectionIntentFilter = new IntentFilter();
+        // Setup IntentFilter to catch network connection and disconnection actions/events
+//        mNetworkConnectionIntentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+
+        // Instantiate the BroadcastReceiver
+        mNetworkConnectionBroadcastReceiver = new ConnectionBroadcastReceiver();
 
         // If first time opening app, then create new PosterListFragment instance and commit to
         // fragment back stack
@@ -87,34 +107,48 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * In explicably, onResume occurs AFTER onRestoreInstanceState() so handle
+     * Inexplicably, onResume occurs AFTER onRestoreInstanceState() so handle
      * rotation/orientation/configuration change here based on bundle data interpreted inside
      * onRestoreInstanceState().
      */
     @Override
     protected void onResume() {
         super.onResume();
+        // Register the BroadcastReceiver when the Activity is in the foreground
+        registerReceiver(mNetworkConnectionBroadcastReceiver, mNetworkConnectionIntentFilter);
 
-        if(isDetailFragment){
-            Log.e(TAG, "MAIN: onResume isDetailFragment");
-            DetailFragment detailFragment = (DetailFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-            if(detailFragment == null){
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .addToBackStack(null)
-                        .replace(R.id.fragment_container, new DetailFragment())
-                        .commit();
-            }
+        if(!isConnected){
+            Toast.makeText(this, "Please check your network connection and try again.", Toast.LENGTH_LONG).show();
         } else {
-            Log.e(TAG, "MAIN: onResume NOT isDetailFragment");
-            PosterListFragment posterListFragment = (PosterListFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-            if(posterListFragment == null){
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .add(R.id.fragment_container, new PosterListFragment())
-                        .commit();
+            Toast.makeText(this, "Network connection achieved!", Toast.LENGTH_SHORT).show();
+            if(isDetailFragment){
+                Log.e(TAG, "MAIN: onResume isDetailFragment");
+                DetailFragment detailFragment = (DetailFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+                if(detailFragment == null){
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .addToBackStack(null)
+                            .replace(R.id.fragment_container, new DetailFragment())
+                            .commit();
+                }
+            } else {
+                Log.e(TAG, "MAIN: onResume NOT isDetailFragment");
+                PosterListFragment posterListFragment = (PosterListFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+                if(posterListFragment == null){
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .add(R.id.fragment_container, new PosterListFragment())
+                            .commit();
+                }
             }
         }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // Unregister the BroadcastReceiver when the Activity is in the background
+        unregisterReceiver(mNetworkConnectionBroadcastReceiver);
     }
 
     /**
@@ -158,16 +192,34 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    //    /**
-//     * Navigate back to the PosterListFragment from the DetailFragment on Back press.
-//     */
-//    @Override
-//    public void onBackPressed() {
-//        int count = getSupportFragmentManager().getBackStackEntryCount();
-//        if(count == 0){
-//            super.onBackPressed();
-//        } else {
-//            this.getSupportFragmentManager().popBackStack();
-//        }
-//    }
+    /**
+     * BroadcastReceiver only used in the MainActivity class so is created as an inner class.
+     */
+    private class ConnectionBroadcastReceiver extends BroadcastReceiver{
+        /**
+         * Update the UI.
+         *
+         * @param context
+         * @param intent Same as the IntentFilter instantiated and setup in onCreate().
+         */
+        @Override
+        public void onReceive(Context context, Intent intent) {
+//            String action = intent.getAction();
+//            Log.e(TAG, "MAIN: intent.getAction() " + action);
+//            if(action == null){
+//                isConnected = false;
+//            } else {
+//                isConnected = true;
+//            }
+
+            ConnectivityManager cm = (ConnectivityManager) getSystemService(context.CONNECTIVITY_SERVICE);
+            NetworkInfo netInfo = cm.getActiveNetworkInfo();
+//            if(netInfo != null && netInfo.isConnected()){
+//                isConnected = true;
+//            } else {
+//                isConnected = false;
+//            }
+            isConnected = (netInfo != null && netInfo.isConnected());
+        }
+    }
 }

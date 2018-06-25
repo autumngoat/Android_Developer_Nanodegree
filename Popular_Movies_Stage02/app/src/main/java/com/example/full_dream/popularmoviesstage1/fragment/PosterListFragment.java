@@ -193,16 +193,6 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
         // Set the view to the empty PosterAdapter
         mRecyclerView.setAdapter(mPosterAdapter);
 
-        // Checked out https://developer.android.com/training/basics/network-ops/managing
-        // for how to check for network status check
-//        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-//        NetworkInfo netInfo = cm.getActiveNetworkInfo();
-//        if(netInfo != null && netInfo.isConnected()){
-//            callRetrofit();
-//        } else {
-//            Toast.makeText(this, netConnectMsg, Toast.LENGTH_LONG).show();
-//        }
-
         Log.e(TAG, "PLFRAGMENT onCreateView");
 
         // Return the fragment view

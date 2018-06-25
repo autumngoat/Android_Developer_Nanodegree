@@ -171,16 +171,9 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
         // Retrieve the selected/clicked-on RecyclerView item
         mSelectedMovie = model.getSelected().getValue();
 
-        // Create an instance of the factory by passing the database and the movie ID to its
-        // constructor
-//        DetailViewModelFactory factory = new DetailViewModelFactory(mDb, mMovie.getId());
-
         // Create a ViewModel (similar to the PosterListViewModel in setupViewModel(), but with
         // an instance of factory as a parameter)
-//        final DetailViewModel viewModel = ViewModelProviders.of(this, factory).get(DetailViewModel.class);
         viewModel = ViewModelProviders.of(this).get(DetailViewModel.class);
-
-//        Log.e(TAG, "DETAILFRAGMENT model.getSelected().getValue()" + mMovie.toString());
 
         callRetrofitForTrailers();
         callRetrofitForReviews();
