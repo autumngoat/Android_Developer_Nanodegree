@@ -47,15 +47,13 @@
 
 package com.example.full_dream.popularmoviesstage1;
 
-import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.KeyEvent;
 
 
 import com.example.full_dream.popularmoviesstage1.fragment.PosterListFragment;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -70,13 +68,31 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        // Implement PosterListFragment like this so that I can replace it with a
-        // DetailFragment on ViewHolder click
-        PosterListFragment posterListFragment = new PosterListFragment();
-        getSupportFragmentManager()
-                .beginTransaction()
-                .add(R.id.fragment_container, posterListFragment)
-                .commit();
+        // Check if the Fragment back stack already has the desired Fragment
+        PosterListFragment posterListFragment = (PosterListFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+
+        // Fix layering Fragments on top of another per configuration change
+        //  w/o fix:
+        //   0th Config Change: 1 Fragment
+        //   1st Config Change: 2 Fragments
+        //   2nd Config Change: 3 Fragments
+        //   ...
+        //   Nth Config Change: N+1 Fragments
+        //  w/ fix:
+        //   0th Config Change: 1 Fragment
+        //   1st Config Change: 1 Fragment
+        //   2nd Config Change: 1 Fragment
+        //   ...
+        //   Nth Config Change: 1 Fragment
+        // If the Fragment is NOT found in the Fragment back stack, then create a Fragment instance
+        if(posterListFragment == null){
+            // Implement PosterListFragment like this so that I can replace it with a
+            // DetailFragment on ViewHolder click
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .add(R.id.fragment_container, new PosterListFragment())
+                    .commit();
+        }
     }
 
 //    /**

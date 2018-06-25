@@ -203,41 +203,6 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
         // Populate DetailFragment UI
         populateUI(mSelectedMovie);
 
-//        Log.e(TAG, "DETAILFRAGMENT viewModel.getMovieById(mSelectedMovie.getId()): " + viewModel.getMovieById(mSelectedMovie.getId()));
-        // Retrieve the LiveData to observe by calling the getSelected() on the SharedViewModel
-//        model.getSelected().observe(this, new Observer<Movie>() {
-//        viewModel.getSelectedMovie().observe(this, new Observer<Movie>() {
-//            @Override
-//            public void onChanged(@Nullable Movie movieEntry) {
-//                // Update the UI
-////                populateUI(mSelectedMovie);
-//                // If the current movie is inside the 'favorites' database, then...
-//                if (movieEntry != null) {
-//                    Log.e(TAG, "DETAILFRAGMENT movieEntry NOT null");
-//                    // ...change FAB icon to show as a Favorite and...
-//                    fab.setImageResource(R.drawable.ic_favorite_red);
-//                    // ...mark as a Favorite
-//                    mIsFavorite = true;
-//                } else {
-//                    Log.e(TAG, "DETAILFRAGMENT movieEntry NULL");
-//                    // Change FAB icon to show as NOT a Favorite
-//                    fab.setImageResource(R.drawable.ic_favorite_white);
-//                    // Mark as NOT a Favorite
-//                    mIsFavorite = false;
-//                }
-//            }
-//        });
-
-//        Movie favorite = viewModel.getMovieById(mSelectedMovie.getId());
-//
-//        if(favorite == null){
-//            fab.setImageResource(R.drawable.ic_favorite_white);
-//            Log.e(TAG, "DETAILFRAGMENT favorite is NULL: " + favorite);
-//        } else {
-//            fab.setImageResource(R.drawable.ic_favorite_red);
-//            Log.e(TAG, "DETAILFRAGMENT favorite NOT null: " + favorite);
-//        }
-
         viewModel.getMovieById(mSelectedMovie.getId()).observe(this, new Observer<Movie>() {
             @Override
             public void onChanged(@Nullable Movie movieEntry) {
@@ -261,7 +226,6 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
                 //    Call DetailViewModel getMovieById
                 //     Which calls MovieRepository getMovieId
                 //    Followed by onChanged()
-
 
                 if(movieEntry != null){
                     Log.e(TAG, "DETAILFRAGMENT movieEntry NOT null");
@@ -465,8 +429,6 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
      */
     public void populateUI(Movie movie){
 
-//        Log.e(TAG, "DETAILFRAGMENT populateUI poster: " + movie.getPosterPath());
-
         // Icons made by "https://www.flaticon.com/authors/freepik"
         // Title: "Popcorn"
         // Licensed by Creative Commons BY 3.0
@@ -480,8 +442,6 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
         String title = movie.getTitle();
         String originalTitle = movie.getOriginalTitle();
         String date = movie.getReleaseDate();
-
-//        Log.e(TAG, "DETAILFRAGMENT populateUI backdrop: " + movie.getBackdropPath());
 
         Picasso.get()
                 .load(movie.getBackdropPath())
