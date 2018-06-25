@@ -58,9 +58,6 @@ import android.widget.TextView;
 import com.example.full_dream.popularmoviesstage1.R;
 import com.example.full_dream.popularmoviesstage1.model.Review;
 
-import org.w3c.dom.Text;
-
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -72,14 +69,6 @@ import butterknife.ButterKnife;
 public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewAdapterViewHolder>{
 
     private List<Review> mReviewList;
-
-    /**
-     *
-     * @return
-     */
-    public ArrayList<Review> getReviewList(){
-        return (ArrayList<Review>)mReviewList;
-    }
 
     /**
      *

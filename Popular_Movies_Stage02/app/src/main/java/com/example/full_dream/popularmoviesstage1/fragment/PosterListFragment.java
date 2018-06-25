@@ -93,7 +93,7 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
 
     // UI related elements
     private Unbinder mUnbinder;
-    private GridLayoutManager mLayoutManager;
+    private int mSettingsOption;
     private PosterAdapter mPosterAdapter;
     @BindView(R.id.rv_poster_list)
     RecyclerView mRecyclerView;
@@ -157,12 +157,7 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
         int numberOfColumns = 6;
 
         // Use a Grid Layout Manager as per the rubric
-        mLayoutManager = new GridLayoutManager(getActivity(), numberOfColumns);
-//        if(savedInstanceState != null){
-//            mLayoutManager.onRestoreInstanceState(savedInstanceState.getParcelable("layout"));
-//        } else {
-//            mLayoutManager = new GridLayoutManager(getActivity(), numberOfColumns);
-//        }
+        GridLayoutManager mLayoutManager = new GridLayoutManager(getActivity(), numberOfColumns);
 
         // Experimented with different span counts on different rows from this code:
         // https://stackoverflow.com/questions/31112291/recyclerview-layoutmanager-different-span-counts-on-different-rows
@@ -199,16 +194,18 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
 
         // Add an Observer for the LiveDate returned by getMovies() == LiveData<List<Movies>>
         Log.e(TAG, "PLFRAGMENT observe()");
-        viewModel.getMovies(0).observe(this, new Observer<List<Movie>>() {
-            // onChanged() method fires when the observed data changes and the fragment is in the
-            // foreground
-            @Override
-            public void onChanged(@Nullable List<Movie> movies) {
-                // Update UI
-                mPosterAdapter.setMovieData(movies);
-                Log.e(TAG, "PLFRAGMENT onChanged() called, 1st movies: " + movies.get(0));
-            }
-        });
+//        viewModel.getMovies(1).observe(this, new Observer<List<Movie>>() {
+//            // onChanged() method fires when the observed data changes and the fragment is in the
+//            // foreground
+//            @Override
+//            public void onChanged(@Nullable List<Movie> movies) {
+//                // Update UI
+//                mPosterAdapter.setMovieData(movies);
+//                Log.e(TAG, "PLFRAGMENT onChanged() called, 1st movies: " + movies.get(0));
+//            }
+//        });
+
+//        populateUI(mSettingsOption);
 
         // Checked out https://developer.android.com/training/basics/network-ops/managing
         // for how to check for network status check
@@ -226,21 +223,27 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
         return rootView;
     }
 
-//    @Override
-//    public void onSaveInstanceState(@NonNull Bundle outState) {
-//        super.onSaveInstanceState(outState);
-//
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+
 //        // For deciding which Fragment to reinstate on configuration change in MainActivity
 //        outState.putString("fragment", "list");
-//        // Save LayoutManager as a Parcelable
+        // Save LayoutManager as a Parcelable
 //        outState.putParcelable("layout", mLayoutManager.onSaveInstanceState());
-//    }
+        outState.putInt("settingsOption", mSettingsOption);
+        Log.e(TAG, "PLFRAGMENT saveInstanceState: " + mSettingsOption);
+    }
 
     /**
      * Tells the fragment that its activity has completed its own Activity.onCreate().
+     *  Re-populate the PosterAdapter based on previously selected Menu setting option, or
+     *  populate UI initially if first time round.
      *
      * @param savedInstanceState If the fragment is being re-created from a previous
      *                           saved state, this is the state.
+     *                            Contains the Menu setting option to restore PosterAdapter on
+     *                            orientation change, else null.
      */
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -251,6 +254,14 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
         // Source:
         //  https://github.com/JakeWharton/ActionBarSherlock/issues/935
         setHasOptionsMenu(true);
+
+        if(savedInstanceState == null){
+            populateUI(mSettingsOption);
+            Log.e(TAG, "PLFRAGMENT first time");
+        } else {
+            populateUI(savedInstanceState.getInt("settingsOption"));
+            Log.e(TAG, "PLFRAGMENT populate using " + savedInstanceState.getInt("settingsOption"));
+        }
 
         Log.e(TAG, "PLFRAGMENT onActivityCreated");
     }
@@ -368,61 +379,37 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        int settingsOption;
-
         switch(item.getItemId()){
             case R.id.action_popular:
                 Log.e(TAG, "PLFRAGMENT menu popular");
-                settingsOption = MOST_POPULAR;
+                mSettingsOption = MOST_POPULAR;
                 item.setChecked(!item.isChecked());
-//                viewModel.getMovies(settingsOption).removeObservers(this);
-//                if(mPosterAdapter != null){
-//                    mPosterAdapter.setMovieData(null);
-//                }
-                viewModel.getMovies(settingsOption).observe(this, new Observer<List<Movie>>() {
-                    @Override
-                    public void onChanged(@Nullable List<Movie> movies) {
-                        // Update UI with popular movies
-                        mPosterAdapter.setMovieData(movies);
-                    }
-                });
+                populateUI(mSettingsOption);
                 break;
             case R.id.action_top_rated:
                 Log.e(TAG, "PLFRAGMENT menu toprated");
-                settingsOption = TOP_RATED;
+                mSettingsOption = TOP_RATED;
                 item.setChecked(!item.isChecked());
-//                viewModel.getMovies(settingsOption).removeObservers(this);
-//                if(mPosterAdapter != null){
-//                    mPosterAdapter.setMovieData(null);
-//                }
-                viewModel.getMovies(settingsOption).observe(this, new Observer<List<Movie>>() {
-                    @Override
-                    public void onChanged(@Nullable List<Movie> movies) {
-                        // Update UI with top rated movies
-                        mPosterAdapter.setMovieData(movies);
-                    }
-                });
+                populateUI(mSettingsOption);
                 break;
             case R.id.action_favorites:
             Log.e(TAG, "PLFRAGMENT menu favorited");
-                settingsOption = FAVORITES;
+                mSettingsOption = FAVORITES;
                 item.setChecked(!item.isChecked());
-//                viewModel.getMovies(settingsOption).removeObservers(this);
-//                if(mPosterAdapter != null){
-//                    mPosterAdapter.setMovieData(null);
-//                }
-                viewModel.getMovies(settingsOption).observe(this, new Observer<List<Movie>>() {
-                    @Override
-                    public void onChanged(@Nullable List<Movie> movies) {
-//                        Log.e(TAG, "PLFRAGMENT favorites menu option" + movies);
-                        // Update UI with favorite movies
-                        mPosterAdapter.setMovieData(movies);
-                    }
-                });
-                break;
+                populateUI(mSettingsOption);
         }
         // Reset scroll position to the top
         mRecyclerView.smoothScrollToPosition(0);
         return super.onOptionsItemSelected(item);
+    }
+
+    public void populateUI(int settingsOption){
+        viewModel.getMovies(settingsOption).observe(this, new Observer<List<Movie>>() {
+            @Override
+            public void onChanged(@Nullable List<Movie> movies) {
+                // Update UI with favorite movies
+                mPosterAdapter.setMovieData(movies);
+            }
+        });
     }
 }

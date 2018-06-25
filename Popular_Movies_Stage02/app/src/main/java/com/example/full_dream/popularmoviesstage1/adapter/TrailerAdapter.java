@@ -57,11 +57,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.full_dream.popularmoviesstage1.R;
-import com.example.full_dream.popularmoviesstage1.model.Review;
 import com.example.full_dream.popularmoviesstage1.model.Trailer;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -92,14 +90,6 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerA
      */
     public interface TrailerAdapterOnClickHandler {
         void onClick(String youtubeKey);
-    }
-
-    /**
-     *
-     * @return
-     */
-    public ArrayList<Trailer> getTrailerList(){
-        return (ArrayList<Trailer>)mTrailerList;
     }
 
     /**
