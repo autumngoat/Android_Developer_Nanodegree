@@ -93,6 +93,7 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
 
     // UI related elements
     private Unbinder mUnbinder;
+    private GridLayoutManager mLayoutManager;
     private PosterAdapter mPosterAdapter;
     @BindView(R.id.rv_poster_list)
     RecyclerView mRecyclerView;
@@ -156,7 +157,12 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
         int numberOfColumns = 6;
 
         // Use a Grid Layout Manager as per the rubric
-        GridLayoutManager mLayoutManager = new GridLayoutManager(getActivity(), numberOfColumns);
+        mLayoutManager = new GridLayoutManager(getActivity(), numberOfColumns);
+//        if(savedInstanceState != null){
+//            mLayoutManager.onRestoreInstanceState(savedInstanceState.getParcelable("layout"));
+//        } else {
+//            mLayoutManager = new GridLayoutManager(getActivity(), numberOfColumns);
+//        }
 
         // Experimented with different span counts on different rows from this code:
         // https://stackoverflow.com/questions/31112291/recyclerview-layoutmanager-different-span-counts-on-different-rows
@@ -219,6 +225,16 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
         // Return the fragment view
         return rootView;
     }
+
+//    @Override
+//    public void onSaveInstanceState(@NonNull Bundle outState) {
+//        super.onSaveInstanceState(outState);
+//
+//        // For deciding which Fragment to reinstate on configuration change in MainActivity
+//        outState.putString("fragment", "list");
+//        // Save LayoutManager as a Parcelable
+//        outState.putParcelable("layout", mLayoutManager.onSaveInstanceState());
+//    }
 
     /**
      * Tells the fragment that its activity has completed its own Activity.onCreate().

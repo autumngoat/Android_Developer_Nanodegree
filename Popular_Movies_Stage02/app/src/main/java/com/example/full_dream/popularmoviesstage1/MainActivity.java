@@ -50,8 +50,10 @@ package com.example.full_dream.popularmoviesstage1;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 
 
+import com.example.full_dream.popularmoviesstage1.fragment.DetailFragment;
 import com.example.full_dream.popularmoviesstage1.fragment.PosterListFragment;
 
 import butterknife.ButterKnife;
@@ -60,34 +62,105 @@ import butterknife.ButterKnife;
  * Setup the main page (list of posters)
  */
 public class MainActivity extends AppCompatActivity {
+
     private static final String TAG = MainActivity.class.getSimpleName();
 
+    private boolean isDetailFragment;
+
+    /**
+     * Initialize first (and only) PosterListFragment instance here if first time app is starting.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        // Check if the Fragment back stack already has the desired Fragment
-        PosterListFragment posterListFragment = (PosterListFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+//        // Check if the Fragment back stack already has the desired Fragment
+//        PosterListFragment posterListFragment = (PosterListFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+//
+//        // Fix layering Fragments on top of another per configuration change
+//        //  w/o fix:
+//        //   0th Config Change: 1 Fragment
+//        //   1st Config Change: 2 Fragments
+//        //   2nd Config Change: 3 Fragments
+//        //   ...
+//        //   Nth Config Change: N+1 Fragments
+//        //  w/ fix:
+//        //   0th Config Change: 1 Fragment
+//        //   1st Config Change: 1 Fragment
+//        //   2nd Config Change: 1 Fragment
+//        //   ...
+//        //   Nth Config Change: 1 Fragment
+//        // If the Fragment is NOT found in the Fragment back stack, then create a Fragment instance
+//        if(posterListFragment == null){
+//            // Implement PosterListFragment like this so that I can replace it with a
+//            // DetailFragment on ViewHolder click
+//            getSupportFragmentManager()
+//                    .beginTransaction()
+//                    .add(R.id.fragment_container, new PosterListFragment())
+//                    .commit();
+//        }
 
-        // Fix layering Fragments on top of another per configuration change
-        //  w/o fix:
-        //   0th Config Change: 1 Fragment
-        //   1st Config Change: 2 Fragments
-        //   2nd Config Change: 3 Fragments
-        //   ...
-        //   Nth Config Change: N+1 Fragments
-        //  w/ fix:
-        //   0th Config Change: 1 Fragment
-        //   1st Config Change: 1 Fragment
-        //   2nd Config Change: 1 Fragment
-        //   ...
-        //   Nth Config Change: 1 Fragment
-        // If the Fragment is NOT found in the Fragment back stack, then create a Fragment instance
-        if(posterListFragment == null){
-            // Implement PosterListFragment like this so that I can replace it with a
-            // DetailFragment on ViewHolder click
+//        if(savedInstanceState != null){
+//            if(savedInstanceState.getString("fragment").equals("list")){
+//                PosterListFragment posterListFragment = (PosterListFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+//                if(posterListFragment == null){
+//                    getSupportFragmentManager()
+//                            .beginTransaction()
+//                            .add(R.id.fragment_container, new PosterListFragment())
+//                            .commit();
+//                }
+//            } else {
+//                DetailFragment detailFragment = (DetailFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+//                if(detailFragment == null){
+//                    getSupportFragmentManager()
+//                            .beginTransaction()
+//                            .addToBackStack(null)
+//                            .replace(R.id.fragment_container, new DetailFragment())
+//                            .commit();
+//                }
+//            }
+//        } else {
+//            getSupportFragmentManager()
+//                    .beginTransaction()
+//                    .add(R.id.fragment_container, new PosterListFragment())
+//                    .commit();
+//        }
+
+//        if(savedInstanceState != null){
+//            if(isDetailFragment){
+//                Log.e(TAG, "MAIN: isDetailFragment");
+//                DetailFragment detailFragment = (DetailFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+//                if(detailFragment == null){
+//                    getSupportFragmentManager()
+//                            .beginTransaction()
+//                            .addToBackStack(null)
+//                            .replace(R.id.fragment_container, new DetailFragment())
+//                            .commit();
+//                }
+//            } else {
+//                Log.e(TAG, "MAIN: NOT isDetailFragment");
+//                PosterListFragment posterListFragment = (PosterListFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+//                if(posterListFragment == null){
+//                    getSupportFragmentManager()
+//                            .beginTransaction()
+//                            .add(R.id.fragment_container, new PosterListFragment())
+//                            .commit();
+//                }
+//            }
+//        } else {
+//            Log.e(TAG, "MAIN: Initial offering");
+//            getSupportFragmentManager()
+//                    .beginTransaction()
+//                    .add(R.id.fragment_container, new PosterListFragment())
+//                    .commit();
+//        }
+
+        // If first time opening app, then create new PosterListFragment instance and commit to
+        // fragment back stack
+        if(savedInstanceState == null){
+            Log.e(TAG, "MAIN: Initial offering");
             getSupportFragmentManager()
                     .beginTransaction()
                     .add(R.id.fragment_container, new PosterListFragment())
@@ -95,7 +168,79 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-//    /**
+    /**
+     * In explicably, onResume occurs AFTER onRestoreInstanceState() so handle
+     * rotation/orientation/configuration change here based on bundle data interpreted inside
+     * onRestoreInstanceState().
+     */
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if(isDetailFragment){
+            Log.e(TAG, "MAIN: onResume isDetailFragment");
+            DetailFragment detailFragment = (DetailFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+            if(detailFragment == null){
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .addToBackStack(null)
+                        .replace(R.id.fragment_container, new DetailFragment())
+                        .commit();
+            }
+        } else {
+            Log.e(TAG, "MAIN: onResume NOT isDetailFragment");
+            PosterListFragment posterListFragment = (PosterListFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+            if(posterListFragment == null){
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .add(R.id.fragment_container, new PosterListFragment())
+                        .commit();
+            }
+        }
+    }
+
+    /**
+     * Store a reference to a Fragment to handle rotation/orientation/configuration change.
+     *
+     * @param outState Bundle that will hold a reference to a Fragment.
+     */
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        Log.e(TAG, "MAIN: onSaveInstanceState" +
+                getSupportFragmentManager().findFragmentById(R.id.fragment_container).getClass().toString());
+
+        // Put a reference to a Fragment in a Bundle
+        getSupportFragmentManager().putFragment(outState, "fragment", getSupportFragmentManager().findFragmentById(R.id.fragment_container));
+    }
+
+    /**
+     * Flag whether or not to restore DetailFragment or PosterListFragment in onResume based on the
+     * Bundle.
+     *
+     * @param savedInstanceState Bundle containing a reference to a Fragment.
+     */
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        // Retrieve the current Fragment instance for a reference previously placed with putFragment()
+        getSupportFragmentManager().getFragment(savedInstanceState, "fragment");
+        Log.e(TAG, "MAIN: onRestoreInstanceState" +
+                getSupportFragmentManager().getFragment(savedInstanceState, "fragment").getClass().toString());
+
+        // Determine whether to flag isDetailFragment true or false
+        if(getSupportFragmentManager().getFragment(savedInstanceState, "fragment").getClass().toString().contains("Detail")){
+            Log.e(TAG, "MAIN: contains DETAIL");
+            isDetailFragment = true;
+        } else {
+            Log.e(TAG, "MAIN: NOT contain DETAIL");
+            isDetailFragment = false;
+        }
+    }
+
+    //    /**
 //     * Navigate back to the PosterListFragment from the DetailFragment on Back press.
 //     */
 //    @Override

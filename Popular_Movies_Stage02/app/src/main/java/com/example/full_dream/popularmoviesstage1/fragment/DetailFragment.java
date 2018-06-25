@@ -274,6 +274,16 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
         return rootView;
     }
 
+//    @Override
+//    public void onSaveInstanceState(@NonNull Bundle outState) {
+//        super.onSaveInstanceState(outState);
+//
+//        // For deciding which Fragment to reinstate on configuration change in MainActivity
+//        outState.putString("fragment", "detail");
+//
+////        outState.putParcelableArrayList("videos", mTrailerAdapter.getTrailerList());
+//    }
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
