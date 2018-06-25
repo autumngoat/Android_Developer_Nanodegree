@@ -98,6 +98,7 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
     @BindView(R.id.rv_poster_list)
     RecyclerView mRecyclerView;
 
+
     /**
      * Mandatory empty constructor for the Fragment Manager to instantiate the fragment.
      */
@@ -208,14 +209,14 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
         return rootView;
     }
 
+    /**
+     *
+     * @param outState
+     */
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
 
-//        // For deciding which Fragment to reinstate on configuration change in MainActivity
-//        outState.putString("fragment", "list");
-        // Save LayoutManager as a Parcelable
-//        outState.putParcelable("layout", mLayoutManager.onSaveInstanceState());
         outState.putInt("settingsOption", mSettingsOption);
         Log.e(TAG, "PLFRAGMENT saveInstanceState: " + mSettingsOption);
     }
@@ -234,12 +235,13 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        // Recommended to place call to sethasOptionsMenu(true) in
+        // Recommended to place call to setHasOptionsMenu(true) in
         // onActivityCreated() for consistent calls after onCreateView()
         // Source:
         //  https://github.com/JakeWharton/ActionBarSherlock/issues/935
         setHasOptionsMenu(true);
 
+        // If first time initialize UI, else populate UI using bundled settings option int
         if(savedInstanceState == null){
             populateUI(mSettingsOption);
             Log.e(TAG, "PLFRAGMENT first time");
@@ -275,7 +277,7 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
     public void onPause() {
         super.onPause();
 
-        Log.e(TAG, "PLFRAGMENT onPause setting option is " + mSettingsOption);
+        Log.e(TAG, "PLFRAGMENT onPause");
     }
 
     @Override
@@ -390,8 +392,11 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
     }
 
     /**
+     * Call PosterListViewModel getMovies(), observe the LiveData<List<Movie>>, and populate the
+     * RecyclerView by setting PosterAdapter to the returned List<Movie>.
      *
-     * @param settingsOption
+     * @param settingsOption Menu setting option that determines what List<Movie> PosterListViewModel
+     *                       getMovies() returns.
      */
     public void populateUI(int settingsOption){
         viewModel.getMovies(settingsOption).observe(this, new Observer<List<Movie>>() {
