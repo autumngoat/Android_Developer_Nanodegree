@@ -192,21 +192,6 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
         // Set the view to the empty PosterAdapter
         mRecyclerView.setAdapter(mPosterAdapter);
 
-        // Add an Observer for the LiveDate returned by getMovies() == LiveData<List<Movies>>
-        Log.e(TAG, "PLFRAGMENT observe()");
-//        viewModel.getMovies(1).observe(this, new Observer<List<Movie>>() {
-//            // onChanged() method fires when the observed data changes and the fragment is in the
-//            // foreground
-//            @Override
-//            public void onChanged(@Nullable List<Movie> movies) {
-//                // Update UI
-//                mPosterAdapter.setMovieData(movies);
-//                Log.e(TAG, "PLFRAGMENT onChanged() called, 1st movies: " + movies.get(0));
-//            }
-//        });
-
-//        populateUI(mSettingsOption);
-
         // Checked out https://developer.android.com/training/basics/network-ops/managing
         // for how to check for network status check
 //        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -259,8 +244,9 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
             populateUI(mSettingsOption);
             Log.e(TAG, "PLFRAGMENT first time");
         } else {
-            populateUI(savedInstanceState.getInt("settingsOption"));
-            Log.e(TAG, "PLFRAGMENT populate using " + savedInstanceState.getInt("settingsOption"));
+            mSettingsOption = savedInstanceState.getInt("settingsOption");
+            populateUI(mSettingsOption);
+            Log.e(TAG, "PLFRAGMENT populate using " + mSettingsOption);
         }
 
         Log.e(TAG, "PLFRAGMENT onActivityCreated");
@@ -289,7 +275,7 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
     public void onPause() {
         super.onPause();
 
-        Log.e(TAG, "PLFRAGMENT onPause");
+        Log.e(TAG, "PLFRAGMENT onPause setting option is " + mSettingsOption);
     }
 
     @Override
@@ -373,8 +359,8 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
     /**
      * Handle clicks on menu items.
      *
-     * @param item Option selected
-     * @return True to consume and false to continue menu processing
+     * @param item Option selected.
+     * @return True to consume and false to continue menu processing.
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -403,6 +389,10 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     *
+     * @param settingsOption
+     */
     public void populateUI(int settingsOption){
         viewModel.getMovies(settingsOption).observe(this, new Observer<List<Movie>>() {
             @Override
