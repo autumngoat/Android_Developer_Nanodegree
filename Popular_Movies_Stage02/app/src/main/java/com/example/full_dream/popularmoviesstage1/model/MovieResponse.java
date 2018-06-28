@@ -47,8 +47,11 @@
 
 package com.example.full_dream.popularmoviesstage1.model;
 
-import java.util.List;
+// 3rd Party Imports - com - Moshi
 import com.squareup.moshi.Json;
+
+// Java Imports
+import java.util.List;
 
 /**
  * Provides a data model to represent the initial JSON HTTP response as a POJO

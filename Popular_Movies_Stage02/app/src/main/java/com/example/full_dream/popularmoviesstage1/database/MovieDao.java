@@ -47,16 +47,17 @@
 
 package com.example.full_dream.popularmoviesstage1.database;
 
+// Android Imports
 import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
-import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
-import android.arch.persistence.room.Update;
 
+// 3rd Party Imports - com
 import com.example.full_dream.popularmoviesstage1.model.Movie;
 
+// Java Imports
 import java.util.List;
 
 /**
@@ -75,29 +76,29 @@ import java.util.List;
 public interface MovieDao {
 
     // Create
+    //  Create/insert a Movie object into the 'favorites' table
     @Insert
     void insertMovie(Movie movie);
 
     // Read all
-    // Followed the Udacity course "Developing Android Apps" >>
-    // Lesson 12: Android Architecture Components >>
-    // 19. Exercise: Adding LiveData
-    //  LiveData runs outside of the main/UI thread by default
+    //  Followed the Udacity course "Developing Android Apps" >>
+    //  Lesson 12: Android Architecture Components >>
+    //  19. Exercise: Adding LiveData
+    //   LiveData runs outside of the main/UI thread by default
+    //  Read/select all Movie objects from the 'favorites' table
     @Query("SELECT * FROM movie")
     LiveData<List<Movie>> loadAllMovies();
 
     // Read by ID
-    // Followed the Udacity course "Developing Android Apps" >>
-    // Lesson 12: Android Architecture Components >>
-    // 20. Exercise: Adding LiveData to AddTaskActivity
+    //  Followed the Udacity course "Developing Android Apps" >>
+    //  Lesson 12: Android Architecture Components >>
+    //  20. Exercise: Adding LiveData to AddTaskActivity
+    //  Read/select a Movie object by movieId from the 'favorites' table
     @Query("SELECT * FROM movie WHERE id = :id")
     LiveData<Movie> loadMovieById(int id);
 
-    // Update
-//    @Update(onConflict = OnConflictStrategy.REPLACE)
-//    void updateMovie(Movie movie);
-
     // Delete
+    //  Delete a Movie object from the 'favorites' table
     @Delete
     void deleteMovie(Movie movie);
 }

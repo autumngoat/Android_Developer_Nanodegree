@@ -47,15 +47,17 @@
 
 package com.example.full_dream.popularmoviesstage1.viewmodel;
 
+// Android Imports
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
+// 3rd Party Imports - com - Popular Movies Stage 2
 import com.example.full_dream.popularmoviesstage1.database.MovieRepository;
 import com.example.full_dream.popularmoviesstage1.model.Movie;
 
+// Java Imports
 import java.util.List;
 
 /**
@@ -69,8 +71,6 @@ import java.util.List;
  */
 public class PosterListViewModel extends AndroidViewModel {
 
-    private static final String TAG = PosterListViewModel.class.getSimpleName();
-
     // Hold a reference to the repository
     private MovieRepository mRepository;
 
@@ -83,17 +83,15 @@ public class PosterListViewModel extends AndroidViewModel {
      */
     public PosterListViewModel(@NonNull Application application) {
         super(application);
-        Log.e(TAG, "PLVM constructor");
         mRepository = new MovieRepository(application);
     }
 
     /**
      * Getter for method for Movie network call that hides the implementation from the UI.
      *
-     * @return
+     * @return A LiveData object of a list of Movie objects.
      */
     public LiveData<List<Movie>> getMovies(int settingsOption) {
-        Log.e(TAG, "PLVM getMovies(int) List<Movies>");
         return mRepository.getMovieList(settingsOption);
     }
 }

@@ -47,10 +47,10 @@
 
 package com.example.full_dream.popularmoviesstage1.fragment;
 
+// Android Imports
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.ActivityNotFoundException;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -62,17 +62,22 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+// 3rd Party Imports - ButterKnife
+import butterknife.BindString;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+
+// 3rd Party Imports - com - Popular Movies Stage 2
 import com.example.full_dream.popularmoviesstage1.BuildConfig;
 import com.example.full_dream.popularmoviesstage1.R;
 import com.example.full_dream.popularmoviesstage1.adapter.ReviewAdapter;
 import com.example.full_dream.popularmoviesstage1.adapter.TrailerAdapter;
-import com.example.full_dream.popularmoviesstage1.database.AppDatabase;
 import com.example.full_dream.popularmoviesstage1.model.Movie;
 import com.example.full_dream.popularmoviesstage1.model.Review;
 import com.example.full_dream.popularmoviesstage1.model.ReviewResponse;
@@ -82,40 +87,31 @@ import com.example.full_dream.popularmoviesstage1.network.RetrofitClient;
 import com.example.full_dream.popularmoviesstage1.network.TheMovieDBService;
 import com.example.full_dream.popularmoviesstage1.viewmodel.DetailViewModel;
 import com.example.full_dream.popularmoviesstage1.viewmodel.SharedViewModel;
+
+// 3rd Party Imports - com - Picasso
 import com.squareup.picasso.Picasso;
 
-import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
+// 3rd Party Imports - Retrofit2
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+// Java Imports
+import java.util.List;
 
 /**
  * UI component that shows off the details of a particular Movie
  */
 public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAdapterOnClickHandler {
 
-    // Constant(s)
+    // Constant
     private static final String TAG = DetailFragment.class.getSimpleName();
-
-    //
-    private Movie mSelectedMovie;
-    private String API_KEY = BuildConfig.API_KEY;
-    private boolean mIsFavorite;
-
-    // Adapters
-    private ReviewAdapter mReviewAdapter;
-    private TrailerAdapter mTrailerAdapter;
-
-    // ViewModels
-    private SharedViewModel model;
-    private DetailViewModel viewModel;
-
-    // UI related elements
-    private Unbinder mUnbinder;
+    // Strings
+    @BindString(R.string.trailer_response_err)
+    String mTrailerErr;
+    @BindString(R.string.review_response_err)
+    String mReviewErr;
+    // Views
     @BindView(R.id.iv_background_poster)
     ImageView mBackgroundPoster;
     @BindView(R.id.tv_rating)
@@ -138,35 +134,38 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
     RecyclerView mTrailerRecyclerView;
     @BindView(R.id.detail_fab_fav)
     FloatingActionButton fab;
+    // Convenience variables
+    private Movie mSelectedMovie;                   // Exists because it made insert/delete easier for FAB onClick()
+    private String API_KEY = BuildConfig.API_KEY;   // Honestly forgot to phase this out to keep API key reference to Repository
+    private boolean mIsFavorite;                    // Seemed to be the easiest way to deal with FAB favorite status and onClick()
+    // Adapters
+    private ReviewAdapter mReviewAdapter;
+    private TrailerAdapter mTrailerAdapter;
+    // ViewModel
+    private DetailViewModel viewModel;
+    // Binding Reset
+    //  An unbinder contract that will unbind views when called
+    //  Source: https://jakewharton.github.io/butterknife/javadoc/butterknife/Unbinder.html
+    private Unbinder mUnbinder;
 
     /**
      * Mandatory empty constructor for the Fragment Manager to instantiate the fragment.
      */
-    public DetailFragment(){}
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-
-        Log.e(TAG, "DETAILFRAGMENT onAttach");
-    }
+    public DetailFragment() {}
 
     /**
-     * Setup the data component of the Fragment.
+     * Sets up the data component of the Fragment.
      */
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-//        // Initialize the Database
-//        mDb = AppDatabase.getInstance(getContext());
 
         // Retrieve the common/shared ViewModel to share data between two Fragments
         //  Both Fragments use getActivity() when getting the ViewModelProvider
         //   As a result, both Fragments receive the same SharedViewModel instance, which is scoped
         //   to the Activity
         // Source: https://developer.android.com/topic/libraries/architecture/viewmodel#sharing
-        model = ViewModelProviders.of(getActivity()).get(SharedViewModel.class);
+        SharedViewModel model = ViewModelProviders.of(getActivity()).get(SharedViewModel.class);
 
         // Retrieve the selected/clicked-on RecyclerView item
         mSelectedMovie = model.getSelected().getValue();
@@ -177,8 +176,6 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
 
         callRetrofitForTrailers();
         callRetrofitForReviews();
-
-        Log.e(TAG, "DETAILFRAGMENT onCreate");
     }
 
     /**
@@ -189,7 +186,7 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_movie_details, container, false);
         // Non-Activity Binding - Fragments
-        // Binding Reset - Set views to null in onDestroyView
+        // Binding Fragment in onCreateView to later set all bound views to null in onDestroyView()
         //  source: http://jakewharton.github.io/butterknife/
         mUnbinder = ButterKnife.bind(this, rootView);
 
@@ -210,7 +207,7 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
                 //     Followed by onChanged()
                 //      Nothing else -> Perfect
                 //  w/o the observer (Observer<Movie> observer):
-//                   viewModel.getMovieById(mSelectedMovie.getId()).removeObserver(this);
+                //   viewModel.getMovieById(mSelectedMovie.getId()).removeObserver(this);
                 //   Initial setup cost: (Same but happens twice for some reason)
                 //    Call DetailViewModel getMovieById
                 //     Which calls MovieRepository getMovieId
@@ -220,14 +217,12 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
                 //     Which calls MovieRepository getMovieId
                 //    Followed by onChanged()
 
-                if(movieEntry != null){
-                    Log.e(TAG, "DETAILFRAGMENT movieEntry NOT null");
+                if (movieEntry != null) {
                     // ...change FAB icon to show as a Favorite and...
                     fab.setImageResource(R.drawable.ic_favorite_red);
                     // ...mark as a Favorite
                     mIsFavorite = true;
                 } else {
-                    Log.e(TAG, "DETAILFRAGMENT movieEntry NULL");
                     // Change FAB icon to show as NOT a Favorite
                     fab.setImageResource(R.drawable.ic_favorite_white);
                     // Mark as NOT a Favorite
@@ -240,19 +235,17 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
         //  Icons made by "https://www.flaticon.com/authors/freepik"
         //  Title: "Favorite"
         //  Licensed by Creative Commons BY 3.0
-        fab.setOnClickListener(new View.OnClickListener(){
+        fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // If already a Favorite, then...
-                if(mIsFavorite) {
-                    Log.e(TAG, "DETAILFRAGMENT delete favorite");
+                if (mIsFavorite) {
                     // ...delete movie from the local database and...
                     viewModel.deleteMovie(mSelectedMovie);
 
                     // ...toggle FAB image resource based on favorite status
                     fab.setImageResource(R.drawable.ic_favorite_white);
                 } else {
-                    Log.e(TAG, "DETAILFRAGMENT insert favorite");
                     // Insert Movie to Database
                     viewModel.insertMovie(mSelectedMovie);
 
@@ -262,93 +255,35 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
             }
         });
 
-        Log.e(TAG, "DETAILFRAGMENT onCreateView");
-
         return rootView;
     }
 
-//    @Override
-//    public void onSaveInstanceState(@NonNull Bundle outState) {
-//        super.onSaveInstanceState(outState);
-//
-//        // For deciding which Fragment to reinstate on configuration change in MainActivity
-//        outState.putString("fragment", "detail");
-//
-////        outState.putParcelableArrayList("videos", mTrailerAdapter.getTrailerList());
-//    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-        Log.e(TAG, "DETAILFRAGMENT onActivityCreated");
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        Log.e(TAG, "DETAILFRAGMENT onStart");
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        Log.e(TAG, "DETAILFRAGMENT onResume");
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-
-        Log.e(TAG, "DETAILFRAGMENT onPause");
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-
-        Log.e(TAG, "DETAILFRAGMENT onStop");
-    }
-
+    /**
+     * Called when the view previously created by onCreatedView() has been detached from the fragment.
+     * The next time the fragment needs to be displayed, a new view will be created.
+     * This is called after onStop().
+     * This is called before onDestroy().
+     * It is called regardless of whether onCreateView() returned a non-null view.
+     * The recommended place to call Butterknife's unbind().
+     *
+     * Comment source:
+     * https://developer.android.com/reference/android/support/v4/app/Fragment
+     * http://jakewharton.github.io/butterknife/
+     *
+     * Used here to understand the fragment lifecycle and detect duplicate DetailFragments.
+     */
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+
+        // Sets the views to null
         mUnbinder.unbind();
-
-        Log.e(TAG, "DETAILFRAGMENT onDestroyView");
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-
-        Log.e(TAG, "DETAILFRAGMENT onDestroy");
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-
-        Log.e(TAG, "DETAILFRAGMENT onDetach");
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId()){
-            case android.R.id.home:
-                getFragmentManager().popBackStack();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
     }
 
     /**
-     * Helper function to be able to call Retrofit whenever data needs to be retrieved.
+     * Retrieves a list of Trailer objects from TMDB to populate ReviewAdapter or log an error message.
      */
-    public void callRetrofitForTrailers(){
+    public void callRetrofitForTrailers() {
 
         // Pass service interface to create() to generate an implementation of the API endpoint
         TheMovieDBService service = RetrofitClient.getApiClient();
@@ -373,15 +308,15 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
 
             @Override
             public void onFailure(Call<TrailerResponse> call, Throwable t) {
-                Log.e("rabbit", "Problems retrieving Trailers");
+                Log.e(TAG, mTrailerErr);
             }
         });
     }
 
     /**
-     * Helper function to be able to call Retrofit whenever data needs to be retrieved.
+     * Retrieves a list of Review objects from TMDB to populate ReviewAdapter or log an error message.
      */
-    public void callRetrofitForReviews(){
+    public void callRetrofitForReviews() {
 
         // Pass service interface to create() to generate an implementation of the API endpoint
         TheMovieDBService service = RetrofitClient.getApiClient();
@@ -405,15 +340,15 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
 
             @Override
             public void onFailure(Call<ReviewResponse> call, Throwable t) {
-                Log.e("rabbit", "Problems retrieving Reviews");
+                Log.e(TAG, mReviewErr);
             }
         });
     }
 
     /**
-     * Handle RecyclerView item clicks to play the YouTube video.
+     * Handles ReviewAdapter item clicks to play the YouTube video.
      */
-    public void onClick(String youtubeKey){
+    public void onClick(String youtubeKey) {
         try {
             // Launch YouTube app
             getActivity().startActivity(new Intent(Intent.ACTION_VIEW,
@@ -426,11 +361,11 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
     }
 
     /**
-     * Update the UI with Movie instance details.
+     * Updates the UI with Movie instance details.
      *
      * @param movie Selected Movie instance.
      */
-    public void populateUI(Movie movie){
+    public void populateUI(Movie movie) {
 
         // Icons made by "https://www.flaticon.com/authors/freepik"
         // Title: "Popcorn"

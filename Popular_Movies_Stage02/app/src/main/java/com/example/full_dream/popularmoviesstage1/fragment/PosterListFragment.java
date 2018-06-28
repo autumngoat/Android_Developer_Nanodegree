@@ -47,9 +47,9 @@
 
 package com.example.full_dream.popularmoviesstage1.fragment;
 
+// Android Imports
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -58,7 +58,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -66,19 +65,27 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.full_dream.popularmoviesstage1.R;
-import com.example.full_dream.popularmoviesstage1.adapter.PosterAdapter;
-import com.example.full_dream.popularmoviesstage1.model.Movie;
-import com.example.full_dream.popularmoviesstage1.network.TheMovieDBService;
-import com.example.full_dream.popularmoviesstage1.viewmodel.PosterListViewModel;
-import com.example.full_dream.popularmoviesstage1.viewmodel.SharedViewModel;
-
-import java.util.List;
-
+// 3rd Party Imports - Butterknife
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
+// 3rd Party Imports - com - Popular Movies Stage 2
+import com.example.full_dream.popularmoviesstage1.R;
+import com.example.full_dream.popularmoviesstage1.adapter.PosterAdapter;
+import com.example.full_dream.popularmoviesstage1.model.Movie;
+import com.example.full_dream.popularmoviesstage1.viewmodel.PosterListViewModel;
+import com.example.full_dream.popularmoviesstage1.viewmodel.SharedViewModel;
+
+// Java Imports
+import java.util.List;
+
+/**
+ * Sets up UI as a list of poster images that can be clicked on to launch a detail view.
+ *  Also sets up the settings option to change the list of poster images to a list of the MOST POPULAR
+ *  movie poster images, a list of the TOP RATED movie poster images, and a list of the FAVORITES
+ *  movie poster images.
+ */
 public class PosterListFragment extends Fragment implements PosterAdapter.PosterAdapterOnClickHandler {
 
     // Constants
@@ -104,13 +111,6 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
      */
     public  PosterListFragment(){}
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-
-        Log.e(TAG, "PLFRAGMENT onAttach");
-    }
-
     /**
      * Called to do the initial creation of the fragment.
      *
@@ -128,8 +128,6 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
         // Use ViewModelProviders to associate an instance of PosterListViewModel scoped with the
         // lifecyce of the UIController PosterListFragment
         viewModel = ViewModelProviders.of(this).get(PosterListViewModel.class);
-
-        Log.e(TAG, "PLFRAGMENT onCreate");
     }
 
     /**
@@ -193,22 +191,26 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
         // Set the view to the empty PosterAdapter
         mRecyclerView.setAdapter(mPosterAdapter);
 
-        Log.e(TAG, "PLFRAGMENT onCreateView");
-
         // Return the fragment view
         return rootView;
     }
 
     /**
+     * Called to ask the fragment to save its current dynamic state, so it can later be
+     * reconstructed in a new instance of its process is restarted.
+     *  Save the chosen menu item (0 - MOST_POPULAR, 1 - TOP_RATED, 2 - FAVORITES) to reinstate
+     *  adapter contents to the proper chosen list of Movie objects.
      *
-     * @param outState
+     * Comments source:
+     * https://developer.android.com/reference/android/support/v4/app/Fragment#onSaveInstanceState(android.os.Bundle)
+     *
+     * @param outState Bundle in which to place your saved state.
      */
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
 
         outState.putInt("settingsOption", mSettingsOption);
-        Log.e(TAG, "PLFRAGMENT saveInstanceState: " + mSettingsOption);
     }
 
     /**
@@ -234,74 +236,25 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
         // If first time initialize UI, else populate UI using bundled settings option int
         if(savedInstanceState == null){
             populateUI(mSettingsOption);
-            Log.e(TAG, "PLFRAGMENT first time");
         } else {
             mSettingsOption = savedInstanceState.getInt("settingsOption");
             populateUI(mSettingsOption);
-            Log.e(TAG, "PLFRAGMENT populate using " + mSettingsOption);
         }
-
-        Log.e(TAG, "PLFRAGMENT onActivityCreated");
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        Log.e(TAG, "PLFRAGMENT onCreateView");
-    }
-
-    /**
-     * Makes the fragment begin interacting with the user (based on its containing
-     * activity being resumed).
-     *  Called after Fragment has been paused or restarted.
-     */
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        Log.e(TAG, "PLFRAGMENT onResume");
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-
-        Log.e(TAG, "PLFRAGMENT onPause");
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-
-        Log.e(TAG, "PLFRAGMENT onStop");
     }
 
     /**
      * Called when the fragment is no longer in use. This is called after onStop() and
      * before onDetach().
      * If you override this method you must call through the superclass implementation.
+     *  Set the views to null in onDestroyView by calling unbind().
+     *
+     * Comments source:
+     * http://jakewharton.github.io/butterknife/
      */
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         mUnbinder.unbind();
-
-        Log.e(TAG, "PLFRAGMENT onDestroyView");
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-
-        Log.e(TAG, "PLFRAGMENT onDestroy");
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-
-        Log.e(TAG, "PLFRAGMENT onDetach");
     }
 
     /**
@@ -314,7 +267,6 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
     public void onClick(Movie movie) {
         // Set the SharedViewModel to the RecyclerView item click
         model.select(movie);
-        Log.e(TAG, "PLFRAGMENT onClick: " + movie.toString());
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         ft.addToBackStack(null);
@@ -350,6 +302,10 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
 
     /**
      * Handle clicks on menu items.
+     *  1) Set global mSettingsOption to chosen menu item in order to use this variable to reset
+     *  the UI to show the proper list of Movie objects (as posters).
+     *  2) Check the chosen menu item in the menu UI.
+     *  3) Call populateUI to retrieve and set the proper list of Movie objects to the adapter.
      *
      * @param item Option selected.
      * @return True to consume and false to continue menu processing.
@@ -359,19 +315,16 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
 
         switch(item.getItemId()){
             case R.id.action_popular:
-                Log.e(TAG, "PLFRAGMENT menu popular");
                 mSettingsOption = MOST_POPULAR;
                 item.setChecked(!item.isChecked());
                 populateUI(mSettingsOption);
                 break;
             case R.id.action_top_rated:
-                Log.e(TAG, "PLFRAGMENT menu toprated");
                 mSettingsOption = TOP_RATED;
                 item.setChecked(!item.isChecked());
                 populateUI(mSettingsOption);
                 break;
             case R.id.action_favorites:
-            Log.e(TAG, "PLFRAGMENT menu favorited");
                 mSettingsOption = FAVORITES;
                 item.setChecked(!item.isChecked());
                 populateUI(mSettingsOption);

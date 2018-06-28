@@ -47,8 +47,7 @@
 
 package com.example.full_dream.popularmoviesstage1.network;
 
-import android.util.Log;
-
+// 3rd Party Imports - Retrofit2
 import retrofit2.Retrofit;
 import retrofit2.converter.moshi.MoshiConverterFactory;
 

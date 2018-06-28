@@ -47,10 +47,12 @@
 
 package com.example.full_dream.popularmoviesstage1.thread;
 
+// Android Imports
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 
+// Java Imports
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -83,13 +85,9 @@ public class AppExecutors {
     //   exeggutor.execute(new RunnableTask1());
     //   exeggutor.execute(new RunanbleTask2());
     private final Executor diskIO;
-    private final Executor mainThread;
-    private final Executor networkIO;
 
-    private AppExecutors(Executor diskIO, Executor mainThread, Executor networkIO){
+    private AppExecutors(Executor diskIO){
         this.diskIO = diskIO;
-        this.mainThread = mainThread;
-        this.networkIO = networkIO;
     }
 
     public static AppExecutors getsInstance() {
@@ -98,37 +96,11 @@ public class AppExecutors {
                 sInstance = new AppExecutors(
                         // The diskIO is a single thread Executor to ensure that database
                         // transactions are done in order to avoid race conditions
-                        Executors.newSingleThreadExecutor(),
-                        // The networkIO Executor is a pool of 3 threads to allow different network
-                        // calls simultaneously while controlling the number of threads possible
-                        Executors.newFixedThreadPool(3),
-                        // Access the main/UI thread using this Executor
-                        new MainThreadExecutor());
+                        Executors.newSingleThreadExecutor());
             }
         }
         return sInstance;
     }
 
     public Executor diskIO(){ return diskIO; }
-
-    public Executor mainThread(){ return mainThread; }
-
-    public Executor networkIO(){ return networkIO; }
-
-    /**
-     * Posts runnables using a handle associated with the main looper.
-     */
-    public static class MainThreadExecutor implements Executor {
-        private Handler mainThreadHandler = new Handler(Looper.getMainLooper());
-
-        /**
-         * Executes the given command sometime in the future.
-         *
-         * @param command The Runnable task.
-         */
-        @Override
-        public void execute(@NonNull Runnable command) {
-            mainThreadHandler.post(command);
-        }
-    }
 }

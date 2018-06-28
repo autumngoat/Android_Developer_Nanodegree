@@ -47,14 +47,13 @@
 
 package com.example.full_dream.popularmoviesstage1.viewmodel;
 
+// Android Imports
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.ViewModel;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
-import com.example.full_dream.popularmoviesstage1.database.AppDatabase;
+// 3rd Party Imports - com - Popular Movies Stage 2
 import com.example.full_dream.popularmoviesstage1.database.MovieRepository;
 import com.example.full_dream.popularmoviesstage1.model.Movie;
 
@@ -65,11 +64,9 @@ import com.example.full_dream.popularmoviesstage1.model.Movie;
  */
 public class DetailViewModel extends AndroidViewModel {
 
-    public static final String TAG = DetailViewModel.class.getSimpleName();
     // Hold a reference to the repository
     private MovieRepository mRepository;
 
-//    public DetailViewModel(AppDatabase database, int movieId){
     /**
      * Subclasses of AndroidViewModel MUST have a constructor that accepts Application as the ONLY
      * parameter, according to:
@@ -79,7 +76,6 @@ public class DetailViewModel extends AndroidViewModel {
      */
     public DetailViewModel(@NonNull Application application){
         super(application);
-        Log.e(TAG, "DETAILVM constructor");
         mRepository = new MovieRepository(application);
     }
 
@@ -91,8 +87,6 @@ public class DetailViewModel extends AndroidViewModel {
      * @return Movie object with the unique Movie ID
      */
     public LiveData<Movie> getMovieById(int movieId){
-        Log.e(TAG, "DETAILVM getMovieById: id==" + movieId);
-        Log.e(TAG, "DETAILVM getMovieById: " + mRepository.getMovieById(movieId));
         return mRepository.getMovieById(movieId);
     }
 

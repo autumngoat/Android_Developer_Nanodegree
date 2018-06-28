@@ -47,10 +47,12 @@
 
 package com.example.full_dream.popularmoviesstage1.network;
 
+// 3rd Party Imports - com - Popular Movies Stage 2
 import com.example.full_dream.popularmoviesstage1.model.MovieResponse;
 import com.example.full_dream.popularmoviesstage1.model.ReviewResponse;
 import com.example.full_dream.popularmoviesstage1.model.TrailerResponse;
 
+// 3rd Party Imports - Retrofit2
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;

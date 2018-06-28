@@ -47,6 +47,7 @@
 
 package com.example.full_dream.popularmoviesstage1.model;
 
+// 3rd Party Imports - com - Moshi
 import com.squareup.moshi.Json;
 
 /**

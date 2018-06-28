@@ -48,8 +48,19 @@
 <resources>
     <string name="app_name">Popular Movies, Stage 2</string>
 
+    <!-- Bundle keys -->
+    <string name="fragment_key">fragment</string>
+
+    <!-- Toast messages -->
+    <string name="network_disconnected">Please check your network connection and try again.</string>
+    <string name="network_connected">Network connection achieved!</string>
+
     <!-- Error messages -->
-    <string name="network_err">Error with network or stream reading: </string>
+    <string name="trailer_response_err">Problems retrieving Trailers</string>
+    <string name="review_response_err">Problems retrieving Reviews</string>
+    <string name="response_not_successful">Response was not successful</string>
+    <string name="network_exception">Problem talking to the server, creating the request, or processing the response</string>
+    <string name="impossible_error">This is not a CTF, go somewhere else for decompiling fun</string>
 
     <!-- Options menu option titles -->
     <string name="most_popular">Most Popular</string>
@@ -63,9 +74,6 @@
     <!-- Detail Labels -->
     <string name="voter_avg_label">Rating: </string>
     <string name="release_date_label">Released: </string>
-
-    <!-- Network connection message -->
-    <string name="network_connection_msg">Please check your network connection.</string>
 
     <!-- Placeholder -->
     <string name="placeholder">Empty</string>

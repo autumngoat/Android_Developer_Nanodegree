@@ -47,10 +47,12 @@
 
 package com.example.full_dream.popularmoviesstage1.viewmodel;
 
+// Android Imports
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 
+// 3rd Party Imports - com - Popular Movies Stage 2
 import com.example.full_dream.popularmoviesstage1.model.Movie;
 
 /**
@@ -63,7 +65,7 @@ import com.example.full_dream.popularmoviesstage1.model.Movie;
 public class SharedViewModel extends ViewModel {
 
     // LiveData which publicly exposes setValue(Movie) and postValue(Movie) methods, if available
-    private final MutableLiveData<Movie> selected = new MutableLiveData<Movie>();
+    private final MutableLiveData<Movie> selected = new MutableLiveData<>();
 
     // Sets the value to the selected Movie
     public void select(Movie movie){

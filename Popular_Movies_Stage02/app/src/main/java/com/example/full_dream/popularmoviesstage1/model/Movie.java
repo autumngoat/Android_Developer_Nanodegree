@@ -47,14 +47,19 @@
 
 package com.example.full_dream.popularmoviesstage1.model;
 
+// Android Imports
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 
-import com.example.full_dream.popularmoviesstage1.R;
-import com.squareup.moshi.Json;
-
+// 3rd Party Imports - Butterknife
 import butterknife.BindString;
+
+// 3rd Party Imports - com - Popular Movies Stage 2
+import com.example.full_dream.popularmoviesstage1.R;
+
+// 3rd Party Imports - com - Moshi
+import com.squareup.moshi.Json;
 
 /**
  * Provides a data model to represent a Movie POJO to hold parsed JSON data.

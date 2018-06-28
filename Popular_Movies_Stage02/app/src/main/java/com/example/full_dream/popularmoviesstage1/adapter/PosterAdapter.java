@@ -47,28 +47,32 @@
 
 package com.example.full_dream.popularmoviesstage1.adapter;
 
+// Android Imports
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
-import com.example.full_dream.popularmoviesstage1.R;
-import com.example.full_dream.popularmoviesstage1.model.Movie;
-
-import com.squareup.picasso.Picasso;
+// 3rd Party Imports - Butterknife
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+// 3rd Party Imports - com - Popular Movies Stage 2
+import com.example.full_dream.popularmoviesstage1.R;
+import com.example.full_dream.popularmoviesstage1.model.Movie;
+
+// 3rd Party Imports - com - Picasso
+import com.squareup.picasso.Picasso;
+
+// Java Imports
 import java.util.List;
 
 /**
- * Provides ViewHolders to display inside RecyclerView
+ * Provides ViewHolders to display inside the Poster RecyclerView in PosterListFragment.
  */
 public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdapterViewHolder> {
     // I adapted much of the Adapter code from my code for S05.01-Exercise-AsyncTaskLoader
@@ -84,7 +88,7 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
     }
 
     /**
-     * Creates ViewHolders by inflating the movie_list_item view
+     * Creates ViewHolders by inflating the movie_list_item view.
      */
     @NonNull
     @Override
@@ -100,7 +104,7 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
     }
 
     /**
-     * Fills/refills the ViewHolders by binding the data to the UI components
+     * Fills/refills the ViewHolders by binding the data to the UI components.
      */
     @Override
     public void onBindViewHolder(@NonNull PosterAdapterViewHolder posterViewHolder, int position) {
@@ -117,7 +121,7 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
     }
 
     /**
-     * Total number of ViewHolders by returning the list size
+     * Total number of ViewHolders by returning the list size.
      */
     @Override
     public int getItemCount() {
@@ -125,14 +129,14 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
         return mMovieData.size();
     }
 
+    /**
+     * Updates the adapter's cached copy of the list of Movie objects.
+     *
+     * @param movieData New list of Movies objects to update the older cached data.
+     */
     public void setMovieData(List<Movie> movieData) {
-//        mMovieData = null;
         mMovieData = movieData;
         notifyDataSetChanged();
-    }
-
-    public List<Movie> getMovieData(){
-        return mMovieData;
     }
 
     /**
@@ -150,7 +154,7 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
         ImageView mPosterImageView;
 
         /**
-         * ViewHolder constructor that sets click listener on newly created empty ViewHolder
+         * ViewHolder constructor that sets click listener on newly created empty ViewHolder.
          */
         PosterAdapterViewHolder(View view) {
             super(view);

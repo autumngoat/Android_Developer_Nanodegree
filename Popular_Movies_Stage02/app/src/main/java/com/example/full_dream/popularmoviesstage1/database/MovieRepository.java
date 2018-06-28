@@ -47,23 +47,29 @@
 
 package com.example.full_dream.popularmoviesstage1.database;
 
+// Android Imports
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.util.Log;
 
+// 3rd Party Imports - com - Popular Movies Stage 2
 import com.example.full_dream.popularmoviesstage1.BuildConfig;
+import com.example.full_dream.popularmoviesstage1.R;
 import com.example.full_dream.popularmoviesstage1.model.Movie;
 import com.example.full_dream.popularmoviesstage1.model.MovieResponse;
 import com.example.full_dream.popularmoviesstage1.network.RetrofitClient;
 import com.example.full_dream.popularmoviesstage1.network.TheMovieDBService;
 import com.example.full_dream.popularmoviesstage1.thread.AppExecutors;
 
-import java.util.List;
-
+// 3rd Party Imports - Retrofit2
+import butterknife.BindString;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+// Java Imports
+import java.util.List;
 
 /**
  * Data layer responsible for fetching data from local or remote data source and sending it to the
@@ -81,11 +87,9 @@ public class MovieRepository {
     private static final int FAVORITES = 2;
     private static final String API_KEY = BuildConfig.API_KEY;
 
-    // For Singleton instantiation
-    private static final Object LOCK = new Object();    // Synch lock
-    private static MovieRepository sInstance;           // Singleton instance
+    // Data sources
     private MovieDao mMovieDao;                         // Local Database access
-    private TheMovieDBService mTmdbService;              // Remote Network access
+    private TheMovieDBService mTmdbService;             // Remote Network access
 
     // Cache data
     //  MutableLiveData is a mutable and thread-safe version of LiveData with public setValue()
@@ -95,9 +99,22 @@ public class MovieRepository {
     private MutableLiveData<List<Movie>> mPopularMovies;
     private MutableLiveData<List<Movie>> mToprateMovies;
     private LiveData<List<Movie>> mFavoriteMovies;
-    // Cache the favorite Movie for FAB UI changes in the DetailFragment
-    private LiveData<Movie> mMovieById;
 
+    // Error messages
+    @BindString(R.string.response_not_successful)
+    String responseNotSuccessful;
+    @BindString(R.string.network_exception)
+    String networkException;
+    @BindString(R.string.impossible_error)
+    String cheekyException;
+
+    /**
+     * Constructor that takes the application context to create/retrieve an instance of the local
+     * SQL database, calls getApiClient() to get access to the TMDB API interface, and create new
+     * LiveData objects of each list of Movie objects.
+     *
+     * @param application Application context used to gain access to the local SQL database instance.
+     */
     public MovieRepository(Application application){
         // Get local database access
         AppDatabase database = AppDatabase.getInstance(application);
@@ -112,45 +129,27 @@ public class MovieRepository {
         mFavoriteMovies = new MutableLiveData<>();
     }
 
+    /**
+     * Retrieve the correct list of Movie objects based on an integer/choice.
+     *
+     * @param settingOption Integer values set in PosterListFragment that correspond to 'most popular',
+     *                      'top rated', and 'favorites'.
+     * @return LiveData of a list of Movie objects pertaining to the setting option.
+     */
     public LiveData<List<Movie>> getMovieList(int settingOption){
-
         // Popular or Top Rated or Favorites?
         switch(settingOption){
             case MOST_POPULAR:
-                // Null check, if null, create new instance and fill it
-//                if(mPopularMovies == null){
-//                    Log.e(TAG, "REPOSITORY popularMovies == null");
-//                    mPopularMovies = new MutableLiveData<>();
-//                }
                 getPopularMoviesList();
-                Log.e(TAG, "REPOSITORY popularMovies.getValue()");
                 return mPopularMovies;
             case TOP_RATED:
-                // Null check, if null, create new instance and fill it
-//                if(mToprateMovies == null){
-//                    Log.e(TAG, "REPOSITORY toprateMovies == null");
-//                    mToprateMovies = new MutableLiveData<>();
-//                }
                 getTopMoviesList();
-                Log.e(TAG, "REPOSITORY toprateMovies.getValue()");
                 return mToprateMovies;
             case FAVORITES:
-                // Null check, if null, create new instance and fill it
-//                if(mFavoriteMovies == null){
-//                    Log.e(TAG, "REPOSITORY favoriteMovies == null");
-//                    mFavoriteMovies = new MutableLiveData<>();
-//                }
-                // Set the value and dispatch the value to all the active observers
-                //  setValue vs postValue
-                //   setValue MUST be done on the main thread
-                //   postValue is done on a background thread
-//                movieList.postValue(mMovieDao.loadAllMovies().getValue());
-//                Log.e(TAG, "MutableLiveDta: " + movieList.toString());
-//                return movieList;
-                Log.e(TAG, "REPOSITORY favorites.getValue(): " + mMovieDao.loadAllMovies().getValue());
                 return mFavoriteMovies = mMovieDao.loadAllMovies();
             default:
-                throw new UnknownError("This is not a CTF, go somewhere else for decompiling fun.");
+                // Required, otherwise 'Missing return statement' error
+                throw new UnknownError(cheekyException);
         }
     }
 
@@ -185,7 +184,7 @@ public class MovieRepository {
                     // Set the value and dispatch the value to all the active observers
                     mPopularMovies.setValue(movies);
                 } else {
-                    Log.e(TAG, "REPOSITORY response NOT successful");
+                    Log.e(TAG, responseNotSuccessful);
                 }
             }
 
@@ -194,7 +193,7 @@ public class MovieRepository {
             @Override
             public void onFailure(Call<MovieResponse> call, Throwable t) {
                 mPopularMovies = null;
-                Log.e(TAG, "REPOSITORY call.enqueue FAILED");
+                Log.e(TAG, networkException);
             }
         });
     }
@@ -229,7 +228,7 @@ public class MovieRepository {
                     List<Movie> movies = response.body().getResults();
                     mToprateMovies.setValue(movies);
                 } else {
-                    Log.e(TAG, "REPOSITORY response NOT successful");
+                    Log.e(TAG, responseNotSuccessful);
                 }
             }
 
@@ -238,7 +237,7 @@ public class MovieRepository {
             @Override
             public void onFailure(Call<MovieResponse> call, Throwable t) {
                 mToprateMovies = null;
-                Log.e(TAG, "REPOSITORY call.enqueue FAILED");
+                Log.e(TAG, networkException);
             }
         });
     }
@@ -279,25 +278,6 @@ public class MovieRepository {
      * @return Return either a Movie object that is inside the 'favorites' database or return null.
      */
     public LiveData<Movie> getMovieById(final int movieId){
-//        AppExecutors.getsInstance().diskIO().execute(new Runnable() {
-//            @Override
-//            public void run() {
-//                mMovieById = mMovieDao.loadMovieById(movieId);
-//                Log.e(TAG, "REPOSITORY getMovieById: id==" + movieId);
-//                Log.e(TAG, "REPOSITORY getMovieById: " + mMovieById);
-//            }
-//        });
-//
-//        if(mMovieById == null){
-//            Log.e(TAG, "REPOSITORY getMovieById: NULL");
-//            return null;
-//        } else {
-//            Log.e(TAG, "REPOSITORY getMovieById: not NULL");
-//            return mMovieById;
-//        }
-
-        Log.e(TAG, "REPOSITORY getMovieByid: id=="+movieId);
-        Log.e(TAG, "REPOSITORY getMovieById: " + mMovieDao.loadMovieById(movieId));
         return mMovieDao.loadMovieById(movieId);
     }
 }

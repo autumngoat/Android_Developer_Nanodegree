@@ -47,6 +47,7 @@
 
 package com.example.full_dream.popularmoviesstage1.adapter;
 
+// Android Imports
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -56,26 +57,31 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.full_dream.popularmoviesstage1.R;
-import com.example.full_dream.popularmoviesstage1.model.Trailer;
-import com.squareup.picasso.Picasso;
-
-import java.util.List;
-
+// 3rd Party Imports - Butterknife
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+// 3rd Party Imports - com - Popular Movies Stage 2
+import com.example.full_dream.popularmoviesstage1.R;
+import com.example.full_dream.popularmoviesstage1.model.Trailer;
+
+// 3rd Party Imports - com - Picasso
+import com.squareup.picasso.Picasso;
+
+// Java Imports
+import java.util.List;
+
 /**
- * Creates and binds the Trailer ViewHolders for the Trailer RecyclerView
+ * Creates and binds the Trailer ViewHolders for the Trailer RecyclerView.
  */
 public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerAdapterViewHolder> {
 
+    // Constants
+    private static final String YOUTUBE_THUMBNAIL_PATH_START = "https://img.youtube.com/vi/";   // Alternatively could have used 'i3.ytimg.com'
+    private static final String YOUTUBE_THUMBNAIL_PATH_END = "/hqdefault.jpg";                  // High-quality Default image
+    // Cached copy of list of Trailer objects
     private List<Trailer> mTrailerList;
-    // Alternatively could have used 'i3.ytimg.com'
-    private static final String YOUTUBE_THUMBNAIL_PATH_START = "https://img.youtube.com/vi/";
-    // High-quality Default image
-    private static final String YOUTUBE_THUMBNAIL_PATH_END = "/hqdefault.jpg";
     private final TrailerAdapterOnClickHandler mClickHandler;
 
     /**
@@ -93,8 +99,9 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerA
     }
 
     /**
+     * Updates the adapter's cached copy of the list of Trailer objects.
      *
-     * @param trailers
+     * @param trailers New list of Trailer objects to update the older cached data.
      */
     public void setTrailerList(List<Trailer> trailers){
         mTrailerList = trailers;

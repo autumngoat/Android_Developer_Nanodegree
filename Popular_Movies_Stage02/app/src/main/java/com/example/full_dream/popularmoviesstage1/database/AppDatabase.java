@@ -47,13 +47,15 @@
 
 package com.example.full_dream.popularmoviesstage1.database;
 
+// Android Imports
 import android.arch.persistence.room.Database;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
-import android.util.Log;
 
+// 3rd Party Imports - com - Popular Movies Stage 2
 import com.example.full_dream.popularmoviesstage1.model.Movie;
+
 
 /**
  * This annotation marks a class as a database. It should be an abstract class that extends
@@ -75,7 +77,6 @@ public abstract class AppDatabase extends RoomDatabase {
 
     private static AppDatabase sInstance;
     private static final Object LOCK = new Object();
-    private static final String TAG = AppDatabase.class.getSimpleName();
     private static final String DATABASE_NAME = "favorites";
 
     /**
@@ -96,13 +97,13 @@ public abstract class AppDatabase extends RoomDatabase {
     public static AppDatabase getInstance(Context context) {
         if(sInstance == null){
             synchronized (LOCK) { // Similar to 'sychronized (AppDatabase.class)
-                Log.d(TAG, "Creating a new database instance");
+                // Creating a new database instance
                 sInstance = Room.databaseBuilder(context.getApplicationContext(),
                         AppDatabase.class, AppDatabase.DATABASE_NAME)
                         .build();
             }
         }
-        Log.d(TAG, "Getting the database instance");
+        // Getting the database instance
         return sInstance;
     }
 
