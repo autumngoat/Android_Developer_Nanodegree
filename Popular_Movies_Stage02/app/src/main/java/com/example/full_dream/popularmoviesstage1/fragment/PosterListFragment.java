@@ -64,8 +64,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 // 3rd Party Imports - Butterknife
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -93,10 +95,11 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
     private static final int MOST_POPULAR = 0;
     private static final int TOP_RATED = 1;
     private static final int FAVORITES = 2;
+    private static final int NO_INTERNET = 3;
 
     // ViewModels
-    private SharedViewModel model;
-    private PosterListViewModel viewModel;
+    private SharedViewModel mSharedModel;
+    private PosterListViewModel mPosterListViewModel;
 
     // UI related elements
     private Unbinder mUnbinder;
@@ -104,6 +107,8 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
     private PosterAdapter mPosterAdapter;
     @BindView(R.id.rv_poster_list)
     RecyclerView mRecyclerView;
+    @BindString(R.string.network_disconnected)
+    String networkDisconnected;
 
 
     /**
@@ -123,11 +128,21 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
 
         // Use ViewModelProviders to associate an instance of PosterListViewModel scoped with the
         // lifecycle of the UIController MainActivity
-        model = ViewModelProviders.of(getActivity()).get(SharedViewModel.class);
+        mSharedModel = ViewModelProviders.of(getActivity()).get(SharedViewModel.class);
 
         // Use ViewModelProviders to associate an instance of PosterListViewModel scoped with the
         // lifecyce of the UIController PosterListFragment
-        viewModel = ViewModelProviders.of(this).get(PosterListViewModel.class);
+        mPosterListViewModel = ViewModelProviders.of(this).get(PosterListViewModel.class);
+
+        // Show internet status error message to user if no internet, and no message otherwise
+        mPosterListViewModel.getInternetStatus().observe(this, new Observer<Integer>() {
+            @Override
+            public void onChanged(@Nullable Integer internetStatus) {
+                if(internetStatus == NO_INTERNET){
+                    Toast.makeText(getContext(), networkDisconnected, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     /**
@@ -266,7 +281,7 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
     @Override
     public void onClick(Movie movie) {
         // Set the SharedViewModel to the RecyclerView item click
-        model.select(movie);
+        mSharedModel.select(movie);
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         ft.addToBackStack(null);
@@ -342,7 +357,9 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
      *                       getMovies() returns.
      */
     public void populateUI(int settingsOption){
-        viewModel.getMovies(settingsOption).observe(this, new Observer<List<Movie>>() {
+        // How to avoid NPE for calling observe() on a null object reference?
+        //  Don't assign to null in MovieRepository in Retrofit callback onFailure()
+        mPosterListViewModel.getMovies(settingsOption).observe(this, new Observer<List<Movie>>() {
             @Override
             public void onChanged(@Nullable List<Movie> movies) {
                 // Update UI with favorite movies

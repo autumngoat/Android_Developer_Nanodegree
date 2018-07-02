@@ -142,7 +142,7 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
     private ReviewAdapter mReviewAdapter;
     private TrailerAdapter mTrailerAdapter;
     // ViewModel
-    private DetailViewModel viewModel;
+    private DetailViewModel mDetailViewModel;
     // Binding Reset
     //  An unbinder contract that will unbind views when called
     //  Source: https://jakewharton.github.io/butterknife/javadoc/butterknife/Unbinder.html
@@ -172,7 +172,7 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
 
         // Create a ViewModel (similar to the PosterListViewModel in setupViewModel(), but with
         // an instance of factory as a parameter)
-        viewModel = ViewModelProviders.of(this).get(DetailViewModel.class);
+        mDetailViewModel = ViewModelProviders.of(this).get(DetailViewModel.class);
 
         callRetrofitForTrailers();
         callRetrofitForReviews();
@@ -193,7 +193,7 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
         // Populate DetailFragment UI
         populateUI(mSelectedMovie);
 
-        viewModel.getMovieById(mSelectedMovie.getId()).observe(this, new Observer<Movie>() {
+        mDetailViewModel.getMovieById(mSelectedMovie.getId()).observe(this, new Observer<Movie>() {
             @Override
             public void onChanged(@Nullable Movie movieEntry) {
 
@@ -241,13 +241,13 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
                 // If already a Favorite, then...
                 if (mIsFavorite) {
                     // ...delete movie from the local database and...
-                    viewModel.deleteMovie(mSelectedMovie);
+                    mDetailViewModel.deleteMovie(mSelectedMovie);
 
                     // ...toggle FAB image resource based on favorite status
                     fab.setImageResource(R.drawable.ic_favorite_white);
                 } else {
                     // Insert Movie to Database
-                    viewModel.insertMovie(mSelectedMovie);
+                    mDetailViewModel.insertMovie(mSelectedMovie);
 
                     // Toggle FAB image resource based on favorite status
                     fab.setImageResource(R.drawable.ic_favorite_red);

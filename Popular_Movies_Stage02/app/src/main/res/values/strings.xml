@@ -52,15 +52,11 @@
     <string name="fragment_key">fragment</string>
 
     <!-- Toast messages -->
-    <string name="network_disconnected">Please check your network connection and try again.</string>
-    <string name="network_connected">Network connection achieved!</string>
+    <string name="network_disconnected">Check your network connection and retry.</string>
 
     <!-- Error messages -->
     <string name="trailer_response_err">Problems retrieving Trailers</string>
     <string name="review_response_err">Problems retrieving Reviews</string>
-    <string name="response_not_successful">Response was not successful</string>
-    <string name="network_exception">Problem talking to the server, creating the request, or processing the response</string>
-    <string name="impossible_error">This is not a CTF, go somewhere else for decompiling fun</string>
 
     <!-- Options menu option titles -->
     <string name="most_popular">Most Popular</string>

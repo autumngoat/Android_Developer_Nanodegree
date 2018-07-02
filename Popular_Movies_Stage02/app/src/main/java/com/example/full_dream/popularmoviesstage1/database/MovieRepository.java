@@ -55,7 +55,6 @@ import android.util.Log;
 
 // 3rd Party Imports - com - Popular Movies Stage 2
 import com.example.full_dream.popularmoviesstage1.BuildConfig;
-import com.example.full_dream.popularmoviesstage1.R;
 import com.example.full_dream.popularmoviesstage1.model.Movie;
 import com.example.full_dream.popularmoviesstage1.model.MovieResponse;
 import com.example.full_dream.popularmoviesstage1.network.RetrofitClient;
@@ -63,7 +62,6 @@ import com.example.full_dream.popularmoviesstage1.network.TheMovieDBService;
 import com.example.full_dream.popularmoviesstage1.thread.AppExecutors;
 
 // 3rd Party Imports - Retrofit2
-import butterknife.BindString;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -85,6 +83,7 @@ public class MovieRepository {
     private static final int MOST_POPULAR = 0;
     private static final int TOP_RATED = 1;
     private static final int FAVORITES = 2;
+    private static final int NO_INTERNET = 3;
     private static final String API_KEY = BuildConfig.API_KEY;
 
     // Data sources
@@ -99,14 +98,14 @@ public class MovieRepository {
     private MutableLiveData<List<Movie>> mPopularMovies;
     private MutableLiveData<List<Movie>> mToprateMovies;
     private LiveData<List<Movie>> mFavoriteMovies;
+    private MutableLiveData<Integer> mInternetStatus;
+//    private MutableLiveData<Void> mInternetStatus;
 
     // Error messages
-    @BindString(R.string.response_not_successful)
-    String responseNotSuccessful;
-    @BindString(R.string.network_exception)
-    String networkException;
-    @BindString(R.string.impossible_error)
-    String cheekyException;
+    //  Butterknife - java.lang.NullPointerException: println needs a message
+    public static final String responseNotSuccessful = "Response was not successful";
+    public static final String networkException = "Problem talking to the server, creating the request, or processing the response";
+    public static final String cheekyException = "This is not a CTF, go somewhere else for decompiling fun";
 
     /**
      * Constructor that takes the application context to create/retrieve an instance of the local
@@ -127,6 +126,7 @@ public class MovieRepository {
         mPopularMovies = new MutableLiveData<>();
         mToprateMovies = new MutableLiveData<>();
         mFavoriteMovies = new MutableLiveData<>();
+        mInternetStatus = new MutableLiveData<>();
     }
 
     /**
@@ -146,6 +146,9 @@ public class MovieRepository {
                 getTopMoviesList();
                 return mToprateMovies;
             case FAVORITES:
+                // Unecessary to change mInternetStatus with FAVORITES local database call b/c
+                // connectivity should not and does not change with this call
+//                mInternetStatus.setValue(FAVORITES);
                 return mFavoriteMovies = mMovieDao.loadAllMovies();
             default:
                 // Required, otherwise 'Missing return statement' error
@@ -183,6 +186,7 @@ public class MovieRepository {
                     List<Movie> movies = response.body().getResults();
                     // Set the value and dispatch the value to all the active observers
                     mPopularMovies.setValue(movies);
+                    mInternetStatus.setValue(MOST_POPULAR);
                 } else {
                     Log.e(TAG, responseNotSuccessful);
                 }
@@ -192,8 +196,9 @@ public class MovieRepository {
             // exception occurred creating the request or processing the response
             @Override
             public void onFailure(Call<MovieResponse> call, Throwable t) {
-                mPopularMovies = null;
+//                mPopularMovies = null;
                 Log.e(TAG, networkException);
+                mInternetStatus.setValue(NO_INTERNET);
             }
         });
     }
@@ -227,6 +232,7 @@ public class MovieRepository {
                 if(response.isSuccessful()){
                     List<Movie> movies = response.body().getResults();
                     mToprateMovies.setValue(movies);
+                    mInternetStatus.setValue(TOP_RATED);
                 } else {
                     Log.e(TAG, responseNotSuccessful);
                 }
@@ -236,8 +242,9 @@ public class MovieRepository {
             // exception occurred creating the request or processing the response
             @Override
             public void onFailure(Call<MovieResponse> call, Throwable t) {
-                mToprateMovies = null;
+//                mToprateMovies = null;
                 Log.e(TAG, networkException);
+                mInternetStatus.setValue(NO_INTERNET);
             }
         });
     }
@@ -279,5 +286,18 @@ public class MovieRepository {
      */
     public LiveData<Movie> getMovieById(final int movieId){
         return mMovieDao.loadMovieById(movieId);
+    }
+
+    /**
+     * Getter that returns a LiveData object tracking an Integer value that both indicates which
+     * menu option was selected (0 - MOST POPULAR, 1 - TOP RATED, 2 - FAVORITES) as well as whether
+     * or not the Retrofit callbacks indicate (3 - NO INTERNET or else the presence of network
+     * connectivity).
+     *
+     * @return Return a LiveData object containing an Integer that may indicate the network status
+     * based on (3 - NO INTERNET or !3 for network connection).
+     */
+    public LiveData<Integer> getInternetStatus(){
+        return mInternetStatus;
     }
 }

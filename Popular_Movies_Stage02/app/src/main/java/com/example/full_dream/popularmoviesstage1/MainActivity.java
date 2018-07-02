@@ -48,22 +48,14 @@
 package com.example.full_dream.popularmoviesstage1;
 
 // Android Imports
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.widget.Toast;
 
 //3rd Party Imports - Butterknife
 import butterknife.BindString;
 import butterknife.ButterKnife;
 
 // 3rd Party Imports - com - Popular Movies Stage 2
-import com.example.full_dream.popularmoviesstage1.fragment.DetailFragment;
 import com.example.full_dream.popularmoviesstage1.fragment.PosterListFragment;
 
 /**
@@ -73,16 +65,6 @@ public class MainActivity extends AppCompatActivity {
 
     // Check which Fragment reference is returned/restored across config change
     private boolean isDetailFragment;
-    // Dynamic IntentFilter
-    private IntentFilter mNetworkConnectionIntentFilter;
-    private BroadcastReceiver mNetworkConnectionBroadcastReceiver;
-    // Network connection status
-    private boolean isDisconnected;
-    // Toast messages
-    @BindString(R.string.network_connected)
-    String networkConnected;
-    @BindString(R.string.network_disconnected)
-    String networkDisconnected;
     // Bundle key
     @BindString(R.string.fragment_key)
     String fragmentKey;
@@ -96,12 +78,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        // Instantiate the IntentFilter
-        mNetworkConnectionIntentFilter = new IntentFilter();
-
-        // Instantiate the BroadcastReceiver
-        mNetworkConnectionBroadcastReceiver = new ConnectionBroadcastReceiver();
-
         // If first time opening app, then create new PosterListFragment instance and commit to
         // fragment back stack
         if(savedInstanceState == null){
@@ -110,52 +86,6 @@ public class MainActivity extends AppCompatActivity {
                     .add(R.id.fragment_container, new PosterListFragment())
                     .commit();
         }
-    }
-
-    /**
-     * Inexplicably, onResume occurs AFTER onRestoreInstanceState() so handle
-     * rotation/orientation/configuration change here based on bundle data interpreted inside
-     * onRestoreInstanceState().
-     */
-    @Override
-    protected void onResume() {
-        super.onResume();
-        // Register the BroadcastReceiver when the Activity is in the foreground
-        registerReceiver(mNetworkConnectionBroadcastReceiver, mNetworkConnectionIntentFilter);
-
-        if(isDisconnected){
-            Toast.makeText(this, networkDisconnected, Toast.LENGTH_LONG).show();
-        } else {
-            Toast.makeText(this, networkConnected, Toast.LENGTH_SHORT).show();
-            if(isDetailFragment){
-                DetailFragment detailFragment = (DetailFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-                if(detailFragment == null){
-                    getSupportFragmentManager()
-                            .beginTransaction()
-                            .addToBackStack(null)
-                            .replace(R.id.fragment_container, new DetailFragment())
-                            .commit();
-                }
-            } else {
-                PosterListFragment posterListFragment = (PosterListFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-                if(posterListFragment == null){
-                    getSupportFragmentManager()
-                            .beginTransaction()
-                            .add(R.id.fragment_container, new PosterListFragment())
-                            .commit();
-                }
-            }
-        }
-    }
-
-    /**
-     * Unregister the BroadcastReceiver when the Activity is no longer in the foreground.
-     */
-    @Override
-    protected void onPause() {
-        super.onPause();
-        // Unregister the BroadcastReceiver when the Activity is in the background
-        unregisterReceiver(mNetworkConnectionBroadcastReceiver);
     }
 
     /**
@@ -192,24 +122,6 @@ public class MainActivity extends AppCompatActivity {
             isDetailFragment = true;
         } else {
             isDetailFragment = false;
-        }
-    }
-
-    /**
-     * BroadcastReceiver only used in the MainActivity class so is created as an inner class.
-     */
-    private class ConnectionBroadcastReceiver extends BroadcastReceiver{
-        /**
-         * Notify only if not connected to the internet.
-         *
-         * @param context MainActivity context.
-         * @param intent Same as the IntentFilter instantiated and setup in onCreate().
-         */
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            ConnectivityManager cm = (ConnectivityManager) getSystemService(context.CONNECTIVITY_SERVICE);
-            NetworkInfo netInfo = cm.getActiveNetworkInfo();
-            isDisconnected = (netInfo == null && !netInfo.isConnected());
         }
     }
 }

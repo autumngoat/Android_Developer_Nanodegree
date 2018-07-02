@@ -87,11 +87,23 @@ public class PosterListViewModel extends AndroidViewModel {
     }
 
     /**
-     * Getter for method for Movie network call that hides the implementation from the UI.
+     * MovieRepository getter method for retrieving a LiveData object of a list of Movie objects that
+     * hides the implementation from the UI.
      *
      * @return A LiveData object of a list of Movie objects.
      */
     public LiveData<List<Movie>> getMovies(int settingsOption) {
         return mRepository.getMovieList(settingsOption);
+    }
+
+
+    /**
+     * MovieRepository getter method for retrieving a LiveData object of an Integer that represents
+     * network connection or no network connection based on its value.
+     *
+     * @return A LiveData object of an Integer object.
+     */
+    public LiveData<Integer> getInternetStatus(){
+        return mRepository.getInternetStatus();
     }
 }
