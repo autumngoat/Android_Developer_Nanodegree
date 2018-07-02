@@ -99,7 +99,6 @@ public class MovieRepository {
     private MutableLiveData<List<Movie>> mToprateMovies;
     private LiveData<List<Movie>> mFavoriteMovies;
     private MutableLiveData<Integer> mInternetStatus;
-//    private MutableLiveData<Void> mInternetStatus;
 
     // Error messages
     //  Butterknife - java.lang.NullPointerException: println needs a message
@@ -148,7 +147,6 @@ public class MovieRepository {
             case FAVORITES:
                 // Unecessary to change mInternetStatus with FAVORITES local database call b/c
                 // connectivity should not and does not change with this call
-//                mInternetStatus.setValue(FAVORITES);
                 return mFavoriteMovies = mMovieDao.loadAllMovies();
             default:
                 // Required, otherwise 'Missing return statement' error
@@ -196,7 +194,6 @@ public class MovieRepository {
             // exception occurred creating the request or processing the response
             @Override
             public void onFailure(Call<MovieResponse> call, Throwable t) {
-//                mPopularMovies = null;
                 Log.e(TAG, networkException);
                 mInternetStatus.setValue(NO_INTERNET);
             }
@@ -242,7 +239,6 @@ public class MovieRepository {
             // exception occurred creating the request or processing the response
             @Override
             public void onFailure(Call<MovieResponse> call, Throwable t) {
-//                mToprateMovies = null;
                 Log.e(TAG, networkException);
                 mInternetStatus.setValue(NO_INTERNET);
             }

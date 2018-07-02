@@ -76,14 +76,14 @@
     <style name="DetailBlocks">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:background">#CC000000</item>
+        <item name="android:background">@color/black_field</item>
     </style>
 
     <!-- Detail TextView Style -->
     <style name="DetailTextViews">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textColor">@color/gold_morning</item>
     </style>
 
 </resources>

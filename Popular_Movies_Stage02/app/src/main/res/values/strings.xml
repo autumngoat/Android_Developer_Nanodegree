@@ -51,8 +51,10 @@
     <!-- Bundle keys -->
     <string name="fragment_key">fragment</string>
 
-    <!-- Toast messages -->
+    <!-- Snackbar messages -->
     <string name="network_disconnected">Check your network connection and retry.</string>
+    <string name="favorites_plus">Added to favorites</string>
+    <string name="favorites_minus">Removed from favorites</string>
 
     <!-- Error messages -->
     <string name="trailer_response_err">Problems retrieving Trailers</string>

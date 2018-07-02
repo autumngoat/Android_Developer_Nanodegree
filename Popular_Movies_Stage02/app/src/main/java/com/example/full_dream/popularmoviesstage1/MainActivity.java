@@ -63,8 +63,6 @@ import com.example.full_dream.popularmoviesstage1.fragment.PosterListFragment;
  */
 public class MainActivity extends AppCompatActivity {
 
-    // Check which Fragment reference is returned/restored across config change
-    private boolean isDetailFragment;
     // Bundle key
     @BindString(R.string.fragment_key)
     String fragmentKey;
@@ -115,13 +113,5 @@ public class MainActivity extends AppCompatActivity {
 
         // Retrieve the current Fragment instance for a reference previously placed with putFragment()
         getSupportFragmentManager().getFragment(savedInstanceState, fragmentKey);
-
-        // Determine whether to flag isDetailFragment true or false
-        if(getSupportFragmentManager().getFragment(savedInstanceState, fragmentKey)
-                .getClass().toString().contains("Detail")){
-            isDetailFragment = true;
-        } else {
-            isDetailFragment = false;
-        }
     }
 }

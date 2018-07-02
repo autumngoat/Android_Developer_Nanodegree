@@ -57,6 +57,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -111,6 +112,10 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
     String mTrailerErr;
     @BindString(R.string.review_response_err)
     String mReviewErr;
+    @BindString(R.string.favorites_plus)
+    String mAddFavoriteMsg;
+    @BindString(R.string.favorites_minus)
+    String mRemoveFavoriteMsg;
     // Views
     @BindView(R.id.iv_background_poster)
     ImageView mBackgroundPoster;
@@ -236,6 +241,9 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
         //  Title: "Favorite"
         //  Licensed by Creative Commons BY 3.0
         fab.setOnClickListener(new View.OnClickListener() {
+
+            String snackBarText;
+
             @Override
             public void onClick(View v) {
                 // If already a Favorite, then...
@@ -245,13 +253,21 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
 
                     // ...toggle FAB image resource based on favorite status
                     fab.setImageResource(R.drawable.ic_favorite_white);
+
+                    //
+                    snackBarText = mRemoveFavoriteMsg;
                 } else {
                     // Insert Movie to Database
                     mDetailViewModel.insertMovie(mSelectedMovie);
 
                     // Toggle FAB image resource based on favorite status
                     fab.setImageResource(R.drawable.ic_favorite_red);
+
+                    //
+                    snackBarText = mAddFavoriteMsg;
                 }
+
+                Snackbar.make(v, snackBarText, Snackbar.LENGTH_SHORT).show();
             }
         });
 
