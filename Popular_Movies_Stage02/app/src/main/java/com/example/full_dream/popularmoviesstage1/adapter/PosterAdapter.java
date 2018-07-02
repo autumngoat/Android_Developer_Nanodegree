@@ -50,6 +50,7 @@ package com.example.full_dream.popularmoviesstage1.adapter;
 // Android Imports
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -118,6 +119,14 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
                 .placeholder(R.drawable.ic_popcorn)
                 .error(R.drawable.ic_popcorn)
                 .into(posterViewHolder.mPosterImageView);
+
+        // Set the transition name of the ImageView of the poster to the poster's/movie's name/title
+        //  Transition names are required to be unique
+        //   Otherwise: java.lang.IllegalArgumentException: Unique transitionNames are required for
+        //   all sharedElements
+        //  ViewCompat - helper for accessing features in View such as 'setTransitionName'
+        //   Source: https://developer.android.com/reference/android/support/v4/view/ViewCompat
+        ViewCompat.setTransitionName(posterViewHolder.mPosterImageView, movie.getTitle());
     }
 
     /**
@@ -140,10 +149,11 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
     }
 
     /**
-     * The interface that receives onClick messages.
+     * The interface for that defines what the method signature of onClick() in PosterListFragment
+     * should contain.
      */
     public interface PosterAdapterOnClickHandler {
-        void onClick(Movie movie);
+        void onClick(Movie movie, View sharedElement);
     }
 
     /**
@@ -162,13 +172,14 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
         }
 
         /**
-         * Sends selected View's associated Movie object to click-handler.
+         * Sends selected View's associated Movie object, and shared View element to share between
+         * PosterListFragment and DetailFragment to the click handler.
          */
         @OnClick(R.id.iv_poster)
         public void onClickShowDetails() {
             int adapterPosition = getAdapterPosition();
             Movie selectedMovie = mMovieData.get(adapterPosition);
-            mClickHandler.onClick(selectedMovie);
+            mClickHandler.onClick(selectedMovie, mPosterImageView);
         }
     }
 }

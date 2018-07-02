@@ -53,6 +53,7 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -143,6 +144,7 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
     private Movie mSelectedMovie;                   // Exists because it made insert/delete easier for FAB onClick()
     private String API_KEY = BuildConfig.API_KEY;   // Honestly forgot to phase this out to keep API key reference to Repository
     private boolean mIsFavorite;                    // Seemed to be the easiest way to deal with FAB favorite status and onClick()
+    private String mTransitionName;
     // Adapters
     private ReviewAdapter mReviewAdapter;
     private TrailerAdapter mTrailerAdapter;
@@ -172,8 +174,10 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
         // Source: https://developer.android.com/topic/libraries/architecture/viewmodel#sharing
         SharedViewModel model = ViewModelProviders.of(getActivity()).get(SharedViewModel.class);
 
-        // Retrieve the selected/clicked-on RecyclerView item
+        // Retrieve the selected/clicked-on RecyclerView item Movie object
         mSelectedMovie = model.getSelected().getValue();
+        // Retrieve the selected/clicked-on ReyclerView item shared element's/view's transition name
+        mTransitionName = model.getTransitionName();
 
         // Create a ViewModel (similar to the PosterListViewModel in setupViewModel(), but with
         // an instance of factory as a parameter)
@@ -254,7 +258,7 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
                     // ...toggle FAB image resource based on favorite status
                     fab.setImageResource(R.drawable.ic_favorite_white);
 
-                    //
+                    // Set SnackBar text
                     snackBarText = mRemoveFavoriteMsg;
                 } else {
                     // Insert Movie to Database
@@ -263,10 +267,10 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
                     // Toggle FAB image resource based on favorite status
                     fab.setImageResource(R.drawable.ic_favorite_red);
 
-                    //
+                    // Set SnackBar text
                     snackBarText = mAddFavoriteMsg;
                 }
-
+                // Show SnackBar text
                 Snackbar.make(v, snackBarText, Snackbar.LENGTH_SHORT).show();
             }
         });
@@ -391,6 +395,11 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
                 .placeholder(R.drawable.ic_popcorn)
                 .error(R.drawable.ic_popcorn)
                 .into(mBackgroundPoster);
+
+        // Set transition name
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+            mBackgroundPoster.setTransitionName(mTransitionName);
+        }
 
         String rating = Double.toString(movie.getVoteAverage());
         String title = movie.getTitle();

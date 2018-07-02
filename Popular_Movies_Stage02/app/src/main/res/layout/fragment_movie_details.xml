@@ -51,19 +51,27 @@
     android:layout_height="match_parent"
     android:background="@android:color/black">
 
-    <!-- Set poster as background image -->
+    <android.support.design.widget.CollapsingToolbarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_scrollFlags="scroll|exitUntilCollapsed"
+        app:contentScrim="@color/gold_morning">
+
+        <ImageView
+            android:id="@+id/iv_backdrop"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alpha="0.8"
+            android:adjustViewBounds="true"
+            app:layout_constraintTop_toBottomOf="@id/rv_review_list"/>
+    </android.support.design.widget.CollapsingToolbarLayout>
+
     <ImageView
         android:id="@+id/iv_background_poster"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
         android:alpha="0.4"/>
-
-    <!-- Floating Action Button for adding/removing to favorites SQLite database -->
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/detail_fab_fav"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
 
     <TextView
         android:id="@+id/tv_rating"
@@ -150,11 +158,9 @@
         app:layout_constraintTop_toBottomOf="@id/rv_trailer_list"
         android:layout_marginTop="8dp"/>
 
-    <ImageView
-        android:id="@+id/iv_backdrop"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:alpha="0.8"
-        android:adjustViewBounds="true"
-        app:layout_constraintTop_toBottomOf="@id/rv_review_list"/>
+    <!-- Floating Action Button for adding/removing to favorites SQLite database -->
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/detail_fab_fav"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 </android.support.constraint.ConstraintLayout>

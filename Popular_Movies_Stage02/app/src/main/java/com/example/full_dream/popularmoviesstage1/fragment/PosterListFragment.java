@@ -50,22 +50,23 @@ package com.example.full_dream.popularmoviesstage1.fragment;
 // Android Imports
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.transition.Fade;
+import android.transition.TransitionInflater;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 // 3rd Party Imports - Butterknife
 import butterknife.BindString;
@@ -283,17 +284,67 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
      * Handle RecyclerView item clicks by replacing the current Fragment with a DetailFragment of
      * the selected/clicked-on RecyclerView item.
      *
-     * @param movie The clicked on RecyclerView item.
+     * @param movie The Movie object associated with the clicked on RecyclerView item.
+     * @param sharedElement The ImageView view associated with the clicked on RecyclerView item.
      */
     @Override
-    public void onClick(Movie movie) {
-        // Set the SharedViewModel to the RecyclerView item click
+    public void onClick(Movie movie, View sharedElement) {
+        String transitionName = ViewCompat.getTransitionName(sharedElement);
+
+        // Get Movie object and ...
         mSharedModel.select(movie);
-        FragmentManager fm = getFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-        ft.addToBackStack(null);
-        ft.replace(R.id.fragment_container, new DetailFragment());
-        ft.commit();
+        // ... get the transition name into the SharedViewModel to share data between Fragments
+        mSharedModel.setTransitionName(transitionName);
+
+        // Entering fragment from exiting fragment (this == PosterListFragment)
+        DetailFragment detailFragment = new DetailFragment();
+
+        // Fragment Transitions with Shared Elements require API level 21 and higher
+        //  The support library contains the following methods but on API levels lower than 21, they
+        //  result in no action
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+            // Sets the Transition that will be used for shared elements transferred INTO the content
+            // Scene
+            detailFragment.setSharedElementEnterTransition(TransitionInflater
+                    .from(getContext())
+                    .inflateTransition(android.R.transition.move));
+            // Sets the Transition that will be used to move Views INTO the initial scene
+            //  Avoid using Fade() else:
+            //   JNI CallObjectMethod called with pending exception java.lang.IllegalStateException: Unable to create layer for ConstraintLayout
+            //    That is an Android stack trace beyond my debugging ken
+//            detailFragment.setEnterTransition(new Fade());
+            detailFragment.setEnterTransition(TransitionInflater
+                    .from(getContext())
+                    .inflateTransition(android.R.transition.move));
+
+            // Sets the Transition that will be used for shared elements transferred BACK during a pop
+            // of the back stack
+            setSharedElementReturnTransition(TransitionInflater
+                    .from(getContext())
+                    .inflateTransition(android.R.transition.move));
+            // Sets the Transition that will be used to move Views OUT of the scene when the fragment
+            // is removed, hidden, or detached when not popping the back stack
+            setExitTransition(TransitionInflater
+                    .from(getContext())
+                    .inflateTransition(android.R.transition.move));
+        }
+
+        getFragmentManager()
+                .beginTransaction()
+                // Used to map a View (sharedElement) from a removed or hidden Fragment
+                // (PostListFragment) to a View from a shown or added Fragment (DetailFragment)
+                //  Must have a unique String (transitionName) in the View hierarchy else:
+                //   java.lang.IllegalArgumentException: Unique transitionNames are required for
+                //   all sharedElements
+                .addSharedElement(sharedElement, transitionName)
+                // An optional name for this back stack state, or null
+                //  If you want to add this transaction to the back stack and don't need to access
+                //  it later, then add 'null' instead of an optional String name
+                .addToBackStack(null)
+                // Replace PosterListFragment with DetailFragment since they both use the same
+                // FrameLayout in activity_main.xml
+                .replace(R.id.fragment_container, detailFragment)
+                .commit();
     }
 
     /**

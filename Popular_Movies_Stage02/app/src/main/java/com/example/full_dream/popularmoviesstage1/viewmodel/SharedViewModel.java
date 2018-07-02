@@ -66,6 +66,14 @@ public class SharedViewModel extends ViewModel {
 
     // LiveData which publicly exposes setValue(Movie) and postValue(Movie) methods, if available
     private final MutableLiveData<Movie> selected = new MutableLiveData<>();
+    // Transition name
+    private String mTransitionName;
+
+    // Set transition name of selected Recycler view item's poster ImageView
+    public void setTransitionName(String transitionName) { mTransitionName = transitionName; }
+
+    // Return the transition name of the selected Recycler view item's poster ImageView
+    public String getTransitionName(){ return mTransitionName; }
 
     // Sets the value to the selected Movie
     public void select(Movie movie){
