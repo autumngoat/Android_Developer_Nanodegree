@@ -48,7 +48,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="4dp">
+    android:padding="@dimen/general_spacing_half">
 
     <!-- adjustViewBounds - set to true if you want the ImageView to adjust its bounds
          to preserve the aspect ratio of its drawable -->

@@ -59,7 +59,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.transition.Fade;
 import android.transition.TransitionInflater;
 import android.view.LayoutInflater;
 import android.view.Menu;
