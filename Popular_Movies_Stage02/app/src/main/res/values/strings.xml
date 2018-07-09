@@ -50,6 +50,7 @@
 
     <!-- Bundle keys -->
     <string name="fragment_key">fragment</string>
+    <string name="settings_option">settingsOption</string>
 
     <!-- Snackbar messages -->
     <string name="network_disconnected">Check your network connection and retry.</string>

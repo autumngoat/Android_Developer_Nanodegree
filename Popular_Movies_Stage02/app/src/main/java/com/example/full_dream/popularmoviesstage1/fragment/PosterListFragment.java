@@ -60,6 +60,7 @@ import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.transition.TransitionInflater;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -109,7 +110,10 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
     @BindView(R.id.rv_poster_list)
     RecyclerView mRecyclerView;
     @BindString(R.string.network_disconnected)
-    String networkDisconnected;
+    String mNetworkDisconnected;
+    // Bundle key(s)
+    @BindString(R.string.settings_option)
+    String mSettingsOptionKey;
 
 
     /**
@@ -146,7 +150,7 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
                     // https://stackoverflow.com/questions/34432339/android-snackbar-vs-toast-usage-and-difference
                     // , so will replace Toast with Snackbar and see how that goes
                     //  That, and I like how it looks compared to Toast
-                    Snackbar.make(getView(), networkDisconnected, Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(getView(), mNetworkDisconnected, Snackbar.LENGTH_SHORT).show();
                 }
             }
         });
@@ -232,7 +236,7 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        outState.putInt("settingsOption", mSettingsOption);
+        outState.putInt(mSettingsOptionKey, mSettingsOption);
     }
 
     /**
@@ -257,9 +261,11 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
 
         // If first time initialize UI, else populate UI using bundled settings option int
         if(savedInstanceState == null){
+            Log.e("rabbit", "mSettingOption in onActivityCreated is: " + mSettingsOption);
             populateUI(mSettingsOption);
         } else {
             mSettingsOption = savedInstanceState.getInt("settingsOption");
+            Log.e("rabbit", "mSettingOption in onActivityCreated is: " + mSettingsOption);
             populateUI(mSettingsOption);
         }
     }
@@ -356,8 +362,33 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
         // Remove existing menu before inflating another menu
         // Source:
         //  https://stackoverflow.com/questions/8472776/fragments-with-the-same-menu-on-the-same-layout-cause-duplicated-menuitem/8495697#8495697
-        menu.clear();
+        // No longer have this issue now that we've fleshed out onCreateOptionsMenu a bit more to
+        // deal with persisting the menu item selected through orientation change
+//        menu.clear();
+
         inflater.inflate(R.menu.settings, menu);
+
+        Log.e("rabbit", "onCreateOptionsMenu SHOULD only be called once");
+        // Persist menu item selected through screen rotation
+        MenuItem menuItem;
+        switch(mSettingsOption){
+            case MOST_POPULAR:
+                menuItem = menu.findItem(R.id.action_popular);
+                Log.e("rabbit", "onCreateOptionsMenu menuItem: POPULAR");
+                menuItem.setChecked(true);
+                break;
+            case TOP_RATED:
+                menuItem = menu.findItem(R.id.action_top_rated);
+                Log.e("rabbit", "onCreateOptionsMenu menuItem: TOPRATED");
+                menuItem.setChecked(true);
+                break;
+            case FAVORITES:
+                menuItem = menu.findItem(R.id.action_favorites);
+                Log.e("rabbit", "onCreateOptionsMenu menuItem: FAVORITES");
+                menuItem.setChecked(true);
+                break;
+        }
+
         super.onCreateOptionsMenu(menu,inflater);
     }
 
@@ -401,8 +432,8 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
                 item.setChecked(!item.isChecked());
                 populateUI(mSettingsOption);
         }
-        // Reset scroll position to the top
-        mRecyclerView.smoothScrollToPosition(0);
+        // Reset scroll position to the top is UNDESIRED
+//        mRecyclerView.smoothScrollToPosition(0);
         return super.onOptionsItemSelected(item);
     }
 

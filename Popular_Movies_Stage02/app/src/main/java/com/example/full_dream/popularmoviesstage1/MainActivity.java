@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
 
     // Bundle key
     @BindString(R.string.fragment_key)
-    String fragmentKey;
+    String mFragmentKey;
 
     /**
      * Initialize first (and only) PosterListFragment instance here if first time app is starting.
@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Put a reference to a Fragment in a Bundle
         getSupportFragmentManager().putFragment(outState,
-                fragmentKey,
+                mFragmentKey,
                 getSupportFragmentManager().findFragmentById(R.id.fragment_container));
     }
 
@@ -112,6 +112,6 @@ public class MainActivity extends AppCompatActivity {
         super.onRestoreInstanceState(savedInstanceState);
 
         // Retrieve the current Fragment instance for a reference previously placed with putFragment()
-        getSupportFragmentManager().getFragment(savedInstanceState, fragmentKey);
+        getSupportFragmentManager().getFragment(savedInstanceState, mFragmentKey);
     }
 }

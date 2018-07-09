@@ -101,10 +101,11 @@ public class MovieRepository {
     private MutableLiveData<Integer> mInternetStatus;
 
     // Error messages
-    //  Butterknife - java.lang.NullPointerException: println needs a message
-    public static final String responseNotSuccessful = "Response was not successful";
-    public static final String networkException = "Problem talking to the server, creating the request, or processing the response";
-    public static final String cheekyException = "This is not a CTF, go somewhere else for decompiling fun";
+    //  Why not Butterknife? - Not recognized as a message:
+    //   java.lang.NullPointerException: println needs a message
+    private static final String responseNotSuccessful = "Response was not successful";
+    private static final String networkException = "Problem talking to the server, creating the request, or processing the response";
+    private static final String cheekyException = "This is not a CTF, go somewhere else for decompiling fun";
 
     /**
      * Constructor that takes the application context to create/retrieve an instance of the local

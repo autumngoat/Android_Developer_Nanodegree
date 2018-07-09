@@ -96,7 +96,7 @@ dependencies {
     // ConstraintLayout
     implementation "com.android.support.constraint:constraint-layout:$constraint_layout_version"
 
-    // Floating Action Button
+    // Support Library - Design Support library (FAB, Snackbar, tabs, nav drawer, etc.)
     implementation "com.android.support:design:$support_library_version"
 
     // RecyclerView
