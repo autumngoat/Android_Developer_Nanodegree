@@ -51,6 +51,7 @@
     <!-- Bundle keys -->
     <string name="fragment_key">fragment</string>
     <string name="settings_option">settingsOption</string>
+    <string name="poster_adapter_state">posterAdapterState</string>
 
     <!-- Snackbar messages -->
     <string name="network_disconnected">Check your network connection and retry.</string>

@@ -52,6 +52,7 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -107,6 +108,7 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
     private Unbinder mUnbinder;
     private int mSettingsOption;
     private PosterAdapter mPosterAdapter;
+    private Parcelable mPosterListState;
     @BindView(R.id.rv_poster_list)
     RecyclerView mRecyclerView;
     @BindString(R.string.network_disconnected)
@@ -114,6 +116,8 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
     // Bundle key(s)
     @BindString(R.string.settings_option)
     String mSettingsOptionKey;
+    @BindString(R.string.poster_adapter_state)
+    String mPosterAdapterState;
 
 
     /**
@@ -209,6 +213,19 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
             }
         });
 
+        // Must provide data BEFORE first layout pass, to have the same scroll boundaries as before
+        // rotation according to:
+        //  https://medium.com/@dimezis/android-scroll-position-restoring-done-right-cff1e2104ac7
+        if(savedInstanceState != null){
+            // Restore poster list state Parcelable to get PosterAdapter position (among other things)
+            mPosterListState = savedInstanceState.getParcelable(mPosterAdapterState);
+        }
+
+        if(mPosterListState != null){
+            // Update the LayoutManager with the scroll position previous to orientation change
+            mLayoutManager.onRestoreInstanceState(mPosterListState);
+        }
+
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         mRecyclerView.setHasFixedSize(true);
@@ -224,8 +241,14 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
     /**
      * Called to ask the fragment to save its current dynamic state, so it can later be
      * reconstructed in a new instance of its process is restarted.
-     *  Save the chosen menu item (0 - MOST_POPULAR, 1 - TOP_RATED, 2 - FAVORITES) to reinstate
-     *  adapter contents to the proper chosen list of Movie objects.
+     *  Save the chosen menu item (0 - MOST_POPULAR, 1 - TOP_RATED, 2 - FAVORITES)
+     *   to reinstate adapter contents to the proper chosen list of Movie objects,
+     *   and
+     *   to reinstate menu item choice in the onCreateOptionsMenu() method so it's not always
+     *   MOST_POPULAR.
+     *  Save PosterAdapter state because the RecyclerView's scroll position is saved within the
+     *   LayoutManager's onSaveInstanceState() Parcelable, which we will need in order to restore
+     *   the scroll position in onCreate().
      *
      * Comments source:
      * https://developer.android.com/reference/android/support/v4/app/Fragment#onSaveInstanceState(android.os.Bundle)
@@ -236,7 +259,14 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
 
+        // Save menu/settings option state
         outState.putInt(mSettingsOptionKey, mSettingsOption);
+        // Save poster list (PosterAdapter RecyclerView) state
+        //  RecyclerView/ListView/ScrollView/NestedScrollView each save scroll position in
+        //  onSaveInstanceState() according to:
+        //   https://medium.com/@dimezis/android-scroll-position-restoring-done-right-cff1e2104ac7
+        mPosterListState = mRecyclerView.getLayoutManager().onSaveInstanceState();
+        outState.putParcelable(mPosterAdapterState, mPosterListState);
     }
 
     /**
@@ -359,17 +389,9 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
      */
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        // Remove existing menu before inflating another menu
-        // Source:
-        //  https://stackoverflow.com/questions/8472776/fragments-with-the-same-menu-on-the-same-layout-cause-duplicated-menuitem/8495697#8495697
-        // No longer have this issue now that we've fleshed out onCreateOptionsMenu a bit more to
-        // deal with persisting the menu item selected through orientation change
-//        menu.clear();
-
         inflater.inflate(R.menu.settings, menu);
 
-        Log.e("rabbit", "onCreateOptionsMenu SHOULD only be called once");
-        // Persist menu item selected through screen rotation
+        // Persist/reinstate menu item selected through screen rotation
         MenuItem menuItem;
         switch(mSettingsOption){
             case MOST_POPULAR:
@@ -432,8 +454,6 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
                 item.setChecked(!item.isChecked());
                 populateUI(mSettingsOption);
         }
-        // Reset scroll position to the top is UNDESIRED
-//        mRecyclerView.smoothScrollToPosition(0);
         return super.onOptionsItemSelected(item);
     }
 
