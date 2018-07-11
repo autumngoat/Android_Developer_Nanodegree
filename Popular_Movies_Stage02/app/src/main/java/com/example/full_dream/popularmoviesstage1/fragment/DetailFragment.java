@@ -55,6 +55,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -62,7 +63,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -76,29 +76,18 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 // 3rd Party Imports - com - Popular Movies Stage 2
-import com.example.full_dream.popularmoviesstage1.BuildConfig;
 import com.example.full_dream.popularmoviesstage1.R;
 import com.example.full_dream.popularmoviesstage1.adapter.ReviewAdapter;
 import com.example.full_dream.popularmoviesstage1.adapter.TrailerAdapter;
 import com.example.full_dream.popularmoviesstage1.model.Movie;
 import com.example.full_dream.popularmoviesstage1.model.Review;
-import com.example.full_dream.popularmoviesstage1.model.ReviewResponse;
 import com.example.full_dream.popularmoviesstage1.model.Trailer;
-import com.example.full_dream.popularmoviesstage1.model.TrailerResponse;
-import com.example.full_dream.popularmoviesstage1.network.RetrofitClient;
-import com.example.full_dream.popularmoviesstage1.network.TheMovieDBService;
 import com.example.full_dream.popularmoviesstage1.viewmodel.DetailViewModel;
 import com.example.full_dream.popularmoviesstage1.viewmodel.SharedViewModel;
 
 // 3rd Party Imports - com - Picasso
 import com.squareup.picasso.Picasso;
 
-// 3rd Party Imports - Retrofit2
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
-// Java Imports
 import java.util.List;
 
 /**
@@ -108,16 +97,14 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
 
     // Constant
     private static final String TAG = DetailFragment.class.getSimpleName();
-    // Strings
-    @BindString(R.string.trailer_response_err)
-    String mTrailerErr;
-    @BindString(R.string.review_response_err)
-    String mReviewErr;
+
+    // Favorite status messages
     @BindString(R.string.favorites_plus)
     String mAddFavoriteMsg;
     @BindString(R.string.favorites_minus)
     String mRemoveFavoriteMsg;
-    // Views
+
+    // IU related variables
     @BindView(R.id.iv_background_poster)
     ImageView mBackgroundPoster;
     @BindView(R.id.tv_rating)
@@ -140,20 +127,31 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
     RecyclerView mTrailerRecyclerView;
     @BindView(R.id.detail_fab_fav)
     FloatingActionButton fab;
+    private Parcelable mTrailerLayoutManagerState;
+    private Parcelable mReviewLayoutManagerState;
+
     // Convenience variables
     private Movie mSelectedMovie;                   // Exists because it made insert/delete easier for FAB onClick()
-    private String API_KEY = BuildConfig.API_KEY;   // Honestly forgot to phase this out to keep API key reference to Repository
     private boolean mIsFavorite;                    // Seemed to be the easiest way to deal with FAB favorite status and onClick()
     private String mTransitionName;
+
     // Adapters
     private ReviewAdapter mReviewAdapter;
     private TrailerAdapter mTrailerAdapter;
+
     // ViewModel
     private DetailViewModel mDetailViewModel;
+
     // Binding Reset
     //  An unbinder contract that will unbind views when called
     //  Source: https://jakewharton.github.io/butterknife/javadoc/butterknife/Unbinder.html
     private Unbinder mUnbinder;
+
+    // Bundle key(s)
+    @BindString(R.string.trailer_list_state)
+    String mTrailerListStateKey;
+    @BindString(R.string.review_list_state)
+    String mReviewListStateKey;
 
     /**
      * Mandatory empty constructor for the Fragment Manager to instantiate the fragment.
@@ -183,8 +181,12 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
         // an instance of factory as a parameter)
         mDetailViewModel = ViewModelProviders.of(this).get(DetailViewModel.class);
 
-        callRetrofitForTrailers();
-        callRetrofitForReviews();
+        // Realized that the reason why the RecyclerViews for Trailers and Reviews did not persist
+        // their scroll positions through screen rotation was because a network call was made
+        // every time there was a screen rotation
+        //  IT WAS TOTALLY THIS
+//        callRetrofitForTrailers();
+//        callRetrofitForReviews();
     }
 
     /**
@@ -199,6 +201,8 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
         //  source: http://jakewharton.github.io/butterknife/
         mUnbinder = ButterKnife.bind(this, rootView);
 
+        setupTrailers(savedInstanceState);
+        setupReviews(savedInstanceState);
         // Populate DetailFragment UI
         populateUI(mSelectedMovie);
 
@@ -278,6 +282,94 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
         return rootView;
     }
 
+//    /**
+//     * Called to ask the fragment to save its current dynamic state, so it can later be
+//     * reconstructed in a new instance of its process is restarted.
+//     *  Save TrailerAdapter's attached RecyclerView's scroll position is saved within the
+//     *   LayoutManager's onSaveInstanceState() Parcelable, which we will need in order to restore
+//     *   the scroll position in populateUI() before the first layout pass.
+//     *  Save ReviewAdapter's attached RecyclerView's scroll position is saved within the
+//     *   LayoutManager's onSaveInstanceState() Parcelable, which we will need in order to restore
+//     *   the scroll position in populateUI() before the first layout pass.
+//     *
+//     * Comments source:
+//     * https://developer.android.com/reference/android/support/v4/app/Fragment#onSaveInstanceState(android.os.Bundle)
+//     *
+//     * @param outState Bundle in which to place your saved state.
+//     */
+//    @Override
+//    public void onSaveInstanceState(@NonNull Bundle outState) {
+//        super.onSaveInstanceState(outState);
+//
+//        // Save Trailer LayoutManager's state
+//        //  RecyclerView/ListView/ScrollView/NestedScrollView each save scroll position in
+//        //  onSaveInstanceState() according to:
+//        //   https://medium.com/@dimezis/android-scroll-position-restoring-done-right-cff1e2104ac7
+//        mTrailerLayoutManagerState = mTrailerRecyclerView.getLayoutManager().onSaveInstanceState();
+//        outState.putParcelable(mTrailerListStateKey, mTrailerLayoutManagerState);
+//
+//        Log.e("rabbit", "onSaveInstanceState: TrailerListState SAVED");
+//
+//        // Save Review LayoutManager's state
+//        //  RecyclerView/ListView/ScrollView/NestedScrollView each save scroll position in
+//        //  onSaveInstanceState() according to:
+//        //   https://medium.com/@dimezis/android-scroll-position-restoring-done-right-cff1e2104ac7
+//        mReviewLayoutManagerState = mReviewRecyclerView.getLayoutManager().onSaveInstanceState();
+//        outState.putParcelable(mReviewListStateKey, mReviewLayoutManagerState);
+//
+//        Log.e("rabbit", "onSaveInstanceState: ReviewListState SAVED");
+//    }
+
+    /**
+     * Tells the fragment that its activity has completed its own Activity.onCreate().
+     *  Used here to limit network calls, and fill the TrailerAdapter and ReviewAdapter with
+     *  their network call contents.
+     *
+     * @param savedInstanceState If the fragment is being re-created from a previous
+     *                           saved state, this is the state.
+     */
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+
+        // Did this mostly to limit network calls instead of actually wanting to observe data that
+        // will likely never change
+        //  It did help me consolidate all network call related code into the Repository pattern,
+        //  so there is that
+        mDetailViewModel.getTrailerList(mSelectedMovie.getId()).observe(this, new Observer<List<Trailer>>() {
+            @Override
+            public void onChanged(@Nullable List<Trailer> trailers) {
+                mTrailerAdapter.setTrailerList(trailers);
+            }
+        });
+
+        // Ditto
+        mDetailViewModel.getReviewList(mSelectedMovie.getId()).observe(this, new Observer<List<Review>>() {
+            @Override
+            public void onChanged(@Nullable List<Review> reviews) {
+                mReviewAdapter.setReviewList(reviews);
+            }
+        });
+    }
+
+    /**
+     * Fragment is no longer interacting with the user either because its activity is being paused
+     * or a fragment operation is modifying it in the activity.
+     *  Use this lifecycle phase to save specifically the scroll positions and generally the
+     *  LayoutManager states of the RecyclerViews for Trailer objects and Review objects.
+     *
+     * Comment source:
+     * https://developer.android.com/reference/android/app/Fragment
+     */
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        mTrailerLayoutManagerState = mTrailerRecyclerView.getLayoutManager().onSaveInstanceState();
+        mReviewLayoutManagerState = mReviewRecyclerView.getLayoutManager().onSaveInstanceState();
+    }
+
     /**
      * Called when the view previously created by onCreatedView() has been detached from the fragment.
      * The next time the fragment needs to be displayed, a new view will be created.
@@ -301,71 +393,6 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
     }
 
     /**
-     * Retrieves a list of Trailer objects from TMDB to populate ReviewAdapter or log an error message.
-     */
-    public void callRetrofitForTrailers() {
-
-        // Pass service interface to create() to generate an implementation of the API endpoint
-        TheMovieDBService service = RetrofitClient.getApiClient();
-
-        // Call represents the HTTP request while the generic parameter, in this case
-        // MovieResponse, represents the HTTP response body type which will be converted
-        // by one of the Converter.Factory instances (Moshi) to JSON to POJO(s).
-        Call<TrailerResponse> call;
-
-        call = service.getTrailers(mSelectedMovie.getId(), API_KEY);
-
-        // Asynchronously send the HTTP request and notify the callback of its HTTP response
-        // or if an error occurred talking to the server, creating the HTTP request
-        call.enqueue(new Callback<TrailerResponse>() {
-            @Override
-            public void onResponse(Call<TrailerResponse> call, Response<TrailerResponse> response) {
-                List<Trailer> trailers = response.body().getResults();
-
-                mTrailerAdapter.setTrailerList(trailers);
-                mTrailerAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onFailure(Call<TrailerResponse> call, Throwable t) {
-                Log.e(TAG, mTrailerErr);
-            }
-        });
-    }
-
-    /**
-     * Retrieves a list of Review objects from TMDB to populate ReviewAdapter or log an error message.
-     */
-    public void callRetrofitForReviews() {
-
-        // Pass service interface to create() to generate an implementation of the API endpoint
-        TheMovieDBService service = RetrofitClient.getApiClient();
-
-        // Call represents the HTTP request while the generic parameter, in this case
-        // MovieResponse, represents the HTTP response body type which will be converted
-        // by one of the Converter.Factory instances (Moshi) to JSON to POJO(s).
-        Call<ReviewResponse> call;
-        call = service.getReviews(mSelectedMovie.getId(), API_KEY);
-
-        // Asynchronously send the HTTP request and notify the callback of its HTTP response
-        // or if an error occurred talking to the server, creating the HTTP request
-        call.enqueue(new Callback<ReviewResponse>() {
-            @Override
-            public void onResponse(Call<ReviewResponse> call, Response<ReviewResponse> response) {
-                List<Review> review = response.body().getReviews();
-
-                mReviewAdapter.setReviewList(review);
-                mReviewAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onFailure(Call<ReviewResponse> call, Throwable t) {
-                Log.e(TAG, mReviewErr);
-            }
-        });
-    }
-
-    /**
      * Handles ReviewAdapter item clicks to play the YouTube video.
      */
     public void onClick(String youtubeKey) {
@@ -381,7 +408,7 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
     }
 
     /**
-     * Updates the UI with Movie instance details.
+     * Updates the UI with Movie instance details except for the Trailers and Reviews.
      *
      * @param movie Selected Movie instance.
      */
@@ -421,25 +448,80 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
         mReleaseDate.setText(date);
         mOriginalLanguage.setText(originalLanguage);
         mSummary.setText(summary);
+    }
 
+    /**
+     * Setup the UI for the RecyclerView, Adapter, and LayoutManager for a list of Trailer objects.
+     *
+     * @param prevousRotationState Used to persist the previous scroll positions, if any.
+     */
+    public void setupTrailers(Bundle prevousRotationState){
         // Cannot use the same LinearLayoutManager for both Trailer and Review RecyclerViews
         LinearLayoutManager mTrailerLayoutManager = new LinearLayoutManager(getActivity(),
                 LinearLayoutManager.HORIZONTAL,
                 false);
 
-        // Setup Trailer RecyclerView and Adapter
+        //
         mTrailerRecyclerView.setLayoutManager(mTrailerLayoutManager);
+        // Size of the RecyclerViewer does NOT depend on the adapter content (meaning that the
+        // content is unlikely to change often enough to require resizing the RecyclerView)
+        // according:
+        //  https://stackoverflow.com/questions/28827597/when-do-we-use-the-recyclerview-sethasfixedsize/28828749
+        mTrailerRecyclerView.setHasFixedSize(true);
+
         mTrailerAdapter = new TrailerAdapter(this);
         mTrailerRecyclerView.setAdapter(mTrailerAdapter);
+
+//        // Must provide data BEFORE first layout pass, to have the same scroll boundaries as before
+//        // rotation according to:
+//        //  https://medium.com/@dimezis/android-scroll-position-restoring-done-right-cff1e2104ac7
+//        if(prevousRotationState != null){
+//            // Restore trailer list state Parcelable to get previous scroll position (among other things)
+//            mTrailerLayoutManagerState = prevousRotationState.getParcelable(mTrailerListStateKey);
+//            Log.e("rabbit", "onCreateView: " + mTrailerListStateKey);
+//        }
+
+        if(mTrailerLayoutManagerState != null){
+            // Update the TrailerLayoutManager with the scroll position previous to orientation change
+            mTrailerLayoutManager.onRestoreInstanceState(mTrailerLayoutManagerState);
+        }
+    }
+
+    /**
+     * Setup the UI for the RecyclerView, Adapter, and LayoutManager for a list of Review objects.
+     *
+     * @param prevousRotationState Used to persist the previous scroll positions, if any.
+     */
+    public void setupReviews(Bundle prevousRotationState){
 
         LinearLayoutManager mReviewLayoutManager = new LinearLayoutManager(getActivity(),
                 LinearLayoutManager.HORIZONTAL,
                 false);
 
-        // Setup Review RecyclerView and Adapter
+        //
         mReviewRecyclerView.setLayoutManager(mReviewLayoutManager);
+        // Size of the RecyclerViewer does NOT depend on the adapter content (meaning that the
+        // content is unlikely to change often enough to require resizing the RecyclerView)
+        // according:
+        //  https://stackoverflow.com/questions/28827597/when-do-we-use-the-recyclerview-sethasfixedsize/28828749
+        mReviewRecyclerView.setHasFixedSize(true);
+
         // Need to initialize ReviewAdapter or else NPE when running callRetrofitForReviews()
         mReviewAdapter = new ReviewAdapter();
         mReviewRecyclerView.setAdapter(mReviewAdapter);
+
+//        // Must provide data BEFORE first layout pass, to have the same scroll boundaries as before
+//        // rotation according to:
+//        //  https://medium.com/@dimezis/android-scroll-position-restoring-done-right-cff1e2104ac7
+//        if(prevousRotationState != null){
+//            // Restore review list state Parcelable to get previous scroll position (among other things)
+//            mReviewLayoutManagerState = prevousRotationState.getParcelable(mReviewListStateKey);
+//            Log.e("rabbit", "onCreateView: " + mReviewListStateKey);
+//        }
+
+        if(mReviewLayoutManagerState != null){
+            // Update the ReviewLayoutManager with the scroll position previous to orientation change
+            mReviewLayoutManager.onRestoreInstanceState(mReviewLayoutManagerState);
+        }
     }
 }

@@ -49,18 +49,16 @@
     <string name="app_name">Popular Movies, Stage 2</string>
 
     <!-- Bundle keys -->
-    <string name="fragment_key">fragment</string>
+    <string name="fragment">fragment</string>
     <string name="settings_option">settingsOption</string>
-    <string name="poster_adapter_state">posterAdapterState</string>
+    <string name="poster_list_state">posterListState</string>
+    <string name="trailer_list_state">trailerListState</string>
+    <string name="review_list_state">reviewListState</string>
 
     <!-- Snackbar messages -->
     <string name="network_disconnected">Check your network connection and retry.</string>
     <string name="favorites_plus">Added to favorites</string>
     <string name="favorites_minus">Removed from favorites</string>
-
-    <!-- Error messages -->
-    <string name="trailer_response_err">Problems retrieving Trailers</string>
-    <string name="review_response_err">Problems retrieving Reviews</string>
 
     <!-- Options menu option titles -->
     <string name="most_popular">Most Popular</string>

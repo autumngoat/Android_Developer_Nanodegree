@@ -57,6 +57,10 @@ import android.util.Log;
 import com.example.full_dream.popularmoviesstage1.BuildConfig;
 import com.example.full_dream.popularmoviesstage1.model.Movie;
 import com.example.full_dream.popularmoviesstage1.model.MovieResponse;
+import com.example.full_dream.popularmoviesstage1.model.Review;
+import com.example.full_dream.popularmoviesstage1.model.ReviewResponse;
+import com.example.full_dream.popularmoviesstage1.model.Trailer;
+import com.example.full_dream.popularmoviesstage1.model.TrailerResponse;
 import com.example.full_dream.popularmoviesstage1.network.RetrofitClient;
 import com.example.full_dream.popularmoviesstage1.network.TheMovieDBService;
 import com.example.full_dream.popularmoviesstage1.thread.AppExecutors;
@@ -99,13 +103,17 @@ public class MovieRepository {
     private MutableLiveData<List<Movie>> mToprateMovies;
     private LiveData<List<Movie>> mFavoriteMovies;
     private MutableLiveData<Integer> mInternetStatus;
+    private MutableLiveData<List<Trailer>> mMovieTrailers;
+    private MutableLiveData<List<Review>> mMovieReviews;
 
     // Error messages
     //  Why not Butterknife? - Not recognized as a message:
     //   java.lang.NullPointerException: println needs a message
-    private static final String responseNotSuccessful = "Response was not successful";
-    private static final String networkException = "Problem talking to the server, creating the request, or processing the response";
-    private static final String cheekyException = "This is not a CTF, go somewhere else for decompiling fun";
+    private static final String MOVIE_RESPONSE_ERROR = "Problems retrieving Movies";
+    private static final String NETWORK_EXCEPTION = "Problem talking to the server, creating the request, or processing the response";
+    private static final String CHEEKY_EXCEPTION = "This is not a CTF, go somewhere else for decompiling fun";
+    private static final String TRAILER_RESPONSE_ERROR = "Problems retrieving Trailers";
+    private static final String REVIEW_RESPONSE_ERROR = "Problems retrieving Reviews";
 
     /**
      * Constructor that takes the application context to create/retrieve an instance of the local
@@ -127,6 +135,8 @@ public class MovieRepository {
         mToprateMovies = new MutableLiveData<>();
         mFavoriteMovies = new MutableLiveData<>();
         mInternetStatus = new MutableLiveData<>();
+        mMovieTrailers = new MutableLiveData<>();
+        mMovieReviews = new MutableLiveData<>();
     }
 
     /**
@@ -151,7 +161,7 @@ public class MovieRepository {
                 return mFavoriteMovies = mMovieDao.loadAllMovies();
             default:
                 // Required, otherwise 'Missing return statement' error
-                throw new UnknownError(cheekyException);
+                throw new UnknownError(CHEEKY_EXCEPTION);
         }
     }
 
@@ -187,7 +197,7 @@ public class MovieRepository {
                     mPopularMovies.setValue(movies);
                     mInternetStatus.setValue(MOST_POPULAR);
                 } else {
-                    Log.e(TAG, responseNotSuccessful);
+                    Log.e(TAG, MOVIE_RESPONSE_ERROR);
                 }
             }
 
@@ -195,7 +205,7 @@ public class MovieRepository {
             // exception occurred creating the request or processing the response
             @Override
             public void onFailure(Call<MovieResponse> call, Throwable t) {
-                Log.e(TAG, networkException);
+                Log.e(TAG, NETWORK_EXCEPTION);
                 mInternetStatus.setValue(NO_INTERNET);
             }
         });
@@ -232,7 +242,7 @@ public class MovieRepository {
                     mToprateMovies.setValue(movies);
                     mInternetStatus.setValue(TOP_RATED);
                 } else {
-                    Log.e(TAG, responseNotSuccessful);
+                    Log.e(TAG, MOVIE_RESPONSE_ERROR);
                 }
             }
 
@@ -240,7 +250,7 @@ public class MovieRepository {
             // exception occurred creating the request or processing the response
             @Override
             public void onFailure(Call<MovieResponse> call, Throwable t) {
-                Log.e(TAG, networkException);
+                Log.e(TAG, NETWORK_EXCEPTION);
                 mInternetStatus.setValue(NO_INTERNET);
             }
         });
@@ -296,5 +306,97 @@ public class MovieRepository {
      */
     public LiveData<Integer> getInternetStatus(){
         return mInternetStatus;
+    }
+
+    /**
+     * Create a Call using an implementation of the API interface (TheMovieDBService) to
+     * asynchronously send a HTTP request for a list of Trailer objects for a specific Movie object
+     * and process the resulting HTTP response.
+     *
+     * @param movieId Unique Movie ID from TMDB being used as the primary key of the 'favorites'
+     *                database.
+     * @return Return either a List of Trailer objects or return null.
+     */
+    public LiveData<List<Trailer>> getTrailerList(int movieId){
+        // A Call represents the HTTP request with a generic parameter representing the response
+        // body type which will be converted by one of the Converter.Factory instances
+        //  Each call yields its own HTTP request and response pair
+        Call<TrailerResponse> call = mTmdbService.getTrailers(movieId, API_KEY);
+
+        // Asynchronously send the HTTP request and notify the callback of its HTTP response
+        // or if an error occurred talking to the server, creating the HTTP request
+        call.enqueue(new Callback<TrailerResponse>() {
+
+            // Invoked for a received HTTP response
+            //  HTTP response may still indicate an application-level failure  such as a 404 or 500
+            @Override
+            public void onResponse(Call<TrailerResponse> call, Response<TrailerResponse> response) {
+
+                // Returns true if in the range [200..300)
+                if(response.isSuccessful()){
+                    List<Trailer> trailers = response.body().getResults();
+                    // Set the value and dispatch the value to all the active observers
+                    mMovieTrailers.setValue(trailers);
+                } else {
+                    Log.e(TAG, TRAILER_RESPONSE_ERROR);
+                }
+            }
+
+            // Invoked when a network exception occurred talking to the server or when an unexpected
+            // exception occurred creating the request or processing the response
+            @Override
+            public void onFailure(Call<TrailerResponse> call, Throwable t) {
+                Log.e(TAG, NETWORK_EXCEPTION);
+                mInternetStatus.setValue(NO_INTERNET);
+            }
+        });
+
+        return mMovieTrailers;
+    }
+
+    /**
+     * Create a Call using an implementation of the API interface (TheMovieDBService) to
+     * asynchronously send a HTTP request for a list of Reviews objects for a specific Movie object
+     * and process the resulting HTTP response.
+     *
+     * @param movieId Unique Movie ID from TMDB being used as the primary key of the 'favorites'
+     *                database.
+     * @return Return either a List of Review objects or return null.
+     */
+    public LiveData<List<Review>> getReviewList(int movieId){
+        // A Call represents the HTTP request with a generic parameter representing the response
+        // body type which will be converted by one of the Converter.Factory instances
+        //  Each call yields its own HTTP request and response pair
+        Call<ReviewResponse> call = mTmdbService.getReviews(movieId, API_KEY);
+
+        // Asynchronously send the HTTP request and notify the callback of its HTTP response
+        // or if an error occurred talking to the server, creating the HTTP request
+        call.enqueue(new Callback<ReviewResponse>() {
+
+            // Invoked for a received HTTP response
+            //  HTTP response may still indicate an application-level failure  such as a 404 or 500
+            @Override
+            public void onResponse(Call<ReviewResponse> call, Response<ReviewResponse> response) {
+
+                // Returns true if in the range [200..300)
+                if(response.isSuccessful()){
+                    List<Review> reviews = response.body().getReviews();
+                    // Set the value and dispatch the value to all the active observers
+                    mMovieReviews.setValue(reviews);
+                } else {
+                    Log.e(TAG, REVIEW_RESPONSE_ERROR);
+                }
+            }
+
+            // Invoked when a network exception occurred talking to the server or when an unexpected
+            // exception occurred creating the request or processing the response
+            @Override
+            public void onFailure(Call<ReviewResponse> call, Throwable t) {
+                Log.e(TAG, NETWORK_EXCEPTION);
+                mInternetStatus.setValue(NO_INTERNET);
+            }
+        });
+
+        return mMovieReviews;
     }
 }

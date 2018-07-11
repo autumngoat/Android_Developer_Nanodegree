@@ -64,7 +64,7 @@ import com.example.full_dream.popularmoviesstage1.fragment.PosterListFragment;
 public class MainActivity extends AppCompatActivity {
 
     // Bundle key
-    @BindString(R.string.fragment_key)
+    @BindString(R.string.fragment)
     String mFragmentKey;
 
     /**

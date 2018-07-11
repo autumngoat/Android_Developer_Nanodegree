@@ -65,6 +65,7 @@ import com.example.full_dream.popularmoviesstage1.R;
 import com.example.full_dream.popularmoviesstage1.model.Review;
 
 // Java Imports
+import java.util.ArrayList;
 import java.util.List;
 
 /**

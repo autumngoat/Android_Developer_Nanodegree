@@ -61,7 +61,6 @@ import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.transition.TransitionInflater;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -104,7 +103,7 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
     private SharedViewModel mSharedModel;
     private PosterListViewModel mPosterListViewModel;
 
-    // UI related elements
+    // UI related variables
     private Unbinder mUnbinder;
     private int mSettingsOption;
     private PosterAdapter mPosterAdapter;
@@ -113,11 +112,12 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
     RecyclerView mRecyclerView;
     @BindString(R.string.network_disconnected)
     String mNetworkDisconnected;
+
     // Bundle key(s)
     @BindString(R.string.settings_option)
     String mSettingsOptionKey;
-    @BindString(R.string.poster_adapter_state)
-    String mPosterAdapterState;
+    @BindString(R.string.poster_list_state)
+    String mPosterListStateKey;
 
 
     /**
@@ -217,8 +217,8 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
         // rotation according to:
         //  https://medium.com/@dimezis/android-scroll-position-restoring-done-right-cff1e2104ac7
         if(savedInstanceState != null){
-            // Restore poster list state Parcelable to get PosterAdapter position (among other things)
-            mPosterListState = savedInstanceState.getParcelable(mPosterAdapterState);
+            // Restore poster list state Parcelable to get previous scroll position (among other things)
+            mPosterListState = savedInstanceState.getParcelable(mPosterListStateKey);
         }
 
         if(mPosterListState != null){
@@ -246,9 +246,9 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
      *   and
      *   to reinstate menu item choice in the onCreateOptionsMenu() method so it's not always
      *   MOST_POPULAR.
-     *  Save PosterAdapter state because the RecyclerView's scroll position is saved within the
+     *  Save PosterAdapter's attached RecyclerView's scroll position is saved within the
      *   LayoutManager's onSaveInstanceState() Parcelable, which we will need in order to restore
-     *   the scroll position in onCreate().
+     *   the scroll position in onCreateView() before the first layout pass.
      *
      * Comments source:
      * https://developer.android.com/reference/android/support/v4/app/Fragment#onSaveInstanceState(android.os.Bundle)
@@ -261,12 +261,17 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
 
         // Save menu/settings option state
         outState.putInt(mSettingsOptionKey, mSettingsOption);
-        // Save poster list (PosterAdapter RecyclerView) state
-        //  RecyclerView/ListView/ScrollView/NestedScrollView each save scroll position in
-        //  onSaveInstanceState() according to:
-        //   https://medium.com/@dimezis/android-scroll-position-restoring-done-right-cff1e2104ac7
-        mPosterListState = mRecyclerView.getLayoutManager().onSaveInstanceState();
-        outState.putParcelable(mPosterAdapterState, mPosterListState);
+        // Null check to avoid NullPointerException due to PosterListFragment being off-screen due
+        // to DetailFragment being in the foreground
+        //  android.support.v7.widget.RecyclerView.getLayoutManager()' on a null object reference
+        if(mRecyclerView != null){
+            // Save poster list (PosterAdapter RecyclerView) state
+            //  RecyclerView/ListView/ScrollView/NestedScrollView each save scroll position in
+            //  onSaveInstanceState() according to:
+            //   https://medium.com/@dimezis/android-scroll-position-restoring-done-right-cff1e2104ac7
+            mPosterListState = mRecyclerView.getLayoutManager().onSaveInstanceState();
+            outState.putParcelable(mPosterListStateKey, mPosterListState);
+        }
     }
 
     /**
@@ -291,11 +296,9 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
 
         // If first time initialize UI, else populate UI using bundled settings option int
         if(savedInstanceState == null){
-            Log.e("rabbit", "mSettingOption in onActivityCreated is: " + mSettingsOption);
             populateUI(mSettingsOption);
         } else {
             mSettingsOption = savedInstanceState.getInt("settingsOption");
-            Log.e("rabbit", "mSettingOption in onActivityCreated is: " + mSettingsOption);
             populateUI(mSettingsOption);
         }
     }
@@ -396,17 +399,14 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
         switch(mSettingsOption){
             case MOST_POPULAR:
                 menuItem = menu.findItem(R.id.action_popular);
-                Log.e("rabbit", "onCreateOptionsMenu menuItem: POPULAR");
                 menuItem.setChecked(true);
                 break;
             case TOP_RATED:
                 menuItem = menu.findItem(R.id.action_top_rated);
-                Log.e("rabbit", "onCreateOptionsMenu menuItem: TOPRATED");
                 menuItem.setChecked(true);
                 break;
             case FAVORITES:
                 menuItem = menu.findItem(R.id.action_favorites);
-                Log.e("rabbit", "onCreateOptionsMenu menuItem: FAVORITES");
                 menuItem.setChecked(true);
                 break;
         }

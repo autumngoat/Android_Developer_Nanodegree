@@ -56,6 +56,10 @@ import android.support.annotation.NonNull;
 // 3rd Party Imports - com - Popular Movies Stage 2
 import com.example.full_dream.popularmoviesstage1.database.MovieRepository;
 import com.example.full_dream.popularmoviesstage1.model.Movie;
+import com.example.full_dream.popularmoviesstage1.model.Review;
+import com.example.full_dream.popularmoviesstage1.model.Trailer;
+
+import java.util.List;
 
 /**
  * This ViewModel is used to cache the list of Movie objects wrapped in a LiveData object.
@@ -105,4 +109,22 @@ public class DetailViewModel extends AndroidViewModel {
      * @param movie Movie instance to delete from the AppDatabase.
      */
     public void deleteMovie(Movie movie){ mRepository.deleteMovie(movie); }
+
+    /**
+     * Wrapper method that calls the MovieRepository's getTrailerList() method, which hides the
+     * implementation from the UI.
+     *
+     * @param movieId Unique Movie ID from TMDB used in the local database as the primary key.
+     * @return A LiveData object of a list of Trailer objects.
+     */
+    public LiveData<List<Trailer>> getTrailerList(int movieId){ return mRepository.getTrailerList(movieId); }
+
+    /**
+     * Wrapper method that calls the MovieRepository's getReviewList() method, which hides the
+     * implementation from the UI.
+     *
+     * @param movieId Unique Movie ID from TMDB used in the local database as the primary key.
+     * @return A LiveData object of a list of Review objects.
+     */
+    public LiveData<List<Review>> getReviewList(int movieId){ return mRepository.getReviewList(movieId); }
 }
