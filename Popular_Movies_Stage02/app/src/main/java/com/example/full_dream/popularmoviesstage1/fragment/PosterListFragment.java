@@ -148,12 +148,6 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
             @Override
             public void onChanged(@Nullable Integer internetStatus) {
                 if(internetStatus == NO_INTERNET){
-//                    Toast.makeText(getContext(), networkDisconnected, Toast.LENGTH_SHORT).show();
-                    // Toast remains on screen even when the Activity or Fragment is finished but
-                    // apparently Snackbar does not, according to:
-                    // https://stackoverflow.com/questions/34432339/android-snackbar-vs-toast-usage-and-difference
-                    // , so will replace Toast with Snackbar and see how that goes
-                    //  That, and I like how it looks compared to Toast
                     Snackbar.make(getView(), mNetworkDisconnected, Snackbar.LENGTH_SHORT).show();
                 }
             }
@@ -189,7 +183,7 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
         GridLayoutManager mLayoutManager = new GridLayoutManager(getActivity(), numberOfColumns);
 
         // Experimented with different span counts on different rows from this code:
-        // https://stackoverflow.com/questions/31112291/recyclerview-layoutmanager-different-span-counts-on-different-rows
+        //  https://stackoverflow.com/questions/31112291/recyclerview-layoutmanager-different-span-counts-on-different-rows
         mLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {

@@ -127,6 +127,8 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
     RecyclerView mTrailerRecyclerView;
     @BindView(R.id.detail_fab_fav)
     FloatingActionButton fab;
+
+    // State saving variables
     private Parcelable mTrailerLayoutManagerState;
     private Parcelable mReviewLayoutManagerState;
 
@@ -180,13 +182,6 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
         // Create a ViewModel (similar to the PosterListViewModel in setupViewModel(), but with
         // an instance of factory as a parameter)
         mDetailViewModel = ViewModelProviders.of(this).get(DetailViewModel.class);
-
-        // Realized that the reason why the RecyclerViews for Trailers and Reviews did not persist
-        // their scroll positions through screen rotation was because a network call was made
-        // every time there was a screen rotation
-        //  IT WAS TOTALLY THIS
-//        callRetrofitForTrailers();
-//        callRetrofitForReviews();
     }
 
     /**
@@ -282,44 +277,6 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
         return rootView;
     }
 
-//    /**
-//     * Called to ask the fragment to save its current dynamic state, so it can later be
-//     * reconstructed in a new instance of its process is restarted.
-//     *  Save TrailerAdapter's attached RecyclerView's scroll position is saved within the
-//     *   LayoutManager's onSaveInstanceState() Parcelable, which we will need in order to restore
-//     *   the scroll position in populateUI() before the first layout pass.
-//     *  Save ReviewAdapter's attached RecyclerView's scroll position is saved within the
-//     *   LayoutManager's onSaveInstanceState() Parcelable, which we will need in order to restore
-//     *   the scroll position in populateUI() before the first layout pass.
-//     *
-//     * Comments source:
-//     * https://developer.android.com/reference/android/support/v4/app/Fragment#onSaveInstanceState(android.os.Bundle)
-//     *
-//     * @param outState Bundle in which to place your saved state.
-//     */
-//    @Override
-//    public void onSaveInstanceState(@NonNull Bundle outState) {
-//        super.onSaveInstanceState(outState);
-//
-//        // Save Trailer LayoutManager's state
-//        //  RecyclerView/ListView/ScrollView/NestedScrollView each save scroll position in
-//        //  onSaveInstanceState() according to:
-//        //   https://medium.com/@dimezis/android-scroll-position-restoring-done-right-cff1e2104ac7
-//        mTrailerLayoutManagerState = mTrailerRecyclerView.getLayoutManager().onSaveInstanceState();
-//        outState.putParcelable(mTrailerListStateKey, mTrailerLayoutManagerState);
-//
-//        Log.e("rabbit", "onSaveInstanceState: TrailerListState SAVED");
-//
-//        // Save Review LayoutManager's state
-//        //  RecyclerView/ListView/ScrollView/NestedScrollView each save scroll position in
-//        //  onSaveInstanceState() according to:
-//        //   https://medium.com/@dimezis/android-scroll-position-restoring-done-right-cff1e2104ac7
-//        mReviewLayoutManagerState = mReviewRecyclerView.getLayoutManager().onSaveInstanceState();
-//        outState.putParcelable(mReviewListStateKey, mReviewLayoutManagerState);
-//
-//        Log.e("rabbit", "onSaveInstanceState: ReviewListState SAVED");
-//    }
-
     /**
      * Tells the fragment that its activity has completed its own Activity.onCreate().
      *  Used here to limit network calls, and fill the TrailerAdapter and ReviewAdapter with
@@ -331,7 +288,6 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
 
         // Did this mostly to limit network calls instead of actually wanting to observe data that
         // will likely never change
@@ -408,7 +364,7 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
     }
 
     /**
-     * Updates the UI with Movie instance details except for the Trailers and Reviews.
+     * Updates the UI with Movie instance details except for the Trailers and Reviews RecyclerViews.
      *
      * @param movie Selected Movie instance.
      */
@@ -461,25 +417,17 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
                 LinearLayoutManager.HORIZONTAL,
                 false);
 
-        //
+        // Set the RecyclerView.LayoutManager that this RecyclerView will use, according to:
+        //  https://developer.android.com/reference/android/support/v7/widget/RecyclerView#setlayoutmanager
         mTrailerRecyclerView.setLayoutManager(mTrailerLayoutManager);
         // Size of the RecyclerViewer does NOT depend on the adapter content (meaning that the
         // content is unlikely to change often enough to require resizing the RecyclerView)
-        // according:
+        // according to:
         //  https://stackoverflow.com/questions/28827597/when-do-we-use-the-recyclerview-sethasfixedsize/28828749
         mTrailerRecyclerView.setHasFixedSize(true);
 
         mTrailerAdapter = new TrailerAdapter(this);
         mTrailerRecyclerView.setAdapter(mTrailerAdapter);
-
-//        // Must provide data BEFORE first layout pass, to have the same scroll boundaries as before
-//        // rotation according to:
-//        //  https://medium.com/@dimezis/android-scroll-position-restoring-done-right-cff1e2104ac7
-//        if(prevousRotationState != null){
-//            // Restore trailer list state Parcelable to get previous scroll position (among other things)
-//            mTrailerLayoutManagerState = prevousRotationState.getParcelable(mTrailerListStateKey);
-//            Log.e("rabbit", "onCreateView: " + mTrailerListStateKey);
-//        }
 
         if(mTrailerLayoutManagerState != null){
             // Update the TrailerLayoutManager with the scroll position previous to orientation change
@@ -498,26 +446,18 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
                 LinearLayoutManager.HORIZONTAL,
                 false);
 
-        //
+        // Set the RecyclerView.LayoutManager that this RecyclerView will use, according to:
+        //  https://developer.android.com/reference/android/support/v7/widget/RecyclerView#setlayoutmanager
         mReviewRecyclerView.setLayoutManager(mReviewLayoutManager);
         // Size of the RecyclerViewer does NOT depend on the adapter content (meaning that the
         // content is unlikely to change often enough to require resizing the RecyclerView)
-        // according:
+        // according to:
         //  https://stackoverflow.com/questions/28827597/when-do-we-use-the-recyclerview-sethasfixedsize/28828749
         mReviewRecyclerView.setHasFixedSize(true);
 
         // Need to initialize ReviewAdapter or else NPE when running callRetrofitForReviews()
         mReviewAdapter = new ReviewAdapter();
         mReviewRecyclerView.setAdapter(mReviewAdapter);
-
-//        // Must provide data BEFORE first layout pass, to have the same scroll boundaries as before
-//        // rotation according to:
-//        //  https://medium.com/@dimezis/android-scroll-position-restoring-done-right-cff1e2104ac7
-//        if(prevousRotationState != null){
-//            // Restore review list state Parcelable to get previous scroll position (among other things)
-//            mReviewLayoutManagerState = prevousRotationState.getParcelable(mReviewListStateKey);
-//            Log.e("rabbit", "onCreateView: " + mReviewListStateKey);
-//        }
 
         if(mReviewLayoutManagerState != null){
             // Update the ReviewLayoutManager with the scroll position previous to orientation change
