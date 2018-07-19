@@ -88,6 +88,7 @@ import com.example.full_dream.popularmoviesstage1.viewmodel.SharedViewModel;
 // 3rd Party Imports - com - Picasso
 import com.squareup.picasso.Picasso;
 
+// Java Imports
 import java.util.List;
 
 /**
@@ -190,16 +191,19 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
         View rootView = inflater.inflate(R.layout.fragment_movie_details, container, false);
         // Non-Activity Binding - Fragments
         // Binding Fragment in onCreateView to later set all bound views to null in onDestroyView()
         //  source: http://jakewharton.github.io/butterknife/
         mUnbinder = ButterKnife.bind(this, rootView);
 
-        setupTrailers(savedInstanceState);
-        setupReviews(savedInstanceState);
         // Populate DetailFragment UI
         populateUI(mSelectedMovie);
+
+        // Setup RecyclerViews of Trailers and Reviews
+        setupTrailers(savedInstanceState);
+        setupReviews(savedInstanceState);
 
         mDetailViewModel.getMovieById(mSelectedMovie.getId()).observe(this, new Observer<Movie>() {
             @Override
@@ -278,6 +282,35 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
     }
 
     /**
+     * Called to ask the fragment to save its current dynamic state, so it can later be
+     * reconstructed in a new instance of its process is restarted.
+     *  Save TrailerLayoutManager onSaveInstanceState() Parcelable state, which we will need in order
+     *  to restore the scroll position in setupTrailers() before the first layout pass.
+     *
+     *  Save ReviewLayoutManager onSaveInstanceState() Parcelable state, which we will need in order
+     *  to restore the scroll position in setupReviews() before the first layout pass.
+     *
+     * Comments source:
+     * https://developer.android.com/reference/android/support/v4/app/Fragment#onSaveInstanceState(android.os.Bundle)
+     *
+     * @param outState Bundle in which to place your saved state.
+     */
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        if(mTrailerRecyclerView != null){
+            mTrailerLayoutManagerState = mTrailerRecyclerView.getLayoutManager().onSaveInstanceState();
+            outState.putParcelable(mTrailerListStateKey, mTrailerLayoutManagerState);
+        }
+
+        if(mReviewRecyclerView != null){
+            mReviewLayoutManagerState = mReviewRecyclerView.getLayoutManager().onSaveInstanceState();
+            outState.putParcelable(mReviewListStateKey, mReviewLayoutManagerState);
+        }
+    }
+
+    /**
      * Tells the fragment that its activity has completed its own Activity.onCreate().
      *  Used here to limit network calls, and fill the TrailerAdapter and ReviewAdapter with
      *  their network call contents.
@@ -307,23 +340,6 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
                 mReviewAdapter.setReviewList(reviews);
             }
         });
-    }
-
-    /**
-     * Fragment is no longer interacting with the user either because its activity is being paused
-     * or a fragment operation is modifying it in the activity.
-     *  Use this lifecycle phase to save specifically the scroll positions and generally the
-     *  LayoutManager states of the RecyclerViews for Trailer objects and Review objects.
-     *
-     * Comment source:
-     * https://developer.android.com/reference/android/app/Fragment
-     */
-    @Override
-    public void onPause() {
-        super.onPause();
-
-        mTrailerLayoutManagerState = mTrailerRecyclerView.getLayoutManager().onSaveInstanceState();
-        mReviewLayoutManagerState = mReviewRecyclerView.getLayoutManager().onSaveInstanceState();
     }
 
     /**
@@ -409,59 +425,77 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
     /**
      * Setup the UI for the RecyclerView, Adapter, and LayoutManager for a list of Trailer objects.
      *
-     * @param prevousRotationState Used to persist the previous scroll positions, if any.
+     * @param savedInstanceState Used to persist the previous scroll positions, if any.
      */
-    public void setupTrailers(Bundle prevousRotationState){
+    public void setupTrailers(Bundle savedInstanceState){
+
         // Cannot use the same LinearLayoutManager for both Trailer and Review RecyclerViews
         LinearLayoutManager mTrailerLayoutManager = new LinearLayoutManager(getActivity(),
                 LinearLayoutManager.HORIZONTAL,
                 false);
 
+        if(savedInstanceState != null){
+            // Restore trailer list state Parcelable to get previous scroll position (among other things)
+            mTrailerLayoutManagerState = savedInstanceState.getParcelable(mTrailerListStateKey);
+        }
+
+        if(mTrailerLayoutManagerState != null){
+            // Update the LayoutManager with the scroll position previous to orientation change
+            mTrailerLayoutManager.onRestoreInstanceState(mTrailerLayoutManagerState);
+        }
+
         // Set the RecyclerView.LayoutManager that this RecyclerView will use, according to:
         //  https://developer.android.com/reference/android/support/v7/widget/RecyclerView#setlayoutmanager
         mTrailerRecyclerView.setLayoutManager(mTrailerLayoutManager);
+
         // Size of the RecyclerViewer does NOT depend on the adapter content (meaning that the
         // content is unlikely to change often enough to require resizing the RecyclerView)
         // according to:
         //  https://stackoverflow.com/questions/28827597/when-do-we-use-the-recyclerview-sethasfixedsize/28828749
         mTrailerRecyclerView.setHasFixedSize(true);
 
+        // Need to initialize TrailerAdapter or else NPE when doing the network call
         mTrailerAdapter = new TrailerAdapter(this);
-        mTrailerRecyclerView.setAdapter(mTrailerAdapter);
 
-        if(mTrailerLayoutManagerState != null){
-            // Update the TrailerLayoutManager with the scroll position previous to orientation change
-            mTrailerLayoutManager.onRestoreInstanceState(mTrailerLayoutManagerState);
-        }
+        // Set the view to the empty TrailerAdapter
+        mTrailerRecyclerView.setAdapter(mTrailerAdapter);
     }
 
     /**
      * Setup the UI for the RecyclerView, Adapter, and LayoutManager for a list of Review objects.
      *
-     * @param prevousRotationState Used to persist the previous scroll positions, if any.
+     * @param savedInstanceState Used to persist the previous scroll positions, if any.
      */
-    public void setupReviews(Bundle prevousRotationState){
+    public void setupReviews(Bundle savedInstanceState){
 
         LinearLayoutManager mReviewLayoutManager = new LinearLayoutManager(getActivity(),
                 LinearLayoutManager.HORIZONTAL,
                 false);
 
+        if(savedInstanceState != null){
+            // Restore review list state Parcelable to get previous scroll position (among other things)
+            mReviewLayoutManagerState = savedInstanceState.getParcelable(mReviewListStateKey);
+        }
+
+        if(mReviewLayoutManagerState != null){
+            // Update the LayoutManager with the scroll position previous to orientation change
+            mReviewLayoutManager.onRestoreInstanceState(mReviewLayoutManagerState);
+        }
+
         // Set the RecyclerView.LayoutManager that this RecyclerView will use, according to:
         //  https://developer.android.com/reference/android/support/v7/widget/RecyclerView#setlayoutmanager
         mReviewRecyclerView.setLayoutManager(mReviewLayoutManager);
+
         // Size of the RecyclerViewer does NOT depend on the adapter content (meaning that the
         // content is unlikely to change often enough to require resizing the RecyclerView)
         // according to:
         //  https://stackoverflow.com/questions/28827597/when-do-we-use-the-recyclerview-sethasfixedsize/28828749
         mReviewRecyclerView.setHasFixedSize(true);
 
-        // Need to initialize ReviewAdapter or else NPE when running callRetrofitForReviews()
+        // Need to initialize ReviewAdapter or else NPE when doing the network call
         mReviewAdapter = new ReviewAdapter();
-        mReviewRecyclerView.setAdapter(mReviewAdapter);
 
-        if(mReviewLayoutManagerState != null){
-            // Update the ReviewLayoutManager with the scroll position previous to orientation change
-            mReviewLayoutManager.onRestoreInstanceState(mReviewLayoutManagerState);
-        }
+        // Set the view to the empty ReviewAdapter
+        mReviewRecyclerView.setAdapter(mReviewAdapter);
     }
 }

@@ -100,11 +100,14 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerA
 
     /**
      * Updates the adapter's cached copy of the list of Trailer objects.
+     *  Note to self: If you update the adapter's data, then you need to notifyDataSetChanged() to
+     *  see it!
      *
      * @param trailers New list of Trailer objects to update the older cached data.
      */
     public void setTrailerList(List<Trailer> trailers){
         mTrailerList = trailers;
+        notifyDataSetChanged();
     }
 
     /**

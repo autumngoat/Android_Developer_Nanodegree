@@ -78,11 +78,14 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewAdap
 
     /**
      * Updates the adapter's cached copy of the list of Review objects.
+     *  Note to self: If you update the adapter's data, then you need to notifyDataSetChanged() to
+     *  see it!
      *
      * @param reviewList New list of Review objects to update the older cached data.
      */
     public void setReviewList(List<Review> reviewList){
         mReviewList = reviewList;
+        notifyDataSetChanged();
     }
 
     /**

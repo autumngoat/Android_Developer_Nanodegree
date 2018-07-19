@@ -225,6 +225,7 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
         mRecyclerView.setHasFixedSize(true);
 
         mPosterAdapter = new PosterAdapter(this);
+
         // Set the view to the empty PosterAdapter
         mRecyclerView.setAdapter(mPosterAdapter);
 
@@ -459,6 +460,7 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
      *                       getMovies() returns.
      */
     public void populateUI(int settingsOption){
+
         // How to avoid NPE for calling observe() on a null object reference?
         //  Don't assign to null in MovieRepository in Retrofit callback onFailure()
         mPosterListViewModel.getMovies(settingsOption).observe(this, new Observer<List<Movie>>() {

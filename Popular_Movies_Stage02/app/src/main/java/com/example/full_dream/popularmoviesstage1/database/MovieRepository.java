@@ -350,7 +350,6 @@ public class MovieRepository {
                 mInternetStatus.setValue(NO_INTERNET);
             }
         });
-
         return mMovieTrailers;
     }
 
@@ -396,7 +395,6 @@ public class MovieRepository {
                 mInternetStatus.setValue(NO_INTERNET);
             }
         });
-
         return mMovieReviews;
     }
 }

@@ -57,6 +57,8 @@
     <dimen name="detail_text_margin">8dp</dimen>
     <dimen name="detail_text_width">0dp</dimen>
     <dimen name="detail_underscore_height">1dp</dimen>
+    <dimen name="fab_margin_phone">16dp</dimen>
+    <dimen name="fab_margin_tablet">24dp</dimen>
 
     <!-- SP -->
     <dimen name="detail_label_text_size">12sp</dimen>
