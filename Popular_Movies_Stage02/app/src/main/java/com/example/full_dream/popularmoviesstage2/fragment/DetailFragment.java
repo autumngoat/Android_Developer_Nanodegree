@@ -126,7 +126,7 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
     @BindView(R.id.rv_trailer_list)
     RecyclerView mTrailerRecyclerView;
     @BindView(R.id.detail_fab_fav)
-    FloatingActionButton fab;
+    FloatingActionButton mFab;
 
     // State saving variables
     private Parcelable mTrailerLayoutManagerState;
@@ -230,12 +230,12 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
 
                 if (movieEntry != null) {
                     // ...change FAB icon to show as a Favorite and...
-                    fab.setImageResource(R.drawable.ic_favorite_red);
+                    mFab.setImageResource(R.drawable.ic_favorite_red);
                     // ...mark as a Favorite
                     mIsFavorite = true;
                 } else {
                     // Change FAB icon to show as NOT a Favorite
-                    fab.setImageResource(R.drawable.ic_favorite_white);
+                    mFab.setImageResource(R.drawable.ic_favorite_white);
                     // Mark as NOT a Favorite
                     mIsFavorite = false;
                 }
@@ -246,7 +246,7 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
         //  Icons made by "https://www.flaticon.com/authors/freepik"
         //  Title: "Favorite"
         //  Licensed by Creative Commons BY 3.0
-        fab.setOnClickListener(new View.OnClickListener() {
+        mFab.setOnClickListener(new View.OnClickListener() {
 
             String snackBarText;
 
@@ -258,7 +258,7 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
                     mDetailViewModel.deleteMovie(mSelectedMovie);
 
                     // ...toggle FAB image resource based on favorite status
-                    fab.setImageResource(R.drawable.ic_favorite_white);
+                    mFab.setImageResource(R.drawable.ic_favorite_white);
 
                     // Set SnackBar text
                     snackBarText = mRemoveFavoriteMsg;
@@ -267,7 +267,7 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
                     mDetailViewModel.insertMovie(mSelectedMovie);
 
                     // Toggle FAB image resource based on favorite status
-                    fab.setImageResource(R.drawable.ic_favorite_red);
+                    mFab.setImageResource(R.drawable.ic_favorite_red);
 
                     // Set SnackBar text
                     snackBarText = mAddFavoriteMsg;

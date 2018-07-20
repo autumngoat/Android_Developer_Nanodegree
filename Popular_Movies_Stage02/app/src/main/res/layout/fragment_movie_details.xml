@@ -115,6 +115,7 @@
        https://developer.android.com/reference/android/support/design/widget/AppBarLayout
        https://github.com/codepath/android_guides/wiki/Handling-Scrolls-with-CoordinatorLayout -->
     <android.support.design.widget.AppBarLayout
+        android:id="@+id/app_bar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/appbar_layout_height">
 
@@ -290,14 +291,24 @@
            w/ CoordinatorLayout, when FAB is on bottom of screen, appearance of SnackBar raises FAB
            and SnackBar is dismissible on swipe right action
       Attributes:
-       android:layout_gravity - used to define the position of the button
+       android:layout_gravity - Used to define the position of the button
         end|bottom - place FAB in bottom and right/end of screen
        android:layout_margin - Material Design FAB specs designate 16dp for phone and 24dp for
-       tablet-->
+       tablet
+       app:layout_anchor - Set as anchor view to be positioned relative to using anchorGravity
+        w/o app:layout_anchorGravity - Will be in top right of anchor view
+         w/ android:layout_gravity - Doesn't do anything to the position of the FAB
+        w/ app:layout_anchorGravity
+         w/ android:layout_gravity - Seems to move FAB up and down (but not right or left) from
+         starting position given by app:layout_anchorGravity
+       app:layout_anchorGravity - Gravity value describing which edge of the child view's anchor
+       view the child should position itself relative to
+        Source: https://developer.android.com/reference/android/support/design/widget/CoordinatorLayout.LayoutParams#anchorgravity-->
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/detail_fab_fav"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fab_margin_phone"
-        android:layout_gravity="end|bottom"/>
+        app:layout_anchor="@id/app_bar"
+        app:layout_anchorGravity="end|bottom"/>
 </android.support.design.widget.CoordinatorLayout>

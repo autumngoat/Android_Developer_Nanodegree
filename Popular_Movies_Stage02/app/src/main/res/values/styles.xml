@@ -49,7 +49,16 @@
 
     <!-- Base application theme
       Use NoActionBar to get rid of extra ActionBar on top of Toolbar and strange empty space above
-      screen-->
+      screen
+       ...Which gets rid of the options menu that allows switching between
+       Popular // Top Rated // Favorites
+        Fail
+         ...Or find a way to make Toolbar replace the Actionbar
+        Found out that it is easy to switch between Themes between Activities via the
+        AndroidManifest but not so much for single Activity Fragments
+         What to do?
+          Implement Toolbar in PosterListFragment and add Menu to that Toolbar
+           Replace the Actionbar! -->
     <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
         <!-- Color for the app bar and other primary UI elements
           java.lang.RuntimeException: A TaskDescription's primary color should be opaque -->

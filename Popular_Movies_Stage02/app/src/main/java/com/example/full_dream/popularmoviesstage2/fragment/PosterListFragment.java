@@ -58,8 +58,10 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.transition.TransitionInflater;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -112,6 +114,8 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
     RecyclerView mRecyclerView;
     @BindString(R.string.network_disconnected)
     String mNetworkDisconnected;
+    @BindView(R.id.poster_toolbar)
+    Toolbar mToolbar;
 
     // Bundle key(s)
     @BindString(R.string.settings_option)
@@ -175,6 +179,11 @@ public class PosterListFragment extends Fragment implements PosterAdapter.Poster
         // Binding Reset - Set views to null in onDestroyView
         //  source: http://jakewharton.github.io/butterknife/
         mUnbinder = ButterKnife.bind(this, rootView);
+
+        // Setup Toolbar as Actionbar
+        //  Source (Except I used it to replace Toolbar with Actionbar rather than vice versa):
+        //   http://android-er.blogspot.com/2016/01/replace-actionbar-with.html
+        ((AppCompatActivity)getActivity()).setSupportActionBar(mToolbar);
 
         // Least common multiple of 2 and 3 is 6
         int numberOfColumns = 6;

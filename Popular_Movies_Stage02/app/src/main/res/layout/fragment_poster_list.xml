@@ -44,10 +44,29 @@
   ~  * SOFTWARE.
   ~  */
   -->
-<android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/rv_poster_list"
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/black">
+    android:background="@android:color/black"
+    android:orientation="vertical">
 
-</android.support.v7.widget.RecyclerView>
+    <!-- Platform for Menu settings/options -->
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/poster_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize">
+
+    </android.support.v7.widget.Toolbar>
+
+    <!-- Learned something new today:
+      RecyclerView should not have nested child views since the adapter is in charge of doing that and
+      doing so causes:
+       java.lang.IllegalStateException: RecyclerView has no LayoutManager android.support.v7.widget.RecyclerView-->
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_poster_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+</LinearLayout>
