@@ -58,6 +58,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -106,20 +107,18 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
     String mRemoveFavoriteMsg;
 
     // IU related variables
-    @BindView(R.id.iv_background_poster)
-    ImageView mBackgroundPoster;
+    @BindView(R.id.iv_poster_icon)
+    ImageView mPosterIcon;
     @BindView(R.id.tv_rating)
     TextView mRating;
     @BindView(R.id.tv_title)
     TextView mTitle;
-    @BindView(R.id.tv_original_title)
-    TextView mOriginalTitle;
+    @BindView(R.id.collapsing_toolbar)
+    CollapsingToolbarLayout mOriginalTitle;
     @BindView(R.id.tv_release_date)
     TextView mReleaseDate;
     @BindView(R.id.iv_backdrop)
     ImageView mBackdrop;
-    @BindView(R.id.tv_original_language)
-    TextView mOriginalLanguage;
     @BindView(R.id.tv_summary)
     TextView mSummary;
     @BindView(R.id.rv_review_list)
@@ -393,11 +392,11 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
                 .load(movie.getPosterPath())
                 .placeholder(R.drawable.ic_popcorn)
                 .error(R.drawable.ic_popcorn)
-                .into(mBackgroundPoster);
+                .into(mPosterIcon);
 
         // Set transition name
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
-            mBackgroundPoster.setTransitionName(mTransitionName);
+            mPosterIcon.setTransitionName(mTransitionName);
         }
 
         String rating = Double.toString(movie.getVoteAverage());
@@ -416,9 +415,8 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
 
         mRating.setText(rating);
         mTitle.setText(title);
-        mOriginalTitle.setText(originalTitle);
+        mOriginalTitle.setTitle(originalTitle + " (" + originalLanguage + ")");
         mReleaseDate.setText(date);
-        mOriginalLanguage.setText(originalLanguage);
         mSummary.setText(summary);
     }
 

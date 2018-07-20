@@ -44,10 +44,28 @@
   ~  * SOFTWARE.
   ~  */
   -->
-
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/fragment_container"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-</FrameLayout>
+<resources>
+    <!-- res/values-v19/styles.xml -->
+    <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
+        <!-- Color for the app bar and other primary UI elements
+                  java.lang.RuntimeException: A TaskDescription's primary color should be opaque -->
+        <item name="colorPrimary">@android:color/black</item>
+        <!-- A darker variant of the primary color, used for the status
+         bar (on Android 5.0+) and contextual app bars -->
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <!-- A secondary color for controls like checkboxes and fields
+          The FAB is colored the colorAccent by default -->
+        <item name="colorAccent">@color/gold_morning</item>
+        <!-- Overrides colorAccent as the activated or checked state for Checkboxes and RadioButtons
+          Overrode colorAccent so that FAB could stay colorAccent color while preserving the
+          color colorControlActivated of the RadioButtons when selecting different menu options
+           Source: https://medium.com/google-developers/theming-with-appcompat-1a292b754b35 -->
+        <item name="colorControlActivated">@color/gold_morning</item>
+        <!-- To change the popup menu and the app text color -->
+        <item name="android:textColor">@color/gold_morning</item>
+        <!-- To change the background of the options menu -->
+        <item name="android:itemBackground">@android:color/black</item>
+        <!-- Make status bar translucent -->
+        <item name="android:windowTranslucentStatus">true</item>
+    </style>
+</resources>

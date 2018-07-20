@@ -48,7 +48,8 @@
 
 <resources>
     <!-- DP -->
-    <dimen name="posterHeight">185dp</dimen>
+    <dimen name="poster_icon_width">120dp</dimen>
+    <dimen name="poster_icon_height">180dp</dimen>
     <dimen name="general_spacing">8dp</dimen>
     <dimen name="general_spacing_double">16dp</dimen>
     <dimen name="general_spacing_half">4dp</dimen>
@@ -59,6 +60,7 @@
     <dimen name="detail_underscore_height">1dp</dimen>
     <dimen name="fab_margin_phone">16dp</dimen>
     <dimen name="fab_margin_tablet">24dp</dimen>
+    <dimen name="appbar_layout_height">300dp</dimen>
 
     <!-- SP -->
     <dimen name="detail_label_text_size">12sp</dimen>

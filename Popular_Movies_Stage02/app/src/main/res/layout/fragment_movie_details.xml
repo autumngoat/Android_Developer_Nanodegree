@@ -44,123 +44,260 @@
   ~  * SOFTWARE.
   ~  */
   -->
-<LinearLayout
+
+<!-- CoordinatorLayout required to "coordinate" Design Support Library views with each other
+  Simple structure of CoordinatorLayout == 3 Child Views:
+   1) AppBarLayout
+   2) A scrollable View
+   3) Floating Action Button
+  Attributes:
+   android:fitsSystemWindows - when set to "true" sets the padding of View(Group) to ensure the
+   contents do NOT overlay the system windows
+    System Windows are parts of the screen like where the system is drawing non-interactive
+    (Status Bar) or interactive (Navigation Bar) content
+     Source: https://medium.com/google-developers/why-would-i-want-to-fitssystemwindows-4e26d9ce1eec
+    Does NOT seem needed... I see no difference either way
+     Look in comments above CollapsingToolbarLayout to see why it matters
+  -->
+<android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:fitsSystemWindows="true">
 
-    <android.support.constraint.ConstraintLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <!-- AppBarLayout is a vertical LinearLayout with specific parameters controlling the
+     scroll behavior of its Child Views
+      Heavily depends on being a DIRECT Child View of CoordinatorLayout ViewGroup
+      Requires a separate scrolling sibling in order to know when to scroll
+       The binding is done through the AppBarLayout.ScrollingViewBehavior behavior class, meaning
+       you should set your scrolling view's behavior to be an instance of
+       AppBarLayout.ScrollingViewBehavior
+        EX: app:layout_behavior="@string/appbar_scrolling_view_behavior" Attribute must be placed
+        inside either a) the Floating Action Button or b) the scrollable View sibling Views
+         a) Backdrop image shows and scrolls (but it is the same as not having the Attribute at all)
+         b) Breaks scrollable View's scroll but CollapsingToolbarLayout can scroll independently
+         and contentScrim color shows
+        EX: https://github.com/codepath/android_guides/wiki/Handling-Scrolls-with-CoordinatorLayout
+        states that we need to define an association between AppBarLayout and a View that WILL BE
+        SCROLLED such as RecyclerView or NestedScrollView
+         Both RecyclerView and NestedScrollView are from the Design Support Library which
+         CoordinatorLayout is from which ConstraintLayout is not from... so wrapping an unsupported
+         ConstraintLayout in a NestedScrollView and giving that NestedScrollView
+         app:layout_behavior="@string/appbar_scrolling_view_behavior" MAKES EVERYTHING WORK!
+          *ARRGHHHH!!!*
+           *UUGHHHHH!!!*
+       A string resource containing the full class name is available:
+        @string/appbar_scrolling_view_behavior
+      Attributes:
+       app:layout_scrollFlags - manage the behavior of DIRECT Child Views of AppBarLayout
+        To be clear, this Attribute is not for AppBarLayout but for it's DIRECT CHILD VIEWs
+        Values:
+         enterAlways - View will become visible when scrolling UP
+          Useful in cases when scrolling from the bottom of a list and wanting to expose the Toolbar
+          as soon as scrolling up takes place
+           Normally the Toolbar is only shown when scrolled to the very top
+         enterAlwaysCollapsed - Assuming enterAlways is declared and a minHeight has been specified,
+         you can also specify enterAlwaysCollapsed so that the Toolbar/View will only show at it's
+         minimum height
+          Until you reach the very top, then it expands to it's full height
+         scroll - Scrolling DOWN will cause the entire content to move
+          Both CollapsingToolbar and scrolling View sibling will scroll at the same scroll event
+         exitUntilCollapsed - Assuming scroll is declared and a minHeight has been specified, the
+         minimum height of the Toolbar will be reached before the rest of the content begins to
+         scroll and exit the screen
+          The rest of the content will exit (off-screen) rather than the Toolbar
+         snap - Determines what to do when a view is left partially reduced when scrolling ends
+          >50% - return to original height
+          <50% - disappear completely
+        Always order your views with the "scroll" flag FIRST
+      Source(s):
+       https://developer.android.com/reference/android/support/design/widget/AppBarLayout
+       https://github.com/codepath/android_guides/wiki/Handling-Scrolls-with-CoordinatorLayout -->
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/appbar_layout_height">
+
+        <!-- Must wrap Toolbar inside CollapsingToolbarLayout to create the collapsing effect
+          Designed to be used as a DIRECT Child of a AppBarLayout
+          Features:
+           Collapsing title - large title that shrinks as layout is scrolled off-screen
+            Normally we set the title of the Toolbar, but now we need to set the title of the
+            CollapsingToolbarLayout instead of the Toolbar
+             CollapsingToolbarLayout collapsingToolbar = (CollapsingToolbarLayout)
+             findViewById(R.id.collapsing_toolbar);
+             collapsingToolbar.setTitle("Title");
+           Content scrim -
+           Status bar scrim -
+           Parallax scrolling children -
+           Pinned position children -
+          DO NOT MANUALLY add views to the Toolbar at run time
+          When using CollapsingToolbarLayout, the status bar should be made translucent API 19 or
+          transparent API 21
+           Set in res/values-xx/styles.xml
+           By enabling transparent/translucent SYSTEM BARs, layout will fill the area behind the
+           SYSTEM BARs, so MUST enable android:fitsSystemWindows for the portions of layout that
+           should not be covered by the SYSTEM BARs
+            Who needs android:fitsSystemWindows="true"?
+             Is it AppBarLayout?
+              No
+             Is it CollapsingToolbarLayout?
+              No
+             Is it Toolbar?
+              No
+             Is it CoordinatorLayout?
+              DING DING DING!
+          Attributes:
+           app:contentScrim -
+          Source:
+           https://developer.android.com/reference/android/support/design/widget/CollapsingToolbarLayout
+           https://github.com/codepath/android_guides/wiki/Handling-Scrolls-with-CoordinatorLayout-->
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/collapsing_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:expandedTitleTextAppearance="@style/ExpandedTitle"
+            app:collapsedTitleTextAppearance="@style/CollapsedTitle"
+            app:contentScrim="@color/gold_morning"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+            <!-- ImageView that fades out as the Toolbar collapses into the designated contentScrim
+              Effect is achieved with app:layout_collapseMode="parallax"
+               Important to keep ImageView before Toolbar if you want scrim to draw over image -->
+            <ImageView
+                android:id="@+id/iv_backdrop"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                app:layout_collapseMode="parallax" />
+
+            <android.support.v7.widget.Toolbar
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:layout_collapseMode="pin"
+                app:layout_scrollFlags="scroll|enterAlways">
+
+            </android.support.v7.widget.Toolbar>
+
+        </android.support.design.widget.CollapsingToolbarLayout>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <!-- Nesting ConstraintLayout in a Design Support Library compatible NestedScrollView makes all
+     of my CoordinatorLayout behaviors work
+      Such as:
+       1) Trying to get FAB to actually "float" on scroll instead of being statically attached to the
+       screen with android:layout_gravity, or statically attached to a View with app:layout_anchor
+       and app:layout_anchorGravity
+       2) Trying to get CollapsingToolBar to scroll in direct relation to its scrolling View sibling
+      However it introduces a new problem:
+       w/o NestedScrollView - no mysterious WHITESPACE at the bottom of the screen
+       w/ NestedScrollView - mysterious WHITESPACE at the bottom of the screen
+        FAB is set to android:layout_gravity="end|bottom" but is above the WHITESPACE so that space
+        is BELOW the bottom of the screen...WTF!?
+         From StackOverflow:
+          No, android:background="@android:color/black" != fix
+          No, android:layout_gravity="fill_vertical" != fix
+          No, android:fillViewport="true" != fix
+          No, removing "exitUntilCollapsed" from CollapsingToolbarLayout != fix
+          No, wrapping ConstraintLayout in a FrameLayout != fix
+          No, android:id="@+id/nested_scroll_view" != fix
+         OMG... I'm an idiot, and I fixed it
+          Realized there was mysterious WHITESPACE above the top of the screen on both the
+          PosterListFragment and DetailFragment UIs and just realized that they are both Fragments
+          inside a single Activity represented by activity_main.xml
+           From my StackOverflow binge, I found out that ScrollView and LinearLayout are both
+           incompatible with CoordinatorLayout
+            And I realized I only really needed FrameLayout for the fragment container so bada bing
+            bada boom, reduce:
+             Scrollview
+              LinearLayout
+               FrameLayout
+              LinearLayout
+             ScrollView
+            to just:
+             FrameLayout
+            and it works as expected -->
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/black">
+        android:background="@android:color/black"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <ImageView
-            android:id="@+id/iv_backdrop"
+        <!-- Show the DetailFragment UI -->
+        <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:alpha="0.8"
-            android:adjustViewBounds="true"
-            app:layout_constraintTop_toTopOf="parent"/>
+            android:layout_height="match_parent">
 
-        <!-- Set poster as background image -->
-        <ImageView
-            android:id="@+id/iv_background_poster"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:adjustViewBounds="true"
-            android:alpha="0.4"/>
+            <!-- Set poster as icon since the Fragment Transition to background image is not very smooth -->
+            <ImageView
+                android:id="@+id/iv_poster_icon"
+                android:layout_width="@dimen/poster_icon_width"
+                android:layout_height="@dimen/poster_icon_height"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"/>
 
-        <!-- Floating Action Button for adding/removing to favorites SQLite database -->
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/detail_fab_fav"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end|bottom"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            <TextView
+                android:id="@+id/tv_rating"
+                android:textSize="@dimen/detail_rating_text_size"
+                style="@style/DetailTextViews"
+                app:layout_constraintLeft_toRightOf="@id/iv_poster_icon"
+                app:layout_constraintTop_toTopOf="parent"/>
 
-        <TextView
-            android:id="@+id/tv_rating"
-            android:textSize="@dimen/detail_rating_text_size"
-            style="@style/DetailTextViews"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/top_underscore"/>
+            <TextView
+                android:id="@+id/tv_title"
+                android:textSize="@dimen/detail_title_text_size"
+                android:layout_marginLeft="@dimen/general_spacing"
+                android:layout_marginStart="@dimen/general_spacing"
+                style="@style/DetailTextViews"
+                app:layout_constraintTop_toBottomOf="@id/tv_rating"
+                app:layout_constraintLeft_toRightOf="@id/iv_poster_icon"/>
 
-        <android.support.constraint.Guideline
-            android:id="@+id/gl_top"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.05"/>
+            <TextView
+                android:id="@+id/tv_release_date"
+                style="@style/DetailTextViews"
+                android:layout_marginLeft="@dimen/general_spacing_double"
+                android:layout_marginStart="@dimen/general_spacing_double"
+                app:layout_constraintTop_toBottomOf="@id/tv_title"
+                app:layout_constraintLeft_toRightOf="@id/iv_poster_icon"/>
 
-        <TextView
-            android:id="@+id/tv_title"
-            android:textSize="@dimen/detail_title_text_size"
-            android:layout_marginLeft="@dimen/general_spacing"
-            android:layout_marginStart="@dimen/general_spacing"
-            style="@style/DetailTextViews"
-            app:layout_constraintBottom_toTopOf="@id/gl_top"
-            app:layout_constraintLeft_toRightOf="@id/tv_rating"
-            app:layout_constraintRight_toRightOf="parent"/>
+            <TextView
+                android:id="@+id/tv_summary"
+                style="@style/DetailTextViews"
+                android:layout_margin="@dimen/general_spacing"
+                app:layout_constraintTop_toBottomOf="@id/iv_poster_icon"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
 
-        <TextView
-            android:id="@+id/tv_original_title"
-            android:textSize="@dimen/detail_original_title_text_size"
-            android:layout_marginLeft="@dimen/general_spacing"
-            android:layout_marginStart="@dimen/general_spacing"
-            style="@style/DetailTextViews"
-            app:layout_constraintTop_toBottomOf="@id/gl_top"
-            app:layout_constraintLeft_toRightOf="@id/tv_rating"/>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_trailer_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_summary"/>
 
-        <View
-            android:id="@+id/top_underscore"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/detail_underscore_height"
-            android:background="@android:color/white"
-            android:layout_marginTop="@dimen/general_spacing"
-            app:layout_constraintTop_toBottomOf="@id/tv_original_title"
-            app:layout_constraintLeft_toLeftOf="@id/tv_rating"
-            app:layout_constraintRight_toRightOf="@id/tv_original_language"/>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_review_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/general_spacing"
+                app:layout_constraintTop_toBottomOf="@id/rv_trailer_list"/>
+        </android.support.constraint.ConstraintLayout>
+    </android.support.v4.widget.NestedScrollView>
 
-        <TextView
-            android:id="@+id/tv_release_date"
-            style="@style/DetailTextViews"
-            android:layout_marginLeft="@dimen/general_spacing_double"
-            android:layout_marginStart="@dimen/general_spacing_double"
-            app:layout_constraintTop_toBottomOf="@id/top_underscore"
-            app:layout_constraintLeft_toLeftOf="@id/tv_rating"/>
-
-        <TextView
-            android:id="@+id/tv_original_language"
-            style="@style/DetailTextViews"
-            android:layout_marginRight="@dimen/general_spacing_double"
-            android:layout_marginEnd="@dimen/general_spacing_double"
-            app:layout_constraintTop_toBottomOf="@id/top_underscore"
-            app:layout_constraintRight_toRightOf="parent"/>
-
-        <TextView
-            android:id="@+id/tv_summary"
-            style="@style/DetailTextViews"
-            android:layout_margin="@dimen/general_spacing"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_release_date"
-            android:background="@color/black_field" />
-    </android.support.constraint.ConstraintLayout>
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_trailer_list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_review_list"
-        android:layout_width="match_parent"
+    <!-- Floating Action Button for adding/removing to favorites SQLite database
+      Must be placed within CoordinatorLayout and placed at bottom of hierarchy to behave correctly:
+       EX: w/o CoordinatorLayout, SnackBar covers FAB and is not dismissible on swipe right action
+           w/ CoordinatorLayout, when FAB is on bottom of screen, appearance of SnackBar raises FAB
+           and SnackBar is dismissible on swipe right action
+      Attributes:
+       android:layout_gravity - used to define the position of the button
+        end|bottom - place FAB in bottom and right/end of screen
+       android:layout_margin - Material Design FAB specs designate 16dp for phone and 24dp for
+       tablet-->
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/detail_fab_fav"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/general_spacing"/>
-</LinearLayout>
+        android:layout_margin="@dimen/fab_margin_phone"
+        android:layout_gravity="end|bottom"/>
+</android.support.design.widget.CoordinatorLayout>

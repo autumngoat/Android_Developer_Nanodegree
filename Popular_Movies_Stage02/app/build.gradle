@@ -96,7 +96,7 @@ dependencies {
     // ConstraintLayout
     implementation "com.android.support.constraint:constraint-layout:$constraint_layout_version"
 
-    // Support Library - Design Support library (FAB, Snackbar, tabs, nav drawer, etc.)
+    // Support Library - Design Support library (FAB, SnackBar, tabs, nav drawer, etc.)
     implementation "com.android.support:design:$support_library_version"
 
     // RecyclerView

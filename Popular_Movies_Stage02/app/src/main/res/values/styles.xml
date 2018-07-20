@@ -47,26 +47,28 @@
 
 <resources>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Color for the app bar and other primary UI elements -->
-         <!-- java.lang.RuntimeException: A TaskDescription's primary color should be opaque -->
-        <item name="colorPrimary">@color/black_solid</item>
+    <!-- Base application theme
+      Use NoActionBar to get rid of extra ActionBar on top of Toolbar and strange empty space above
+      screen-->
+    <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
+        <!-- Color for the app bar and other primary UI elements
+          java.lang.RuntimeException: A TaskDescription's primary color should be opaque -->
+        <item name="colorPrimary">@android:color/black</item>
         <!-- A darker variant of the primary color, used for the status
          bar (on Android 5.0+) and contextual app bars -->
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <!-- A secondary color for controls like checkboxes and fields -->
-         <!-- The FAB is colored the colorAccent by default -->
+        <!-- A secondary color for controls like checkboxes and fields
+          The FAB is colored the colorAccent by default -->
         <item name="colorAccent">@color/gold_morning</item>
-        <!-- Overrides colorAccent as the activated or checked state for Checkboxes and RadioButtons -->
-         <!-- Overrode colorAccent so that FAB could stay colorAccent color while preserving the
-          color colorControlActivated of the RadioButtons when selecting different menu options-->
-         <!-- Source: https://medium.com/google-developers/theming-with-appcompat-1a292b754b35 -->
+        <!-- Overrides colorAccent as the activated or checked state for Checkboxes and RadioButtons
+          Overrode colorAccent so that FAB could stay colorAccent color while preserving the
+          color colorControlActivated of the RadioButtons when selecting different menu options
+           Source: https://medium.com/google-developers/theming-with-appcompat-1a292b754b35 -->
         <item name="colorControlActivated">@color/gold_morning</item>
         <!-- To change the popup menu and the app text color -->
         <item name="android:textColor">@color/gold_morning</item>
         <!-- To change the background of the options menu -->
-        <item name="android:itemBackground">@color/black_solid</item>
+        <item name="android:itemBackground">@android:color/black</item>
     </style>
 
     <!-- Label Style -->
@@ -93,4 +95,13 @@
         <item name="android:layout_margin">@dimen/detail_text_margin</item>
     </style>
 
+    <!-- Detail CollapsingToolbarLayout Expanded Title Style -->
+    <style name="ExpandedTitle">
+        <item name="android:textColor">@color/gold_morning</item>
+    </style>
+
+    <!-- Detail CollapsingToolbarLayout Collapsed Title Style -->
+    <style name="CollapsedTitle">
+        <item name="android:textColor">@android:color/black</item>
+    </style>
 </resources>
