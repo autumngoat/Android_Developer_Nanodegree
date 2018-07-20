@@ -45,74 +45,56 @@
  *
  */
 
-package com.example.full_dream.popularmoviesstage1.model;
+package com.example.full_dream.popularmoviesstage2.model;
 
 // 3rd Party Imports - com - Moshi
 import com.squareup.moshi.Json;
 
-// Java Imports
-import java.util.List;
-
 /**
- * Provides a data model to represent the initial JSON HTTP response as a POJO
- * that contains the desired Movie details in the 'results' JSONArray.
+ * Provides a data model to represent a Review POJO to hold parsed JSON data.
  *
  * Used jsonprettyprint.com and jsonschema2pojo.com to auto-generate this POJO
  * from a TMDB JSON HTTP Response.
  */
-public class MovieResponse {
+public class Review {
+    @Json(name = "author")
+    private String author;
+    @Json(name = "content")
+    private String content;
+    @Json(name = "id")
+    private String id;
+    @Json(name = "url")
+    private String url;
 
-    @Json(name = "page")
-    private Integer page;
-    @Json(name = "total_results")
-    private Integer totalResults;
-    @Json(name = "total_pages")
-    private Integer totalPages;
-    @Json(name = "results")
-    private List<Movie> results = null;
-
-    public Integer getPage() {
-        return page;
+    public String getAuthor() {
+        return author;
     }
 
-    public void setPage(Integer page) {
-        this.page = page;
+    public void setAuthor(String author) {
+        this.author = author;
     }
 
-    public Integer getTotalResults() {
-        return totalResults;
+    public String getContent() {
+        return content;
     }
 
-    public void setTotalResults(Integer totalResults) {
-        this.totalResults = totalResults;
+    public void setContent(String content) {
+        this.content = content;
     }
 
-    public Integer getTotalPages() {
-        return totalPages;
+    public String getId() {
+        return id;
     }
 
-    public void setTotalPages(Integer totalPages) {
-        this.totalPages = totalPages;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public List<Movie> getResults() {
-        return results;
+    public String getUrl() {
+        return url;
     }
 
-    public void setResults(List<Movie> results) {
-        this.results = results;
-    }
-
-    /**
-     * Formatted String representation of MovieResponse object for better debugging purposes.
-     *
-     * @return Return String representation of MovieResponse object.
-     */
-    @Override
-    public String toString() {
-        return "\npage: " + this.page +
-                "\ntotalPages: " + this.totalPages +
-                "\nresults: " + this.results +
-                "\ntotalResults: " + this.totalResults;
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

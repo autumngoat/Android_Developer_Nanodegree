@@ -45,60 +45,74 @@
  *
  */
 
-package com.example.full_dream.popularmoviesstage1.database;
+package com.example.full_dream.popularmoviesstage2.network;
 
-// Android Imports
-import android.arch.lifecycle.LiveData;
-import android.arch.persistence.room.Dao;
-import android.arch.persistence.room.Delete;
-import android.arch.persistence.room.Insert;
-import android.arch.persistence.room.Query;
+// 3rd Party Imports - com - Popular Movies Stage 2
+import com.example.full_dream.popularmoviesstage2.model.MovieResponse;
+import com.example.full_dream.popularmoviesstage2.model.ReviewResponse;
+import com.example.full_dream.popularmoviesstage2.model.TrailerResponse;
 
-// 3rd Party Imports - com
-import com.example.full_dream.popularmoviesstage1.model.Movie;
-
-// Java Imports
-import java.util.List;
+// 3rd Party Imports - Retrofit2
+import retrofit2.Call;
+import retrofit2.http.GET;
+import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 /**
- * Marks the class as a Data Access Object.
- *  DAO are the main classes where you define your database interactions.
- *   They can include a variety of query methods.
+ * API Service that specifics and defines each API endpoint to indicate how a HTTP request will be
+ * handled.
  *
- * Comments Source:
- * https://developer.android.com/reference/android/arch/persistence/room/Dao
- *
- * Followed the Udacity course "Developing Android Apps" >>
- * Lesson 12: Android Architecture Components >>
- * 06. Creating a DAO
+ * Started with Retrofit setup code from these tutorials:
+ * https://medium.com/@shelajev/how-to-make-http-calls-on-android-with-retrofit-2-cfc4a67c6254
+ * http://square.github.io/retrofit/
+ * http://square.github.io/retrofit/2.x/retrofit/
  */
-@Dao
-public interface MovieDao {
+public interface TheMovieDBService {
+    String API_KEY = "api_key";
 
-    // Create
-    //  Create/insert a Movie object into the 'favorites' table
-    @Insert
-    void insertMovie(Movie movie);
+    /**
+     * Make a GET HTTP request for the most popular movies
+     * and returns a HTTP response as a MovieResponse POJO.
+     *
+     * Source:
+     * http://square.github.io/retrofit/2.x/retrofit/retrofit2/http/GET.html
+     * http://square.github.io/retrofit/2.x/retrofit/retrofit2/Call.html
+     */
+    @GET("movie/popular/") Call<MovieResponse> getPopularMovies(
+            @Query(API_KEY) String apiKey);
 
-    // Read all
-    //  Followed the Udacity course "Developing Android Apps" >>
-    //  Lesson 12: Android Architecture Components >>
-    //  19. Exercise: Adding LiveData
-    //   LiveData runs outside of the main/UI thread by default
-    //  Read/select all Movie objects from the 'favorites' table
-    @Query("SELECT * FROM movie")
-    LiveData<List<Movie>> loadAllMovies();
+    /**
+     * Make a GET HTTP request for the top rated movies,
+     * and returns a HTTP response as a MovieResponse POJO.
+     *
+     * Source:
+     * http://square.github.io/retrofit/2.x/retrofit/retrofit2/http/GET.html
+     * http://square.github.io/retrofit/2.x/retrofit/retrofit2/Call.html
+     */
+    @GET("movie/top_rated/") Call<MovieResponse> getTopRatedMovies(
+            @Query(API_KEY) String apiKey);
 
-    // Read by ID
-    //  Followed the Udacity course "Developing Android Apps" >>
-    //  Lesson 12: Android Architecture Components >>
-    //  20. Exercise: Adding LiveData to AddTaskActivity
-    //  Read/select a Movie object by movieId from the 'favorites' table
-    @Query("SELECT * FROM movie WHERE id = :id")
-    LiveData<Movie> loadMovieById(int id);
+    /**
+     * Make a GET HTTP request for the videos (trailers) related to the selected movie and returns
+     * a HTTP response as a Trailer POJO.
+     *
+     * Source:
+     * https://developers.themoviedb.org/3/movies/get-movie-videos
+     */
+    @GET("movie/{movie_id}/videos?")
+    Call<TrailerResponse> getTrailers(
+            @Path("movie_id") int movieId,
+            @Query(API_KEY) String apiKey);
 
-    // Delete
-    //  Delete a Movie object from the 'favorites' table
-    @Delete
-    void deleteMovie(Movie movie);
+    /**
+     * Make GET HTTP request for the user reviews related to the selected movie and returns a HTTP
+     * response as a Review POJO.
+     *
+     * Source:
+     * https://developers.themoviedb.org/3/movies/get-movie-reviews
+     */
+    @GET("movie/{movie_id}/reviews?")
+    Call<ReviewResponse> getReviews(
+            @Path("movie_id") int movieId,
+            @Query(API_KEY) String apiKey);
 }

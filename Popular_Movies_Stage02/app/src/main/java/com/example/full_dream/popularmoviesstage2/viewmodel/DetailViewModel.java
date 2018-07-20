@@ -45,7 +45,7 @@
  *
  */
 
-package com.example.full_dream.popularmoviesstage1.viewmodel;
+package com.example.full_dream.popularmoviesstage2.viewmodel;
 
 // Android Imports
 import android.app.Application;
@@ -54,22 +54,19 @@ import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
 
 // 3rd Party Imports - com - Popular Movies Stage 2
-import com.example.full_dream.popularmoviesstage1.database.MovieRepository;
-import com.example.full_dream.popularmoviesstage1.model.Movie;
+import com.example.full_dream.popularmoviesstage2.database.MovieRepository;
+import com.example.full_dream.popularmoviesstage2.model.Movie;
+import com.example.full_dream.popularmoviesstage2.model.Review;
+import com.example.full_dream.popularmoviesstage2.model.Trailer;
 
-// Java Imports
 import java.util.List;
 
 /**
  * This ViewModel is used to cache the list of Movie objects wrapped in a LiveData object.
  *  Extending AndroidViewModel requires an implementation of it's constructor.
  *   The AndroidViewModel class has a constructor that receives a parameter of type application.
- *
- * Followed the Udacity course "Developing Android Apps" >>
- * Lesson 12: Android Architecture Components >>
- * 22. Exercise: Adding the ViewModel
  */
-public class PosterListViewModel extends AndroidViewModel {
+public class DetailViewModel extends AndroidViewModel {
 
     // Hold a reference to the repository
     private MovieRepository mRepository;
@@ -81,29 +78,53 @@ public class PosterListViewModel extends AndroidViewModel {
      *
      * @param application Base class for maintaining global application state.
      */
-    public PosterListViewModel(@NonNull Application application) {
+    public DetailViewModel(@NonNull Application application){
         super(application);
         mRepository = new MovieRepository(application);
     }
 
     /**
-     * MovieRepository getter method for retrieving a LiveData object of a list of Movie objects that
-     * hides the implementation from the UI.
+     * Wrapper method that calls the MovieRepository's getMovieById() method, which hides the
+     * implementation from the UI.
      *
-     * @return A LiveData object of a list of Movie objects.
+     * @param movieId Unique Movie ID from TMDB used in the local database as the primary key.
+     * @return Movie object with the unique Movie ID
      */
-    public LiveData<List<Movie>> getMovies(int settingsOption) {
-        return mRepository.getMovieList(settingsOption);
+    public LiveData<Movie> getMovieById(int movieId){
+        return mRepository.getMovieById(movieId);
     }
-
 
     /**
-     * MovieRepository getter method for retrieving a LiveData object of an Integer that represents
-     * network connection or no network connection based on its value.
+     * Wrapper method that calls the MovieRepository's insertMovie() method, which hides the
+     * implementation from the UI.
      *
-     * @return A LiveData object of an Integer object.
+     * @param movie Movie instance to insert into the AppDatabase.
      */
-    public LiveData<Integer> getInternetStatus(){
-        return mRepository.getInternetStatus();
-    }
+    public void insertMovie(Movie movie){ mRepository.insertMovie(movie); }
+
+    /**
+     * Wrapper method that calls the MovieRepository's deleteMovie() method, which hides the
+     * implementation from the UI.
+     *
+     * @param movie Movie instance to delete from the AppDatabase.
+     */
+    public void deleteMovie(Movie movie){ mRepository.deleteMovie(movie); }
+
+    /**
+     * Wrapper method that calls the MovieRepository's getTrailerList() method, which hides the
+     * implementation from the UI.
+     *
+     * @param movieId Unique Movie ID from TMDB used in the local database as the primary key.
+     * @return A LiveData object of a list of Trailer objects.
+     */
+    public LiveData<List<Trailer>> getTrailerList(int movieId){ return mRepository.getTrailerList(movieId); }
+
+    /**
+     * Wrapper method that calls the MovieRepository's getReviewList() method, which hides the
+     * implementation from the UI.
+     *
+     * @param movieId Unique Movie ID from TMDB used in the local database as the primary key.
+     * @return A LiveData object of a list of Review objects.
+     */
+    public LiveData<List<Review>> getReviewList(int movieId){ return mRepository.getReviewList(movieId); }
 }

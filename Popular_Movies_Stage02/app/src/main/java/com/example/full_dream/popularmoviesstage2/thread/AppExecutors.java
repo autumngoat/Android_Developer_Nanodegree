@@ -45,43 +45,59 @@
  *
  */
 
-package com.example.full_dream.popularmoviesstage1.viewmodel;
+package com.example.full_dream.popularmoviesstage2.thread;
 
 // Android Imports
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.ViewModel;
 
-// 3rd Party Imports - com - Popular Movies Stage 2
-import com.example.full_dream.popularmoviesstage1.model.Movie;
+// Java Imports
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 /**
- * Share data between two Fragments (Master: PosterListFragment, Detail: DetailFragment) using a
- * ViewModel object using their common Activity (MainActivity) to handle this communication.
+ * Global executor pools for the whole application.
+ *  Grouping tasks like this avoids the effects of task starvation (e.g. disk reads don't wait
+ *  behind webservice requests).
  *
- * Source:
- * https://developer.android.com/topic/libraries/architecture/viewmodel#sharing
+ * Taken whole-sale from:
+ *  Udacity course "Developing Android Apps" >>
+ *  Lesson 12: Android Architecture Components >>
+ *  13. Exercise: Executors >>
+ *  T09b.04-Exercise-Executors >>
+ *  AppExecutors.java
+ *
+ *  Comment source:
+ *  https://developer.android.com/reference/java/util/concurrent/Executor
  */
-public class SharedViewModel extends ViewModel {
+public class AppExecutors {
 
-    // LiveData which publicly exposes setValue(Movie) and postValue(Movie) methods, if available
-    private final MutableLiveData<Movie> selected = new MutableLiveData<>();
-    // Transition name
-    private String mTransitionName;
+    // For Singleton instantiation
+    private static final Object LOCK = new Object();
+    private static AppExecutors sInstance;
+    // An Executor is normally used instead of explicitly creating threads
+    //  Rather than invoking a new thread for each RunnableTask:
+    //   new Thread(new RunnableTask1().start());
+    //   new Thread(new RunnableTask2().start());
+    //  Use an Executor for all RunnableTasks:
+    //   Executor exeggutor = anExecutor();
+    //   exeggutor.execute(new RunnableTask1());
+    //   exeggutor.execute(new RunanbleTask2());
+    private final Executor diskIO;
 
-    // Set transition name of selected Recycler view item's poster ImageView
-    public void setTransitionName(String transitionName) { mTransitionName = transitionName; }
-
-    // Return the transition name of the selected Recycler view item's poster ImageView
-    public String getTransitionName(){ return mTransitionName; }
-
-    // Sets the value to the selected Movie
-    public void select(Movie movie){
-        selected.setValue(movie);
+    private AppExecutors(Executor diskIO){
+        this.diskIO = diskIO;
     }
 
-    // Returns the selected Movie
-    public LiveData<Movie> getSelected(){
-        return selected;
+    public static AppExecutors getsInstance() {
+        if(sInstance == null){
+            synchronized (LOCK) {
+                sInstance = new AppExecutors(
+                        // The diskIO is a single thread Executor to ensure that database
+                        // transactions are done in order to avoid race conditions
+                        Executors.newSingleThreadExecutor());
+            }
+        }
+        return sInstance;
     }
+
+    public Executor diskIO(){ return diskIO; }
 }

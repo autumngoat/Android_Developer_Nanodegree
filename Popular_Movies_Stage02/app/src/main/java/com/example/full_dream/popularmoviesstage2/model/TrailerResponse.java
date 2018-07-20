@@ -45,7 +45,7 @@
  *
  */
 
-package com.example.full_dream.popularmoviesstage1.model;
+package com.example.full_dream.popularmoviesstage2.model;
 
 // 3rd Party Imports - com - Moshi
 import com.squareup.moshi.Json;
@@ -55,22 +55,16 @@ import java.util.List;
 
 /**
  * Provides a data model to represent the initial JSON HTTP response as a POJO
- * that contains the desired Review details in the 'reviews' JSONArray.
+ * that contains the desired Trailer details in the 'results' JSONArray.
  *
  * Used jsonprettyprint.com and jsonschema2pojo.com to auto-generate this POJO
  * from a TMDB JSON HTTP Response.
  */
-public class ReviewResponse {
+public class TrailerResponse {
     @Json(name = "id")
     private Integer id;
-    @Json(name = "page")
-    private Integer page;
     @Json(name = "results")
-    private List<Review> results;
-    @Json(name = "total_pages")
-    private Integer totalPages;
-    @Json(name = "total_reviews")
-    private Integer totalReviews;
+    private List<Trailer> results;
 
     public Integer getId() {
         return id;
@@ -80,36 +74,11 @@ public class ReviewResponse {
         this.id = id;
     }
 
-    public Integer getPage() {
-        return page;
-    }
-
-    public void setPage(Integer page) {
-        this.page = page;
-    }
-
-    public List<Review> getReviews() {
+    public List<Trailer> getResults() {
         return results;
     }
 
-    public void setReviews(List<Review> results) {
+    public void setResults(List<Trailer> results) {
         this.results = results;
     }
-
-    public Integer getTotalPages() {
-        return totalPages;
-    }
-
-    public void setTotalPages(Integer totalPages) {
-        this.totalPages = totalPages;
-    }
-
-    public Integer getTotalReviews() {
-        return totalReviews;
-    }
-
-    public void setTotalReviews(Integer totalReviews) {
-        this.totalReviews = totalReviews;
-    }
-
 }

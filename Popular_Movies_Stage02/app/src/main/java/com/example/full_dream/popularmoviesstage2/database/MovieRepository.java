@@ -45,7 +45,7 @@
  *
  */
 
-package com.example.full_dream.popularmoviesstage1.database;
+package com.example.full_dream.popularmoviesstage2.database;
 
 // Android Imports
 import android.app.Application;
@@ -54,16 +54,16 @@ import android.arch.lifecycle.MutableLiveData;
 import android.util.Log;
 
 // 3rd Party Imports - com - Popular Movies Stage 2
-import com.example.full_dream.popularmoviesstage1.BuildConfig;
-import com.example.full_dream.popularmoviesstage1.model.Movie;
-import com.example.full_dream.popularmoviesstage1.model.MovieResponse;
-import com.example.full_dream.popularmoviesstage1.model.Review;
-import com.example.full_dream.popularmoviesstage1.model.ReviewResponse;
-import com.example.full_dream.popularmoviesstage1.model.Trailer;
-import com.example.full_dream.popularmoviesstage1.model.TrailerResponse;
-import com.example.full_dream.popularmoviesstage1.network.RetrofitClient;
-import com.example.full_dream.popularmoviesstage1.network.TheMovieDBService;
-import com.example.full_dream.popularmoviesstage1.thread.AppExecutors;
+import com.example.full_dream.popularmoviesstage2.BuildConfig;
+import com.example.full_dream.popularmoviesstage2.model.Movie;
+import com.example.full_dream.popularmoviesstage2.model.MovieResponse;
+import com.example.full_dream.popularmoviesstage2.model.Review;
+import com.example.full_dream.popularmoviesstage2.model.ReviewResponse;
+import com.example.full_dream.popularmoviesstage2.model.Trailer;
+import com.example.full_dream.popularmoviesstage2.model.TrailerResponse;
+import com.example.full_dream.popularmoviesstage2.network.RetrofitClient;
+import com.example.full_dream.popularmoviesstage2.network.TheMovieDBService;
+import com.example.full_dream.popularmoviesstage2.thread.AppExecutors;
 
 // 3rd Party Imports - Retrofit2
 import retrofit2.Call;

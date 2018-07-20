@@ -45,73 +45,103 @@
  *
  */
 
-package com.example.full_dream.popularmoviesstage1;
+package com.example.full_dream.popularmoviesstage2.adapter;
 
 // Android Imports
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
-//3rd Party Imports - Butterknife
-import butterknife.BindString;
+// 3rd Paty Imports - Butterknife
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 // 3rd Party Imports - com - Popular Movies Stage 2
-import com.example.full_dream.popularmoviesstage1.fragment.PosterListFragment;
+import com.example.full_dream.popularmoviesstage2.R;
+import com.example.full_dream.popularmoviesstage2.model.Review;
+
+// Java Imports
+import java.util.List;
 
 /**
- * Handle network connection changes and manage Fragments during orientation change.
+ * Creates and binds the Review ViewHolders for the Review RecyclerView
  */
-public class MainActivity extends AppCompatActivity {
+public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewAdapterViewHolder>{
 
-    // Bundle key
-    @BindString(R.string.fragment)
-    String mFragmentKey;
+    // Cached local copy of list of Review objects
+    private List<Review> mReviewList;
 
     /**
-     * Initialize first (and only) PosterListFragment instance here if first time app is starting.
+     * Updates the adapter's cached copy of the list of Review objects.
+     *  Note to self: If you update the adapter's data, then you need to notifyDataSetChanged() to
+     *  see it!
+     *
+     * @param reviewList New list of Review objects to update the older cached data.
+     */
+    public void setReviewList(List<Review> reviewList){
+        mReviewList = reviewList;
+        notifyDataSetChanged();
+    }
+
+    /**
+     * Fills/refills the ViewHolders by binding the data to the UI components.
      */
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
+    public void onBindViewHolder(@NonNull ReviewAdapterViewHolder holder, int position) {
+        Review review = mReviewList.get(position);
 
-        // If first time opening app, then create new PosterListFragment instance and commit to
-        // fragment back stack
-        if(savedInstanceState == null){
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .add(R.id.fragment_container, new PosterListFragment())
-                    .commit();
+        String author = review.getAuthor();
+        String content = review.getContent();
+
+        holder.mAuthor.setText(author);
+        holder.mContent.setText(content);
+    }
+
+    /**
+     * Total number of ViewHolders by returning the list size.
+     */
+    @Override
+    public int getItemCount() {
+        if(null == mReviewList) return 0;
+        return mReviewList.size();
+    }
+
+    /**
+     * Creates ViewHolders by inflating the review_list_item view.
+     */
+    @NonNull
+    @Override
+    public ReviewAdapterViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        Context context = parent.getContext();
+        int layoutIdForListItem = R.layout.review_list_item;
+        LayoutInflater inflater = LayoutInflater.from(context);
+
+        View view = inflater.inflate(layoutIdForListItem,
+                parent,
+                context.getResources().getBoolean(R.bool.shouldAttachToParentImmediately));
+
+        return new ReviewAdapterViewHolder(view);
+    }
+
+    /**
+     * ViewHolder inner class.
+     */
+    public class ReviewAdapterViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.review_author)
+        TextView mAuthor;
+        @BindView(R.id.review_content)
+        TextView mContent;
+
+        /**
+         * ViewHolder constructor for new empty ViewHolders
+         */
+        ReviewAdapterViewHolder(View view){
+            super(view);
+            ButterKnife.bind(this, view);
         }
-    }
-
-    /**
-     * Store a reference to a Fragment to handle rotation/orientation/configuration change.
-     *
-     * @param outState Bundle that will hold a reference to a Fragment.
-     */
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-
-        // Put a reference to a Fragment in a Bundle
-        getSupportFragmentManager().putFragment(outState,
-                mFragmentKey,
-                getSupportFragmentManager().findFragmentById(R.id.fragment_container));
-    }
-
-    /**
-     * Flag whether or not to restore DetailFragment or PosterListFragment in onResume based on the
-     * Bundle.
-     *
-     * @param savedInstanceState Bundle containing a reference to a Fragment.
-     */
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-
-        // Retrieve the current Fragment instance for a reference previously placed with putFragment()
-        getSupportFragmentManager().getFragment(savedInstanceState, mFragmentKey);
     }
 }

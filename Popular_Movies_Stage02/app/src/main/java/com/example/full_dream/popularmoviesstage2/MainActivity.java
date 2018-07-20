@@ -45,52 +45,73 @@
  *
  */
 
-package com.example.full_dream.popularmoviesstage1.network;
+package com.example.full_dream.popularmoviesstage2;
 
-// 3rd Party Imports - Retrofit2
-import retrofit2.Retrofit;
-import retrofit2.converter.moshi.MoshiConverterFactory;
+// Android Imports
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+
+//3rd Party Imports - Butterknife
+import butterknife.BindString;
+import butterknife.ButterKnife;
+
+// 3rd Party Imports - com - Popular Movies Stage 2
+import com.example.full_dream.popularmoviesstage2.fragment.PosterListFragment;
 
 /**
- * API client that will create and send the HTTP request and receive the HTTP response.
- *
- * Started with Retrofit setup code from these tutorials:
- * https://medium.com/@shelajev/how-to-make-http-calls-on-android-with-retrofit-2-cfc4a67c6254
- * http://square.github.io/retrofit/
- * http://square.github.io/retrofit/2.x/retrofit/
+ * Handle network connection changes and manage Fragments during orientation change.
  */
-public class RetrofitClient {
-    // 'private' is not allowed here
-    // 'static final' are redundant for interface fields
-    /**
-     * Base URLs should always end in /.
-     *
-     * Source: http://square.github.io/retrofit/2.x/retrofit/retrofit2/Retrofit.Builder.html#baseUrl
-     */
-    private static final String TMDB_BASE_URL = "https://api.themoviedb.org/3/";
+public class MainActivity extends AppCompatActivity {
+
+    // Bundle key
+    @BindString(R.string.fragment)
+    String mFragmentKey;
 
     /**
-     * The Retrofit class generates an implementation of the TheMovieDBService interface.
-     *
-     * Comment Source:
-     * http://square.github.io/retrofit/
-     * https://square.github.io/retrofit/2.x/retrofit/retrofit2/Retrofit.Builder.html
-     * https://square.github.io/retrofit/2.x/retrofit/retrofit2/Retrofit.html
-     *
-     * @return An implementation of the TheMovieDBService interface.
+     * Initialize first (and only) PosterListFragment instance here if first time app is starting.
      */
-    public static TheMovieDBService getApiClient(){
-        // Build a new Retrofit object using builder...
-        Retrofit retrofit = new Retrofit.Builder()
-                // Set the API base URL.  Calling baseUrl() before calling build() is required.
-                .baseUrl(TMDB_BASE_URL)
-                // Add a converter factory for serialization and deserialization of objects
-                .addConverterFactory(MoshiConverterFactory.create())
-                // Create the Retrofit instance using the configured values
-                .build();
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
 
-        // ...and pass TheMovieDBService interface to create(Class<T> service) to generate an
-        // implementation
-        return retrofit.create(TheMovieDBService.class);
+        // If first time opening app, then create new PosterListFragment instance and commit to
+        // fragment back stack
+        if(savedInstanceState == null){
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .add(R.id.fragment_container, new PosterListFragment())
+                    .commit();
+        }
+    }
+
+    /**
+     * Store a reference to a Fragment to handle rotation/orientation/configuration change.
+     *
+     * @param outState Bundle that will hold a reference to a Fragment.
+     */
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        // Put a reference to a Fragment in a Bundle
+        getSupportFragmentManager().putFragment(outState,
+                mFragmentKey,
+                getSupportFragmentManager().findFragmentById(R.id.fragment_container));
+    }
+
+    /**
+     * Flag whether or not to restore DetailFragment or PosterListFragment in onResume based on the
+     * Bundle.
+     *
+     * @param savedInstanceState Bundle containing a reference to a Fragment.
+     */
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        // Retrieve the current Fragment instance for a reference previously placed with putFragment()
+        getSupportFragmentManager().getFragment(savedInstanceState, mFragmentKey);
     }
 }

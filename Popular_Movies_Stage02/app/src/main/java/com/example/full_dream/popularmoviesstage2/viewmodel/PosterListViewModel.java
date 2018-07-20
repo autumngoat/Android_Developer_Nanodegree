@@ -45,104 +45,65 @@
  *
  */
 
-package com.example.full_dream.popularmoviesstage1.adapter;
+package com.example.full_dream.popularmoviesstage2.viewmodel;
 
 // Android Imports
-import android.content.Context;
+import android.app.Application;
+import android.arch.lifecycle.AndroidViewModel;
+import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
-
-// 3rd Paty Imports - Butterknife
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 // 3rd Party Imports - com - Popular Movies Stage 2
-import com.example.full_dream.popularmoviesstage1.R;
-import com.example.full_dream.popularmoviesstage1.model.Review;
+import com.example.full_dream.popularmoviesstage2.database.MovieRepository;
+import com.example.full_dream.popularmoviesstage2.model.Movie;
 
 // Java Imports
-import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Creates and binds the Review ViewHolders for the Review RecyclerView
+ * This ViewModel is used to cache the list of Movie objects wrapped in a LiveData object.
+ *  Extending AndroidViewModel requires an implementation of it's constructor.
+ *   The AndroidViewModel class has a constructor that receives a parameter of type application.
+ *
+ * Followed the Udacity course "Developing Android Apps" >>
+ * Lesson 12: Android Architecture Components >>
+ * 22. Exercise: Adding the ViewModel
  */
-public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewAdapterViewHolder>{
+public class PosterListViewModel extends AndroidViewModel {
 
-    // Cached local copy of list of Review objects
-    private List<Review> mReviewList;
+    // Hold a reference to the repository
+    private MovieRepository mRepository;
 
     /**
-     * Updates the adapter's cached copy of the list of Review objects.
-     *  Note to self: If you update the adapter's data, then you need to notifyDataSetChanged() to
-     *  see it!
+     * Subclasses of AndroidViewModel MUST have a constructor that accepts Application as the ONLY
+     * parameter, according to:
+     *  https://developer.android.com/reference/android/arch/lifecycle/AndroidViewModel)
      *
-     * @param reviewList New list of Review objects to update the older cached data.
+     * @param application Base class for maintaining global application state.
      */
-    public void setReviewList(List<Review> reviewList){
-        mReviewList = reviewList;
-        notifyDataSetChanged();
+    public PosterListViewModel(@NonNull Application application) {
+        super(application);
+        mRepository = new MovieRepository(application);
     }
 
     /**
-     * Fills/refills the ViewHolders by binding the data to the UI components.
+     * MovieRepository getter method for retrieving a LiveData object of a list of Movie objects that
+     * hides the implementation from the UI.
+     *
+     * @return A LiveData object of a list of Movie objects.
      */
-    @Override
-    public void onBindViewHolder(@NonNull ReviewAdapterViewHolder holder, int position) {
-        Review review = mReviewList.get(position);
-
-        String author = review.getAuthor();
-        String content = review.getContent();
-
-        holder.mAuthor.setText(author);
-        holder.mContent.setText(content);
+    public LiveData<List<Movie>> getMovies(int settingsOption) {
+        return mRepository.getMovieList(settingsOption);
     }
 
-    /**
-     * Total number of ViewHolders by returning the list size.
-     */
-    @Override
-    public int getItemCount() {
-        if(null == mReviewList) return 0;
-        return mReviewList.size();
-    }
 
     /**
-     * Creates ViewHolders by inflating the review_list_item view.
+     * MovieRepository getter method for retrieving a LiveData object of an Integer that represents
+     * network connection or no network connection based on its value.
+     *
+     * @return A LiveData object of an Integer object.
      */
-    @NonNull
-    @Override
-    public ReviewAdapterViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        Context context = parent.getContext();
-        int layoutIdForListItem = R.layout.review_list_item;
-        LayoutInflater inflater = LayoutInflater.from(context);
-
-        View view = inflater.inflate(layoutIdForListItem,
-                parent,
-                context.getResources().getBoolean(R.bool.shouldAttachToParentImmediately));
-
-        return new ReviewAdapterViewHolder(view);
-    }
-
-    /**
-     * ViewHolder inner class.
-     */
-    public class ReviewAdapterViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.review_author)
-        TextView mAuthor;
-        @BindView(R.id.review_content)
-        TextView mContent;
-
-        /**
-         * ViewHolder constructor for new empty ViewHolders
-         */
-        ReviewAdapterViewHolder(View view){
-            super(view);
-            ButterKnife.bind(this, view);
-        }
+    public LiveData<Integer> getInternetStatus(){
+        return mRepository.getInternetStatus();
     }
 }

@@ -45,7 +45,7 @@
  *
  */
 
-package com.example.full_dream.popularmoviesstage1.database;
+package com.example.full_dream.popularmoviesstage2.database;
 
 // Android Imports
 import android.arch.persistence.room.Database;
@@ -54,7 +54,7 @@ import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 
 // 3rd Party Imports - com - Popular Movies Stage 2
-import com.example.full_dream.popularmoviesstage1.model.Movie;
+import com.example.full_dream.popularmoviesstage2.model.Movie;
 
 
 /**

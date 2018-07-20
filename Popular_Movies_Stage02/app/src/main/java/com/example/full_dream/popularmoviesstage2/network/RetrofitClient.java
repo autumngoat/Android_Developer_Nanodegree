@@ -45,40 +45,52 @@
  *
  */
 
-package com.example.full_dream.popularmoviesstage1.model;
+package com.example.full_dream.popularmoviesstage2.network;
 
-// 3rd Party Imports - com - Moshi
-import com.squareup.moshi.Json;
-
-// Java Imports
-import java.util.List;
+// 3rd Party Imports - Retrofit2
+import retrofit2.Retrofit;
+import retrofit2.converter.moshi.MoshiConverterFactory;
 
 /**
- * Provides a data model to represent the initial JSON HTTP response as a POJO
- * that contains the desired Trailer details in the 'results' JSONArray.
+ * API client that will create and send the HTTP request and receive the HTTP response.
  *
- * Used jsonprettyprint.com and jsonschema2pojo.com to auto-generate this POJO
- * from a TMDB JSON HTTP Response.
+ * Started with Retrofit setup code from these tutorials:
+ * https://medium.com/@shelajev/how-to-make-http-calls-on-android-with-retrofit-2-cfc4a67c6254
+ * http://square.github.io/retrofit/
+ * http://square.github.io/retrofit/2.x/retrofit/
  */
-public class TrailerResponse {
-    @Json(name = "id")
-    private Integer id;
-    @Json(name = "results")
-    private List<Trailer> results;
+public class RetrofitClient {
+    // 'private' is not allowed here
+    // 'static final' are redundant for interface fields
+    /**
+     * Base URLs should always end in /.
+     *
+     * Source: http://square.github.io/retrofit/2.x/retrofit/retrofit2/Retrofit.Builder.html#baseUrl
+     */
+    private static final String TMDB_BASE_URL = "https://api.themoviedb.org/3/";
 
-    public Integer getId() {
-        return id;
-    }
+    /**
+     * The Retrofit class generates an implementation of the TheMovieDBService interface.
+     *
+     * Comment Source:
+     * http://square.github.io/retrofit/
+     * https://square.github.io/retrofit/2.x/retrofit/retrofit2/Retrofit.Builder.html
+     * https://square.github.io/retrofit/2.x/retrofit/retrofit2/Retrofit.html
+     *
+     * @return An implementation of the TheMovieDBService interface.
+     */
+    public static TheMovieDBService getApiClient(){
+        // Build a new Retrofit object using builder...
+        Retrofit retrofit = new Retrofit.Builder()
+                // Set the API base URL.  Calling baseUrl() before calling build() is required.
+                .baseUrl(TMDB_BASE_URL)
+                // Add a converter factory for serialization and deserialization of objects
+                .addConverterFactory(MoshiConverterFactory.create())
+                // Create the Retrofit instance using the configured values
+                .build();
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public List<Trailer> getResults() {
-        return results;
-    }
-
-    public void setResults(List<Trailer> results) {
-        this.results = results;
+        // ...and pass TheMovieDBService interface to create(Class<T> service) to generate an
+        // implementation
+        return retrofit.create(TheMovieDBService.class);
     }
 }

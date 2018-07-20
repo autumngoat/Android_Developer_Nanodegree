@@ -45,7 +45,7 @@
  *
  */
 
-package com.example.full_dream.popularmoviesstage1.fragment;
+package com.example.full_dream.popularmoviesstage2.fragment;
 
 // Android Imports
 import android.arch.lifecycle.Observer;
@@ -75,11 +75,11 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 // 3rd Party Imports - com - Popular Movies Stage 2
-import com.example.full_dream.popularmoviesstage1.R;
-import com.example.full_dream.popularmoviesstage1.adapter.PosterAdapter;
-import com.example.full_dream.popularmoviesstage1.model.Movie;
-import com.example.full_dream.popularmoviesstage1.viewmodel.PosterListViewModel;
-import com.example.full_dream.popularmoviesstage1.viewmodel.SharedViewModel;
+import com.example.full_dream.popularmoviesstage2.R;
+import com.example.full_dream.popularmoviesstage2.adapter.PosterAdapter;
+import com.example.full_dream.popularmoviesstage2.model.Movie;
+import com.example.full_dream.popularmoviesstage2.viewmodel.PosterListViewModel;
+import com.example.full_dream.popularmoviesstage2.viewmodel.SharedViewModel;
 
 // Java Imports
 import java.util.List;

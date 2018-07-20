@@ -45,7 +45,7 @@
  *
  */
 
-package com.example.full_dream.popularmoviesstage1.adapter;
+package com.example.full_dream.popularmoviesstage2.adapter;
 
 // Android Imports
 import android.content.Context;
@@ -63,8 +63,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 // 3rd Party Imports - com - Popular Movies Stage 2
-import com.example.full_dream.popularmoviesstage1.R;
-import com.example.full_dream.popularmoviesstage1.model.Trailer;
+import com.example.full_dream.popularmoviesstage2.R;
+import com.example.full_dream.popularmoviesstage2.model.Trailer;
 
 // 3rd Party Imports - com - Picasso
 import com.squareup.picasso.Picasso;

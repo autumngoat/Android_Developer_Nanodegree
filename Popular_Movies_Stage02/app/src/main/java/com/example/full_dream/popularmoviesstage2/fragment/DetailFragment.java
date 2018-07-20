@@ -45,7 +45,7 @@
  *
  */
 
-package com.example.full_dream.popularmoviesstage1.fragment;
+package com.example.full_dream.popularmoviesstage2.fragment;
 
 // Android Imports
 import android.arch.lifecycle.Observer;
@@ -77,14 +77,14 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 // 3rd Party Imports - com - Popular Movies Stage 2
-import com.example.full_dream.popularmoviesstage1.R;
-import com.example.full_dream.popularmoviesstage1.adapter.ReviewAdapter;
-import com.example.full_dream.popularmoviesstage1.adapter.TrailerAdapter;
-import com.example.full_dream.popularmoviesstage1.model.Movie;
-import com.example.full_dream.popularmoviesstage1.model.Review;
-import com.example.full_dream.popularmoviesstage1.model.Trailer;
-import com.example.full_dream.popularmoviesstage1.viewmodel.DetailViewModel;
-import com.example.full_dream.popularmoviesstage1.viewmodel.SharedViewModel;
+import com.example.full_dream.popularmoviesstage2.R;
+import com.example.full_dream.popularmoviesstage2.adapter.ReviewAdapter;
+import com.example.full_dream.popularmoviesstage2.adapter.TrailerAdapter;
+import com.example.full_dream.popularmoviesstage2.model.Movie;
+import com.example.full_dream.popularmoviesstage2.model.Review;
+import com.example.full_dream.popularmoviesstage2.model.Trailer;
+import com.example.full_dream.popularmoviesstage2.viewmodel.DetailViewModel;
+import com.example.full_dream.popularmoviesstage2.viewmodel.SharedViewModel;
 
 // 3rd Party Imports - com - Picasso
 import com.squareup.picasso.Picasso;

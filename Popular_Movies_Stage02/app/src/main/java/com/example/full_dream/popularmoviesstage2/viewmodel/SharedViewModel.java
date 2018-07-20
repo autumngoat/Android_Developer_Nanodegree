@@ -45,56 +45,43 @@
  *
  */
 
-package com.example.full_dream.popularmoviesstage1.model;
+package com.example.full_dream.popularmoviesstage2.viewmodel;
 
-// 3rd Party Imports - com - Moshi
-import com.squareup.moshi.Json;
+// Android Imports
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
+import android.arch.lifecycle.ViewModel;
+
+// 3rd Party Imports - com - Popular Movies Stage 2
+import com.example.full_dream.popularmoviesstage2.model.Movie;
 
 /**
- * Provides a data model to represent a Review POJO to hold parsed JSON data.
+ * Share data between two Fragments (Master: PosterListFragment, Detail: DetailFragment) using a
+ * ViewModel object using their common Activity (MainActivity) to handle this communication.
  *
- * Used jsonprettyprint.com and jsonschema2pojo.com to auto-generate this POJO
- * from a TMDB JSON HTTP Response.
+ * Source:
+ * https://developer.android.com/topic/libraries/architecture/viewmodel#sharing
  */
-public class Review {
-    @Json(name = "author")
-    private String author;
-    @Json(name = "content")
-    private String content;
-    @Json(name = "id")
-    private String id;
-    @Json(name = "url")
-    private String url;
+public class SharedViewModel extends ViewModel {
 
-    public String getAuthor() {
-        return author;
+    // LiveData which publicly exposes setValue(Movie) and postValue(Movie) methods, if available
+    private final MutableLiveData<Movie> selected = new MutableLiveData<>();
+    // Transition name
+    private String mTransitionName;
+
+    // Set transition name of selected Recycler view item's poster ImageView
+    public void setTransitionName(String transitionName) { mTransitionName = transitionName; }
+
+    // Return the transition name of the selected Recycler view item's poster ImageView
+    public String getTransitionName(){ return mTransitionName; }
+
+    // Sets the value to the selected Movie
+    public void select(Movie movie){
+        selected.setValue(movie);
     }
 
-    public void setAuthor(String author) {
-        this.author = author;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
+    // Returns the selected Movie
+    public LiveData<Movie> getSelected(){
+        return selected;
     }
 }
