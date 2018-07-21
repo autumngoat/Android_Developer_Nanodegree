@@ -415,7 +415,7 @@ public class DetailFragment extends Fragment implements TrailerAdapter.TrailerAd
 
         mRating.setText(rating);
         mTitle.setText(title);
-        mOriginalTitle.setTitle(originalTitle + " (" + originalLanguage + ")");
+        mOriginalTitle.setTitle(originalTitle + " (" + originalLanguage.toUpperCase() + ")");
         mReleaseDate.setText(date);
         mSummary.setText(summary);
     }

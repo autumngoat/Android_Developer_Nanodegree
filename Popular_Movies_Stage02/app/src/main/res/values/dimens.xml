@@ -50,22 +50,28 @@
     <!-- DP -->
     <dimen name="poster_icon_width">120dp</dimen>
     <dimen name="poster_icon_height">180dp</dimen>
+
     <dimen name="general_spacing">8dp</dimen>
     <dimen name="general_spacing_double">16dp</dimen>
     <dimen name="general_spacing_half">4dp</dimen>
+
     <dimen name="detail_poster_width">370dp</dimen>
     <dimen name="detail_poster_height">400dp</dimen>
+
     <dimen name="detail_text_margin">8dp</dimen>
     <dimen name="detail_text_width">0dp</dimen>
-    <dimen name="detail_underscore_height">1dp</dimen>
+
     <dimen name="fab_margin_phone">16dp</dimen>
     <dimen name="fab_margin_tablet">24dp</dimen>
+
     <dimen name="appbar_layout_height">300dp</dimen>
 
     <!-- SP -->
     <dimen name="detail_label_text_size">12sp</dimen>
-    <dimen name="detail_rating_text_size">36sp</dimen>
-    <dimen name="detail_title_text_size">28sp</dimen>
-    <dimen name="detail_original_title_text_size">16sp</dimen>
+    <dimen name="detail_text_size">16sp</dimen>
+    <dimen name="detail_original_title_text_size">12sp</dimen>
+
     <dimen name="review_author_text_size">24sp</dimen>
+
+    <dimen name="trailer_title_text_size">20sp</dimen>
 </resources>

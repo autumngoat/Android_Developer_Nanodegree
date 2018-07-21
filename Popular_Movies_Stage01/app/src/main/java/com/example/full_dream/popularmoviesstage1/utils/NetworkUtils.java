@@ -50,6 +50,8 @@ package com.example.full_dream.popularmoviesstage1.utils;
 import android.net.Uri;
 import android.util.Log;
 
+import com.example.full_dream.popularmoviesstage1.BuildConfig;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;

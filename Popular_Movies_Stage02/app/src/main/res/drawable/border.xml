@@ -45,8 +45,8 @@
   ~  */
   -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- Black solid background -->
-    <solid android:color="@color/black_field" />
+    <!-- Black semi-transparent background -->
+    <solid android:color="@color/black_wind" />
     <!-- Gold border -->
     <stroke
         android:width="1dp"

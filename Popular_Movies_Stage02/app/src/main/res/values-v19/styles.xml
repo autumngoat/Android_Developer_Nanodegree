@@ -52,7 +52,7 @@
         <item name="colorPrimary">@android:color/black</item>
         <!-- A darker variant of the primary color, used for the status
          bar (on Android 5.0+) and contextual app bars -->
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorPrimaryDark">@android:color/black</item>
         <!-- A secondary color for controls like checkboxes and fields
           The FAB is colored the colorAccent by default -->
         <item name="colorAccent">@color/gold_morning</item>

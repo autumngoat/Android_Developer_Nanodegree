@@ -53,15 +53,20 @@
     <TextView
         android:id="@+id/video_name"
         android:textColor="@android:color/white"
+        android:textSize="@dimen/trailer_title_text_size"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"/>
+        android:layout_gravity="center_horizontal"
+        android:paddingTop="@dimen/general_spacing"/>
 
+    <!-- I prefer the wide and zoomed-in (and admittedly cut-off) thumbnails made by
+    android:scaletype="centerCrop" to any of the other options and their tiny thumbnails -->
     <ImageView
         android:id="@+id/video_thumbnail"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:scaleType="center"/>
+        android:layout_marginStart="@dimen/general_spacing"
+        android:layout_marginEnd="@dimen/general_spacing"
+        android:scaleType="centerCrop" />
 
 </LinearLayout>

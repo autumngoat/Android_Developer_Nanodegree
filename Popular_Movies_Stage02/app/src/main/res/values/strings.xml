@@ -70,8 +70,10 @@
     <string name="highest_rated_desc">top_rated</string>
 
     <!-- Detail Labels -->
+    <string name="title_label">Title: </string>
     <string name="voter_avg_label">Rating: </string>
     <string name="release_date_label">Released: </string>
+    <string name="summary_label">Synopsis: </string>
 
     <!-- Placeholder -->
     <string name="placeholder">Empty</string>
