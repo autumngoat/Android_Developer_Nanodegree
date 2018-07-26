@@ -1,0 +1,108 @@
+/*
+ *  PROJECT LICENSE
+ *
+ *  This project was submitted by Seong Wang as part of the Android Developer Nanodegree at Udacity.
+ *
+ *  As part of Udacity Honor code:
+ *    - I hereby confirm that all project submissions consist of my own work. Accordingly, I will document and cite the origins of any part(s) of my project submissions that were taken from websites, books, forums, blog posts, GitHub repositories, or any other source and explain why I used them for any part of my submission.
+ *      - Acceptable sources consist of:
+ *          - Unmodified or modified code from the Udacity courses
+ *          - A modest amount of unmodified or modified code from third-party sources with attribution
+ *      - NOT ACCEPTABLE: Any part of another student’s work, even with attribution
+ *    - I understand that Udacity will check my submission for plagiarism, and that failure to adhere to the Udacity Honor Code
+ *    may result in the cancellation of my enrollment without refund.
+ *    - I understand that I may be asked to explain my work in a video call with a Udacity Representative before my Nanodegree is
+ *    conferred.
+ *
+ *  I, the author of the project, allow you to check the code as a reference so long as you are not a fellow Android Developer
+ *  Nanodegree student, but if you submit it, it's your own responsibility if you get expelled.
+ *
+ *  Copyright (c) 2018 Seong Wang
+ *
+ *  Besides the above notice, the following license applies and this license notice must be included in all works derived from
+ *  this project.
+ *
+ *  MIT License
+ *
+ *  Permission is hereby granted, free of charge, to any person obtaining a copy
+ *  of this software and associated documentation files (the "Software"), to deal
+ *  in the Software without restriction, including without limitation the rights
+ *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ *  copies of the Software, and to permit persons to whom the Software is
+ *  furnished to do so, subject to the following conditions:
+ *
+ *  The above copyright notice and this permission notice shall be included in all
+ *  copies or substantial portions of the Software.
+ *
+ *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ *  SOFTWARE.
+ */
+
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 27
+    defaultConfig {
+        applicationId "com.example.full_dream.baking"
+        minSdkVersion 15
+        targetSdkVersion 27
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    // Google's Databinding Library (I've already given ButterKnife a go with P2 and P3)
+    dataBinding.enabled = true
+}
+
+dependencies {
+    // Not allowed to use 28.0.0-alpha1 because it's alpha
+    def support_library = "27.1.1"
+    def constraint_layout = "1.1.2"
+    def junit = "4.12"
+    def android_test = "1.0.2"
+    def espresso = "3.0.2"
+    def retrofit2 = "2.4.0"
+    def moshi = "1.5.0"
+    def exoplayer = "2.7.2"
+
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    // Support Library
+    implementation "com.android.support:appcompat-v7:$support_library"
+
+    // UI - ConstraintLayout
+    implementation "com.android.support.constraint:constraint-layout:$constraint_layout"
+    // UI - RecyclerView
+    implementation "com.android.support:recyclerview-v7:$support_library"
+    // UI - CardView
+    implementation "com.android.support:cardview-v7:$support_library"
+
+    // Utility - Network - Retrofit 2
+    implementation "com.squareup.retrofit2:retrofit:$retrofit2"
+    // Utility - Network - Moshi converter
+    implementation "com.squareup.retrofit2:converter-moshi:$retrofit2"
+    // Utility - JSON parser - Moshi
+    implementation "com.squareup.moshi:moshi:$moshi"
+    // Utility - Application-level Media-player - ExoPlayer - Core Functionality (required)
+    implementation "com.google.android.exoplayer:exoplayer-core:$exoplayer"
+    // Utility - Application-level Media-player - ExoPlayer - UI Components and resources
+    implementation "com.google.android.exoplayer:exoplayer-ui:$exoplayer"
+
+    // Testing - JUnit
+    testImplementation "junit:junit:$junit"
+    // Testing - Android Test
+    androidTestImplementation "com.android.support.test:runner:$android_test"
+    // Testing - Espresso
+    androidTestImplementation "com.android.support.test.espresso:espresso-core:$espresso"
+}
