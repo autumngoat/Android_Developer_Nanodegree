@@ -43,70 +43,95 @@
  *  SOFTWARE.
  */
 
-package com.example.full_dream.baking;
+package com.example.full_dream.baking.adapter;
 
 // Android Imports
+import android.content.Context;
 import android.databinding.DataBindingUtil;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
 
 // 3rd Party Imports - com - Baking
-import com.example.full_dream.baking.databinding.ActivityMainBinding;
-import com.example.full_dream.baking.fragment.RecipeFragment;
+import com.example.full_dream.baking.R;
+import com.example.full_dream.baking.adapter.holder.RecipeViewHolder;
+import com.example.full_dream.baking.databinding.RecipeListItemBinding;
+import com.example.full_dream.baking.model.Recipe;
 
-public class MainActivity extends AppCompatActivity {
-    public static final String FRAGMENT_KEY = "fragment";
+// Java Imports
+import java.util.List;
+
+public class RecipeAdapter extends RecyclerView.Adapter<RecipeViewHolder> {
+
+    // Cached copy of list of Recipe objects
+    private List<Recipe> mRecipeData;
+
+    // Empty Constructor
+    public RecipeAdapter(){}
 
     /**
-     * Initialize first (and only) RecipeFragment instance here if it's the first time the app is
-     * starting.
+     * Creates ViewHolders by inflating the recipe_list_item view.
      *
-     * @param savedInstanceState Null state means the app is starting for the first time.
+     * @param parent
+     * @param viewType
+     *
+     * @return
      */
+    @NonNull
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public RecipeViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-        // Must be here (not sure why)
-        //  Otherwise:
-        //   java.lang.IllegalArgumentException: No view found for id 0x7f070052 (com.example.full_dream.baking:id/fragment_container) for fragment RecipeFragment{b6ccaef #0 id=0x7f070052}
-        ActivityMainBinding binding = DataBindingUtil.setContentView(this,R.layout.activity_main);
+        Log.e("rabbit", "RecipeAdapter onCreateViewHolder");
 
-        // If first time app is starting, create a RecipeFragment instance and add it to the
-        // fragment back stack
-        if(savedInstanceState == null){
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .add(R.id.fragment_container, new RecipeFragment())
-                    .commit();
-        }
+        // Local variables
+        Context context = parent.getContext();
+        int layoutIdForListItem = R.layout.recipe_list_item;
+        LayoutInflater inflater = LayoutInflater.from(context);
+
+        //
+        RecipeListItemBinding binding = DataBindingUtil.inflate(
+                inflater,
+                layoutIdForListItem,
+                parent,
+                false);
+
+        return new RecipeViewHolder(binding);
     }
 
     /**
-     * Store a reference to a Fragment to handle rotation/orientation/configuration change.
+     * Fills/refills the ViewHolders by binding the data to the UI components.
      *
-     * @param outState Bundle that will hold a reference to a Fragment.
+     * @param holder
+     * @param position
      */
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
+    public void onBindViewHolder(@NonNull RecipeViewHolder holder, int position) {
+        Recipe recipe = mRecipeData.get(position);
 
-        // Put a reference to a Fragment in a Bundle
-        getSupportFragmentManager().putFragment(outState,
-                FRAGMENT_KEY,
-                getSupportFragmentManager().findFragmentById(R.id.fragment_container));
+        Log.e("rabbit", "RecipeAdapter onBindViewHolder recipe name: " + recipe.getName());
+
+        // TODO: Set up Recipe CardView
+        holder.bind(recipe);
     }
 
     /**
-     * Flag whether or not to restore whichever Fragment in onResume based on the Bundle.
-     *
-     * @param savedInstanceState Bundle containing a reference to a Fragment.
+     * Total number of ViewHolders by returning the list size.
      */
     @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
+    public int getItemCount() {
+        // Condition ? if : else
+        return (mRecipeData != null) ? mRecipeData.size() : 0;
+    }
 
-        // Retrieve the current Fragment instance for a reference previously placed with putFragment()
-        getSupportFragmentManager().getFragment(savedInstanceState, FRAGMENT_KEY);
+    /**
+     * Updates the adapter's cached copy of the list of Recipe objects.
+     *
+     * @param recipeData New list of Recipe objects to update the older cached data.
+     */
+    public void setRecipeData(List<Recipe> recipeData) {
+        mRecipeData = recipeData;
+        notifyDataSetChanged();
     }
 }

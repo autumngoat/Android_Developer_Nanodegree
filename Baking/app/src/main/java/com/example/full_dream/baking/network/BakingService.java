@@ -43,70 +43,28 @@
  *  SOFTWARE.
  */
 
-package com.example.full_dream.baking;
-
-// Android Imports
-import android.databinding.DataBindingUtil;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+package com.example.full_dream.baking.network;
 
 // 3rd Party Imports - com - Baking
-import com.example.full_dream.baking.databinding.ActivityMainBinding;
-import com.example.full_dream.baking.fragment.RecipeFragment;
+import com.example.full_dream.baking.model.Recipe;
 
-public class MainActivity extends AppCompatActivity {
-    public static final String FRAGMENT_KEY = "fragment";
+// 3rd Party Imports - Retrofit2
+import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.http.GET;
+
+/**
+ * API Service that specifics and defines each API endpoint to indicate how a HTTP request will be
+ * handled.
+ */
+public interface BakingService {
     /**
-     * Initialize first (and only) RecipeFragment instance here if it's the first time the app is
-     * starting.
-     *
-     * @param savedInstanceState Null state means the app is starting for the first time.
+     * Make a GET HTTP request for the android-baking-app-json endpoint and return a HTTP response
+     * as a Recipe POJO.
      */
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        // Must be here (not sure why)
-        //  Otherwise:
-        //   java.lang.IllegalArgumentException: No view found for id 0x7f070052 (com.example.full_dream.baking:id/fragment_container) for fragment RecipeFragment{b6ccaef #0 id=0x7f070052}
-        ActivityMainBinding binding = DataBindingUtil.setContentView(this,R.layout.activity_main);
-
-        // If first time app is starting, create a RecipeFragment instance and add it to the
-        // fragment back stack
-        if(savedInstanceState == null){
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .add(R.id.fragment_container, new RecipeFragment())
-                    .commit();
-        }
-    }
-
-    /**
-     * Store a reference to a Fragment to handle rotation/orientation/configuration change.
-     *
-     * @param outState Bundle that will hold a reference to a Fragment.
-     */
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-
-        // Put a reference to a Fragment in a Bundle
-        getSupportFragmentManager().putFragment(outState,
-                FRAGMENT_KEY,
-                getSupportFragmentManager().findFragmentById(R.id.fragment_container));
-    }
-
-    /**
-     * Flag whether or not to restore whichever Fragment in onResume based on the Bundle.
-     *
-     * @param savedInstanceState Bundle containing a reference to a Fragment.
-     */
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-
-        // Retrieve the current Fragment instance for a reference previously placed with putFragment()
-        getSupportFragmentManager().getFragment(savedInstanceState, FRAGMENT_KEY);
-    }
+    @GET("android-baking-app-json")
+    // both work
+//    @GET("baking.json")
+    Call<List<Recipe>> getRecipes();
 }

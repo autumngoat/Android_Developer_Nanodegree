@@ -75,11 +75,17 @@ dependencies {
     def retrofit2 = "2.4.0"
     def moshi = "1.5.0"
     def exoplayer = "2.7.2"
+    def livedata_and_viewmodel = "1.1.1"
+    def timber = "4.7.1"
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     // Support Library
     implementation "com.android.support:appcompat-v7:$support_library"
+
+    // Android Architecture Components - Live Data and View Model
+    implementation "android.arch.lifecycle:extensions:$livedata_and_viewmodel"
+    annotationProcessor "android.arch.lifecycle:compiler:$livedata_and_viewmodel"
 
     // UI - ConstraintLayout
     implementation "com.android.support.constraint:constraint-layout:$constraint_layout"
@@ -98,6 +104,8 @@ dependencies {
     implementation "com.google.android.exoplayer:exoplayer-core:$exoplayer"
     // Utility - Application-level Media-player - ExoPlayer - UI Components and resources
     implementation "com.google.android.exoplayer:exoplayer-ui:$exoplayer"
+    // Utility - Logging - Timber
+    implementation "com.jakewharton.timber:timber:$timber"
 
     // Testing - JUnit
     testImplementation "junit:junit:$junit"

@@ -43,70 +43,63 @@
  *  SOFTWARE.
  */
 
-package com.example.full_dream.baking;
+package com.example.full_dream.baking.model;
 
-// Android Imports
-import android.databinding.DataBindingUtil;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+// 3rd Party Import - Moshi
+import com.squareup.moshi.Json;
 
-// 3rd Party Imports - com - Baking
-import com.example.full_dream.baking.databinding.ActivityMainBinding;
-import com.example.full_dream.baking.fragment.RecipeFragment;
+/**
+ * Provides a data model to represent a recipe's Step POJO to hold parsed JSON data.
+ */
+public class Step {
+    @Json(name = "id")
+    private Integer id;
+    @Json(name = "shortDescription")
+    private String shortDescription;
+    @Json(name = "description")
+    private String description;
+    @Json(name = "videoURL")
+    private String videoURL;
+    @Json(name = "thumbnailURL")
+    private String thumbnailURL;
 
-public class MainActivity extends AppCompatActivity {
-    public static final String FRAGMENT_KEY = "fragment";
-
-    /**
-     * Initialize first (and only) RecipeFragment instance here if it's the first time the app is
-     * starting.
-     *
-     * @param savedInstanceState Null state means the app is starting for the first time.
-     */
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        // Must be here (not sure why)
-        //  Otherwise:
-        //   java.lang.IllegalArgumentException: No view found for id 0x7f070052 (com.example.full_dream.baking:id/fragment_container) for fragment RecipeFragment{b6ccaef #0 id=0x7f070052}
-        ActivityMainBinding binding = DataBindingUtil.setContentView(this,R.layout.activity_main);
-
-        // If first time app is starting, create a RecipeFragment instance and add it to the
-        // fragment back stack
-        if(savedInstanceState == null){
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .add(R.id.fragment_container, new RecipeFragment())
-                    .commit();
-        }
+    public Integer getId() {
+        return id;
     }
 
-    /**
-     * Store a reference to a Fragment to handle rotation/orientation/configuration change.
-     *
-     * @param outState Bundle that will hold a reference to a Fragment.
-     */
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-
-        // Put a reference to a Fragment in a Bundle
-        getSupportFragmentManager().putFragment(outState,
-                FRAGMENT_KEY,
-                getSupportFragmentManager().findFragmentById(R.id.fragment_container));
+    public void setId(Integer id) {
+        this.id = id;
     }
 
-    /**
-     * Flag whether or not to restore whichever Fragment in onResume based on the Bundle.
-     *
-     * @param savedInstanceState Bundle containing a reference to a Fragment.
-     */
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
+    public String getShortDescription() {
+        return shortDescription;
+    }
 
-        // Retrieve the current Fragment instance for a reference previously placed with putFragment()
-        getSupportFragmentManager().getFragment(savedInstanceState, FRAGMENT_KEY);
+    public void setShortDescription(String shortDescription) {
+        this.shortDescription = shortDescription;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getVideoURL() {
+        return videoURL;
+    }
+
+    public void setVideoURL(String videoURL) {
+        this.videoURL = videoURL;
+    }
+
+    public String getThumbnailURL() {
+        return thumbnailURL;
+    }
+
+    public void setThumbnailURL(String thumbnailURL) {
+        this.thumbnailURL = thumbnailURL;
     }
 }

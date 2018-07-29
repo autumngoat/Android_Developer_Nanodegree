@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <!--
   ~  PROJECT LICENSE
   ~
@@ -44,14 +43,28 @@
   ~  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   ~  SOFTWARE.
   -->
-
 <layout
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- Phone only needs one fragment container, while Tablet needs at least two -->
-    <FrameLayout
-        android:id="@+id/fragment_container"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_width="match_parent">
-    </FrameLayout>
+        android:orientation="vertical">
+
+        <!-- According to the Mocks, should display "Baking Time" -->
+        <!--<android.support.v7.widget.Toolbar-->
+            <!--android:id="@+id/toolbar_recipe"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="?attr/actionBarSize">-->
+
+        <!--</android.support.v7.widget.Toolbar>-->
+
+        <!-- According to the Mocks, should show a list of Recipe CardViews -->
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerview_recipe"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </android.support.v7.widget.RecyclerView>
+    </LinearLayout>
 </layout>

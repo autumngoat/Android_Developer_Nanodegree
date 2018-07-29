@@ -43,70 +43,45 @@
  *  SOFTWARE.
  */
 
-package com.example.full_dream.baking;
+package com.example.full_dream.baking.network;
 
-// Android Imports
-import android.databinding.DataBindingUtil;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+// 3rd Party Imports - Retrofit2
+import retrofit2.Retrofit;
+import retrofit2.converter.moshi.MoshiConverterFactory;
 
-// 3rd Party Imports - com - Baking
-import com.example.full_dream.baking.databinding.ActivityMainBinding;
-import com.example.full_dream.baking.fragment.RecipeFragment;
-
-public class MainActivity extends AppCompatActivity {
-    public static final String FRAGMENT_KEY = "fragment";
+/**
+ * API client that will create and send the HTTP request and receive the HTTP response.
+ */
+public class RetrofitClient {
 
     /**
-     * Initialize first (and only) RecipeFragment instance here if it's the first time the app is
-     * starting.
+     * Base URLs should always end in / and must start with 'http' or 'https' else:
+     *  java.lang.IllegalArgumentException: Illegal URL:
      *
-     * @param savedInstanceState Null state means the app is starting for the first time.
+     * Comment source:
+     *  https://stackoverflow.com/questions/35114456/java-lang-illegalargumentexception-illegal-url-with-retrofit
      */
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        // Must be here (not sure why)
-        //  Otherwise:
-        //   java.lang.IllegalArgumentException: No view found for id 0x7f070052 (com.example.full_dream.baking:id/fragment_container) for fragment RecipeFragment{b6ccaef #0 id=0x7f070052}
-        ActivityMainBinding binding = DataBindingUtil.setContentView(this,R.layout.activity_main);
-
-        // If first time app is starting, create a RecipeFragment instance and add it to the
-        // fragment back stack
-        if(savedInstanceState == null){
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .add(R.id.fragment_container, new RecipeFragment())
-                    .commit();
-        }
-    }
+    private static final String BAKING_URL = "http://go.udacity.com/";
+    //  Both work
+//    private static final String BAKING_URL = "https://d17h27t6h515a5.cloudfront.net/topher/2017/May/59121517_baking/";
 
     /**
-     * Store a reference to a Fragment to handle rotation/orientation/configuration change.
+     * Specify the base URL for the Retrofit instance and pass it to create(Class<T> service) to
+     * generate an API service.
      *
-     * @param outState Bundle that will hold a reference to a Fragment.
+     * @return An API service
      */
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
+    public static BakingService getApiClient(){
+        // Build a new Retrofit object using builder...
+        Retrofit retrofit = new Retrofit.Builder()
+                // Set the API base URL.  Calling baseUrl() before calling build() is required.
+                .baseUrl(BAKING_URL)
+                // Add a converter factory for serialization and deserialization of objects
+                .addConverterFactory(MoshiConverterFactory.create())
+                // Create the Retrofit instance using the configured values
+                .build();
 
-        // Put a reference to a Fragment in a Bundle
-        getSupportFragmentManager().putFragment(outState,
-                FRAGMENT_KEY,
-                getSupportFragmentManager().findFragmentById(R.id.fragment_container));
-    }
-
-    /**
-     * Flag whether or not to restore whichever Fragment in onResume based on the Bundle.
-     *
-     * @param savedInstanceState Bundle containing a reference to a Fragment.
-     */
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-
-        // Retrieve the current Fragment instance for a reference previously placed with putFragment()
-        getSupportFragmentManager().getFragment(savedInstanceState, FRAGMENT_KEY);
+        // ...and pass Retrofit instance to create(Class<T> service) to generate an API service
+        return retrofit.create(BakingService.class);
     }
 }
