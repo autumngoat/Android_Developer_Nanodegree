@@ -62,8 +62,6 @@ public class RetrofitClient {
      *  https://stackoverflow.com/questions/35114456/java-lang-illegalargumentexception-illegal-url-with-retrofit
      */
     private static final String BAKING_URL = "http://go.udacity.com/";
-    //  Both work
-//    private static final String BAKING_URL = "https://d17h27t6h515a5.cloudfront.net/topher/2017/May/59121517_baking/";
 
     /**
      * Specify the base URL for the Retrofit instance and pass it to create(Class<T> service) to

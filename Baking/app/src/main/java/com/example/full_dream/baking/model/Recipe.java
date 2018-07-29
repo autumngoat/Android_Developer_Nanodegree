@@ -72,6 +72,8 @@ public class Recipe{
     @Json(name = "image")
     private String image;
 
+    private static final String PLACEHOLDER = "empty";
+
     public Integer getId() {
         return id;
     }
@@ -113,7 +115,18 @@ public class Recipe{
     }
 
     public String getImage() {
-        return image;
+        // Null and empty String check for image source
+        // Null check and empty String check
+        //  Must return non-empty non-null String
+        //   Picasso.load() states that it will throw an IllegalArgumentException if the URL is
+        //   empty or null.
+        //    Source:
+        //     https://square.github.io/picasso/2.x/picasso/
+        if(image == null || image.isEmpty()){
+            return PLACEHOLDER;
+        } else {
+            return image;
+        }
     }
 
     public void setImage(String image) {

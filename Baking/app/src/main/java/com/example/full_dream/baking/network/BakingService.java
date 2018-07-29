@@ -64,7 +64,5 @@ public interface BakingService {
      * as a Recipe POJO.
      */
     @GET("android-baking-app-json")
-    // both work
-//    @GET("baking.json")
     Call<List<Recipe>> getRecipes();
 }

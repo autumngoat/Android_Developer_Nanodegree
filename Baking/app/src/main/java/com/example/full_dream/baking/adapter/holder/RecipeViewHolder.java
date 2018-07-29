@@ -48,10 +48,10 @@ package com.example.full_dream.baking.adapter.holder;
 // Android Imports
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-
+import com.example.full_dream.baking.R;
 import com.example.full_dream.baking.databinding.RecipeListItemBinding;
 import com.example.full_dream.baking.model.Recipe;
+import com.squareup.picasso.Picasso;
 
 public class RecipeViewHolder extends RecyclerView.ViewHolder {
 
@@ -64,10 +64,15 @@ public class RecipeViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void bind(Recipe recipe){
-
-        Log.e("rabbit", "recipe name: " + recipe.getName());
-        Log.e("rabbit", "recipe servings: " + recipe.getServings());
-
         mBinding.setRecipe(recipe);
+
+        // Icons made by "https://www.flaticon.com/authors/freepik"
+        // Title: "Cookie"
+        // Site: https://www.flaticon.com/free-icon/cookie_1047711
+        // Licensed by Creative Commons BY 3.0
+        Picasso.get().load(recipe.getImage())
+                .placeholder(R.drawable.ic_cookie)
+                .error(R.drawable.ic_cookie)
+                .into(mBinding.ivRecipeImage);
     }
 }

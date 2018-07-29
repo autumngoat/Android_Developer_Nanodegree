@@ -109,10 +109,6 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull RecipeViewHolder holder, int position) {
         Recipe recipe = mRecipeData.get(position);
-
-        Log.e("rabbit", "RecipeAdapter onBindViewHolder recipe name: " + recipe.getName());
-
-        // TODO: Set up Recipe CardView
         holder.bind(recipe);
     }
 
