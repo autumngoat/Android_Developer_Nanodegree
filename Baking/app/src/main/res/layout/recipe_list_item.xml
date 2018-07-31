@@ -79,26 +79,42 @@
     </data>
 
     <!-- CardView is a ViewGroup
-      Attributes:
+      Attributes (Can not be placed inside styles.xml):
        card_view:cardCornerRadius : Used to set the corner radius in our layouts
-       card_view:cardBackgroundColor : Used to set the background color of the view-->
+       card_view:cardBackgroundColor : Used to set the background color of the view
+      Styling Source:
+       https://medium.com/@eugenebrusov/using-of-constraintlayout-to-build-out-cardview-with-material-design-e111e64575c2 -->
     <android.support.v7.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/RecipeCardView"
         android:onClick="@{() -> callback.onClickShowRecipeDetail(recipe)}"
-        card_view:cardCornerRadius="8dp"
-        card_view:cardBackgroundColor="@color/cardview_light_background">
+        card_view:cardCornerRadius="@dimen/recipe_card_corner_radius"
+        card_view:cardBackgroundColor="@color/colorAccent">
 
-        <LinearLayout
+        <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            xmlns:app="http://schemas.android.com/apk/res-auto">
 
+            <!-- Attributes:
+              app:adjustViewBounds : Set this to true if you want the ImageView to adjust its bounds
+              to preserve the aspect ratio of its drawable
+              app:layout_constraintDimensionRatio : Ratio can be expressed as either a float value
+              representing a ratio between width and height or a ratio in the form of width:height
+               Set both dimensions to MATCH_CONSTRAINT (0dp) and specify which side (H for height or
+               W for width) to constrain based on the dimensions of the other.
+
+              Comment Source:
+               https://developer.android.com/reference/android/widget/ImageView
+               https://developer.android.com/reference/android/support/constraint/ConstraintLayout -->
             <ImageView
                 android:id="@+id/iv_recipe_image"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:adjustViewBounds="true"/>
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:adjustViewBounds="true"
+                app:layout_constraintDimensionRatio="H,16:9"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
 
             <!-- To bind a value, '@' annotation is used
               Recipe 'name' is bound to the TextView using '@{recipe.name}'
@@ -107,9 +123,25 @@
               https://www.androidhive.info/android-working-with-databinding/ -->
             <TextView
                 android:id="@+id/tv_recipe_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@{recipe.name}"/>
-        </LinearLayout>
+                style="@style/RecipeTextView"
+                android:text="@{recipe.name}"
+                android:layout_marginLeft="@dimen/recipe_card_margin"
+                android:layout_marginStart="@dimen/recipe_card_margin"
+                app:layout_constraintTop_toBottomOf="@id/iv_recipe_image"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/tv_recipe_servings"/>
+
+            <!-- Avoid Resources$NotFoundException by using String.valueOf(integer)
+             Comment Source:
+              https://stackoverflow.com/questions/32837455/data-binding-resourcesnotfoundexception-when-attribute-of-object-is-int -->
+            <TextView
+                android:id="@+id/tv_recipe_servings"
+                style="@style/RecipeTextView"
+                android:text="@{String.valueOf(recipe.servings)}"
+                android:layout_marginRight="@dimen/recipe_card_margin"
+                android:layout_marginEnd="@dimen/recipe_card_margin"
+                app:layout_constraintTop_toBottomOf="@id/iv_recipe_image"
+                app:layout_constraintEnd_toEndOf="parent"/>
+        </android.support.constraint.ConstraintLayout>
     </android.support.v7.widget.CardView>
 </layout>

@@ -47,6 +47,10 @@ package com.example.full_dream.baking.fragment;
 
 import android.support.v4.app.Fragment;
 
+/**
+ * Sets up the UI as a list of Ingredients and then a list of individual Steps with descriptions,
+ * which
+ */
 public class RecipeDetailFragment extends Fragment {
 
 }

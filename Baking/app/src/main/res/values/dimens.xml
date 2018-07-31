@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   ~  PROJECT LICENSE
   ~
@@ -44,28 +45,9 @@
   -->
 
 <resources>
-
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-    </style>
-
     <!-- Recipe CardView -->
-    <style name="RecipeCardView">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginTop">@dimen/recipe_card_margin</item>
-    </style>
-
-    <!-- Recipe Name and Servings TextViews -->
-    <style name="RecipeTextView">
-        <item name="android:layout_width">@dimen/recipe_text_width</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">@dimen/recipe_text_size</item>
-        <item name="android:textColor">@color/colorPrimaryDark</item>
-        <item name="android:textStyle">bold</item>
-    </style>
+    <dimen name="recipe_card_margin">8dp</dimen>
+    <dimen name="recipe_card_corner_radius">16dp</dimen>
+    <dimen name="recipe_text_size">24sp</dimen>
+    <dimen name="recipe_text_width">0dp</dimen>
 </resources>

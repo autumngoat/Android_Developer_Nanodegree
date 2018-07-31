@@ -58,7 +58,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 // 3rd Party Imports - com - Baking
 import com.example.full_dream.baking.R;
@@ -70,6 +69,10 @@ import com.example.full_dream.baking.viewmodel.SharedViewModel;
 
 import java.util.List;
 
+/**
+ * Sets up the UI as a list of Recipe objects as a CardView, which contains the Recipe's name,
+ * serving size, and image, that once clicked launches RecipeDetailFragment.
+ */
 public class RecipeFragment extends Fragment implements RecipeAdapter.RecipeAdapterOnClickHandler{
 
     // ViewModel(s)
@@ -176,17 +179,13 @@ public class RecipeFragment extends Fragment implements RecipeAdapter.RecipeAdap
         // RecipeDetailFragment (instead of Parcelable or other methods)
         mSharedViewModel.setSelectedRecipe(recipe);
 
-        Toast.makeText(getContext(),
-                "click works! " + recipe.getName(),
-                Toast.LENGTH_SHORT).show();
-
         // Entering fragment from exiting fragment
-//        RecipeDetailFragment recipeDetailFragment = new RecipeDetailFragment();
-//
-//        getFragmentManager()
-//                .beginTransaction()
-//                .addToBackStack("recipeDetail")
-//                .replace(R.id.fragment_container, recipeDetailFragment)
-//                .commit();
+        RecipeDetailFragment recipeDetailFragment = new RecipeDetailFragment();
+
+        getFragmentManager()
+                .beginTransaction()
+                .addToBackStack("recipeDetail")
+                .replace(R.id.fragment_container, recipeDetailFragment)
+                .commit();
     }
 }
