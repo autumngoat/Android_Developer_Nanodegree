@@ -59,7 +59,7 @@ import com.squareup.picasso.Picasso;
 public class RecipeViewHolder extends RecyclerView.ViewHolder {
 
     //
-    RecipeListItemBinding mBinding;
+    RecipeListItemBinding mRecipeListItemBinding;
 
     /**
      * The ViewHolder that will be used to display the data in each item shown in the RecyclerView.
@@ -70,7 +70,7 @@ public class RecipeViewHolder extends RecyclerView.ViewHolder {
         super(binding.getRoot());
 
         // Initialize View here
-        this.mBinding = binding;
+        this.mRecipeListItemBinding = binding;
     }
 
     /**
@@ -81,7 +81,7 @@ public class RecipeViewHolder extends RecyclerView.ViewHolder {
     public void bind(Recipe recipe){
 
         // Bind the Recipe data object originating from the adapter to the ViewHolder
-        mBinding.setRecipe(recipe);
+        mRecipeListItemBinding.setRecipe(recipe);
 
         // Icons made by "https://www.flaticon.com/authors/freepik"
         // Title: "Cookie"
@@ -90,6 +90,6 @@ public class RecipeViewHolder extends RecyclerView.ViewHolder {
         Picasso.get().load(recipe.getImage())
                 .placeholder(R.drawable.ic_cookie)
                 .error(R.drawable.ic_cookie)
-                .into(mBinding.ivRecipeImage);
+                .into(mRecipeListItemBinding.ivRecipeImage);
     }
 }

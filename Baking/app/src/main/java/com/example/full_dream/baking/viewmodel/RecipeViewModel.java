@@ -59,17 +59,23 @@ import java.util.List;
 /**
  * This ViewModel is used to cache the list of Recipe objects wrapped in a LiveData object and
  * modify data passed into it.
+ *  Acts as a bridge between the RecipeRepository and the View (RecipeFragment).
+ *   This is where the business logic lives, much like a Presenter in MVP or Controller in MVC.
+ *  Was also true for P3 but I am still learning what is or isn't MVVM.
+ *
+ * Comment Source:
+ *  https://android.jlelse.eu/android-architecture-components-now-with-100-more-mvvm-11629a630125
  */
 public class RecipeViewModel extends ViewModel {
 
     // Hold a reference to the repository
-    private RecipeRepository mRepository;
+    private RecipeRepository mRecipeRepository;
 
     /**
      * Constructor to instantiate repository reference.
      */
     public RecipeViewModel() {
-        this.mRepository = new RecipeRepository();
+        this.mRecipeRepository = new RecipeRepository();
     }
 
     /**
@@ -79,7 +85,7 @@ public class RecipeViewModel extends ViewModel {
      * @return A LiveData object of a list of Recipe objects.
      */
     public LiveData<List<Recipe>> getRecipes() {
-        return mRepository.getRecipes();
+        return mRecipeRepository.getRecipes();
     }
 
 

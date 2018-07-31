@@ -53,7 +53,6 @@
        The <variable> tag takes two attributes 'name' and 'type'
         'name' is an alias name
         'type' should be an object model class
-        The <variable> element is an object of POJO which is bound to the UI.
 
      Comment Source:
       https://www.androidhive.info/android-working-with-databinding/ -->

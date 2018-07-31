@@ -65,9 +65,9 @@ import java.util.List;
 public class RecipeAdapter extends RecyclerView.Adapter<RecipeViewHolder> {
 
     // Cached copy of list of Recipe objects
-    private List<Recipe> mRecipeData;
+    private List<Recipe> mRecipeList;
     // Instance of the RecipeAdapterOnClickHandler interface
-    private RecipeAdapterOnClickHandler mClickHandler;
+    private RecipeAdapterOnClickHandler mRecipeAdapterOnClickHandler;
 
     /**
      * RecipeAdapter constructor.
@@ -76,7 +76,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeViewHolder> {
      * @param clickHandler An object that implements the RecipeAdapterOnClickHandler interface.
      */
     public RecipeAdapter(RecipeAdapterOnClickHandler clickHandler){
-        mClickHandler = clickHandler;
+        mRecipeAdapterOnClickHandler = clickHandler;
     }
 
     /**
@@ -121,7 +121,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeViewHolder> {
                 false);
 
         // Binds the click event to the layout
-        binding.setCallback(mClickHandler);
+        binding.setCallback(mRecipeAdapterOnClickHandler);
 
         // Set the View's layout parameters
         return new RecipeViewHolder(binding);
@@ -139,7 +139,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeViewHolder> {
     public void onBindViewHolder(@NonNull RecipeViewHolder holder, int position) {
 
         // Get Recipe object from List<Recipe> at adapter position
-        Recipe recipe = mRecipeData.get(position);
+        Recipe recipe = mRecipeList.get(position);
         // Bind Recipe object to RecipeViewHolder
         holder.bind(recipe);
     }
@@ -152,16 +152,16 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeViewHolder> {
     @Override
     public int getItemCount() {
         // Condition ? if : else
-        return (mRecipeData != null) ? mRecipeData.size() : 0;
+        return (mRecipeList != null) ? mRecipeList.size() : 0;
     }
 
     /**
      * Updates the adapter's cached copy of the list of Recipe objects.
      *
-     * @param recipeData New list of Recipe objects to update the older cached data.
+     * @param recipeList New list of Recipe objects to update the older cached data.
      */
-    public void setRecipeData(List<Recipe> recipeData) {
-        mRecipeData = recipeData;
+    public void setRecipeData(List<Recipe> recipeList) {
+        mRecipeList = recipeList;
         notifyDataSetChanged();
     }
 }
