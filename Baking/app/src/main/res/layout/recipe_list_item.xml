@@ -53,6 +53,7 @@
        The <variable> tag takes two attributes 'name' and 'type'
         'name' is an alias name
         'type' should be an object model class
+        The <variable> element is an object of POJO which is bound to the UI.
 
      Comment Source:
       https://www.androidhive.info/android-working-with-databinding/ -->
@@ -66,6 +67,10 @@
          handler class with the necessary callback method(s)
           type:"pathToInterface"
            Whether that be a separate class or an inner class
+          'android:onClick="@{callback::onClickShowRecipeDetail}}"' binds the CardView to the
+          onClickShowRecipeDetail method
+           'android:onClick="@{() -> callback.onClickShowRecipeDetail(recipe)}"' binds the CardView
+           to the onClickShowRecipeDetail method and also passes the recipe parameter
 
          Comment Source:
           https://www.androidhive.info/android-working-with-databinding/ -->

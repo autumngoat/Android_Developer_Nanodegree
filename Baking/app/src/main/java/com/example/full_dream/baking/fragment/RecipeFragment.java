@@ -158,6 +158,15 @@ public class RecipeFragment extends Fragment implements RecipeAdapter.RecipeAdap
     /**
      * Handle RecipeAdapter clicks events by replacing the current RecipeFragment with a
      * RecipeDetailFragment.
+     *  Decided to implement RecipeAdapter.RecipeAdapterOnClickHandler interface in RecipeFragment
+     *  instead of implementing the interface in a separate class because:
+     *   1) There is only 1 type of task to execute when this listener is called:
+     *    Replacing the current RecipeFragment with RecipeDetailFragment.
+     *   2) The event listener does NOT need to check the source of the click event in order to
+     *   complete it's action since there is only one class implementing it.
+     *
+     * Comment Source:
+     *  https://softwareengineering.stackexchange.com/questions/110106/what-is-the-proper-way-to-implement-the-onclicklistener-interface-for-many-butto
      *
      * @param recipe The Recipe object associated with the clicked upon RecipeAdapter item.
      */
@@ -168,7 +177,7 @@ public class RecipeFragment extends Fragment implements RecipeAdapter.RecipeAdap
         mSharedViewModel.setSelectedRecipe(recipe);
 
         Toast.makeText(getContext(),
-                "click works!" + recipe.getName(),
+                "click works! " + recipe.getName(),
                 Toast.LENGTH_SHORT).show();
 
         // Entering fragment from exiting fragment

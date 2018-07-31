@@ -48,7 +48,6 @@ package com.example.full_dream.baking.viewmodel;
 // Android Imports
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModel;
-import android.util.Log;
 
 // 3rd Party Imports - com - Baking
 import com.example.full_dream.baking.data.RecipeRepository;

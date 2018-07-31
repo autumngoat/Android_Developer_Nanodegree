@@ -71,18 +71,6 @@ public class RecipeViewHolder extends RecyclerView.ViewHolder {
 
         // Initialize View here
         this.mBinding = binding;
-
-        // Works
-//        // Set click listener
-//        //  Source: https://stackoverflow.com/questions/46874441/recyclerview-item-click-listener-with-databinding
-//        binding.getRoot().findViewById(R.id.iv_recipe_image).setOnClickListener(new View.OnClickListener(){
-//            @Override
-//            public void onClick(View v) {
-//                Toast.makeText(mBinding.getRoot().getContext(),
-//                        mBinding.getRecipe().getName(),
-//                        Toast.LENGTH_SHORT).show();
-//            }
-//        });
     }
 
     /**
@@ -92,7 +80,7 @@ public class RecipeViewHolder extends RecyclerView.ViewHolder {
      */
     public void bind(Recipe recipe){
 
-        //
+        // Bind the Recipe data object originating from the adapter to the ViewHolder
         mBinding.setRecipe(recipe);
 
         // Icons made by "https://www.flaticon.com/authors/freepik"
@@ -103,9 +91,5 @@ public class RecipeViewHolder extends RecyclerView.ViewHolder {
                 .placeholder(R.drawable.ic_cookie)
                 .error(R.drawable.ic_cookie)
                 .into(mBinding.ivRecipeImage);
-
-//        // Does not work, causes causes onClickShowRecipeDetail fire as ViewHolders show instead of
-//        // onClick
-//        clickHandler.onClickShowRecipeDetail(recipe);
     }
 }
