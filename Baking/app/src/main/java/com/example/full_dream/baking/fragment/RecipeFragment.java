@@ -58,6 +58,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 // 3rd Party Imports - com - Baking
 import com.example.full_dream.baking.R;
@@ -65,13 +66,15 @@ import com.example.full_dream.baking.adapter.RecipeAdapter;
 import com.example.full_dream.baking.databinding.FragmentRecipeBinding;
 import com.example.full_dream.baking.model.Recipe;
 import com.example.full_dream.baking.viewmodel.RecipeViewModel;
+import com.example.full_dream.baking.viewmodel.SharedViewModel;
 
 import java.util.List;
 
-public class RecipeFragment extends Fragment {
+public class RecipeFragment extends Fragment implements RecipeAdapter.RecipeAdapterOnClickHandler{
 
     // ViewModel(s)
     private RecipeViewModel mRecipeViewModel;
+    private SharedViewModel mSharedViewModel;
 
     // Adapter(s)
     private RecipeAdapter mRecipeAdapter;
@@ -90,6 +93,10 @@ public class RecipeFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Use ViewModelProviders to associate an instance of SharedViewModel scoped with the
+        // lifecycle of the UIController MainActivity
+        mSharedViewModel = ViewModelProviders.of(getActivity()).get(SharedViewModel.class);
 
         // Use ViewModelProviders to associate an instance of RecipeViewModel scoped with the
         // lifecycle of the UIController RecipeFragment
@@ -111,13 +118,15 @@ public class RecipeFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        // asdf
+        //
         // Source:
         //  https://stackoverflow.com/questions/34706399/how-to-use-data-binding-with-fragment
         FragmentRecipeBinding binding = DataBindingUtil.inflate(inflater,
                 R.layout.fragment_recipe,
                 container,
                 false);
+
+//        binding.toolbarRecipe.setTitle("Baking Time");
 
         // Creates a vertical LinearLayoutManager
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
@@ -126,7 +135,7 @@ public class RecipeFragment extends Fragment {
         // Optimization for RecyclerViews who's contents are not likely to change
         binding.recyclerviewRecipe.setHasFixedSize(true);
         // Instantiate the adapter
-        mRecipeAdapter = new RecipeAdapter();
+        mRecipeAdapter = new RecipeAdapter(this);
         // Set a new adapter to provide child views on demand
         binding.recyclerviewRecipe.setAdapter(mRecipeAdapter);
 
@@ -137,8 +146,6 @@ public class RecipeFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        Log.e("rabbit", "onActivityCreated");
-
         mRecipeViewModel.getRecipes().observe(this, new Observer<List<Recipe>>() {
             @Override
             public void onChanged(@Nullable List<Recipe> recipes) {
@@ -146,5 +153,31 @@ public class RecipeFragment extends Fragment {
                 mRecipeAdapter.setRecipeData(recipes);
             }
         });
+    }
+
+    /**
+     * Handle RecipeAdapter clicks events by replacing the current RecipeFragment with a
+     * RecipeDetailFragment.
+     *
+     * @param recipe The Recipe object associated with the clicked upon RecipeAdapter item.
+     */
+    public void onClickShowRecipeDetail(Recipe recipe){
+
+        // Set Recipe object in SharedViewModel to transfer that data from RecipeFragment to
+        // RecipeDetailFragment (instead of Parcelable or other methods)
+        mSharedViewModel.setSelectedRecipe(recipe);
+
+        Toast.makeText(getContext(),
+                "click works!" + recipe.getName(),
+                Toast.LENGTH_SHORT).show();
+
+        // Entering fragment from exiting fragment
+//        RecipeDetailFragment recipeDetailFragment = new RecipeDetailFragment();
+//
+//        getFragmentManager()
+//                .beginTransaction()
+//                .addToBackStack("recipeDetail")
+//                .replace(R.id.fragment_container, recipeDetailFragment)
+//                .commit();
     }
 }

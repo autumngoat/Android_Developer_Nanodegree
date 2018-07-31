@@ -46,11 +46,14 @@
 package com.example.full_dream.baking.adapter.holder;
 
 // Android Imports
-
 import android.support.v7.widget.RecyclerView;
+
+// 3rd Party Imports - com - Baking
 import com.example.full_dream.baking.R;
 import com.example.full_dream.baking.databinding.RecipeListItemBinding;
 import com.example.full_dream.baking.model.Recipe;
+
+// 3rd Party Imports - Picasso
 import com.squareup.picasso.Picasso;
 
 public class RecipeViewHolder extends RecyclerView.ViewHolder {
@@ -58,12 +61,38 @@ public class RecipeViewHolder extends RecyclerView.ViewHolder {
     //
     RecipeListItemBinding mBinding;
 
-    public RecipeViewHolder(RecipeListItemBinding binding){
+    /**
+     * The ViewHolder that will be used to display the data in each item shown in the RecyclerView.
+     *
+     * @param binding The layout ViewGroup used to display the data.
+     */
+    public RecipeViewHolder(final RecipeListItemBinding binding){
         super(binding.getRoot());
+
+        // Initialize View here
         this.mBinding = binding;
+
+        // Works
+//        // Set click listener
+//        //  Source: https://stackoverflow.com/questions/46874441/recyclerview-item-click-listener-with-databinding
+//        binding.getRoot().findViewById(R.id.iv_recipe_image).setOnClickListener(new View.OnClickListener(){
+//            @Override
+//            public void onClick(View v) {
+//                Toast.makeText(mBinding.getRoot().getContext(),
+//                        mBinding.getRecipe().getName(),
+//                        Toast.LENGTH_SHORT).show();
+//            }
+//        });
     }
 
+    /**
+     * The method that is used to bind the data to the ViewHolder.
+     *
+     * @param recipe
+     */
     public void bind(Recipe recipe){
+
+        //
         mBinding.setRecipe(recipe);
 
         // Icons made by "https://www.flaticon.com/authors/freepik"
@@ -74,5 +103,9 @@ public class RecipeViewHolder extends RecyclerView.ViewHolder {
                 .placeholder(R.drawable.ic_cookie)
                 .error(R.drawable.ic_cookie)
                 .into(mBinding.ivRecipeImage);
+
+//        // Does not work, causes causes onClickShowRecipeDetail fire as ViewHolders show instead of
+//        // onClick
+//        clickHandler.onClickShowRecipeDetail(recipe);
     }
 }

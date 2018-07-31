@@ -43,45 +43,10 @@
  *  SOFTWARE.
  */
 
-package com.example.full_dream.baking.viewmodel;
+package com.example.full_dream.baking.fragment;
 
-// Android Imports
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.ViewModel;
-import android.util.Log;
+import android.support.v4.app.Fragment;
 
-// 3rd Party Imports - com - Baking
-import com.example.full_dream.baking.data.RecipeRepository;
-import com.example.full_dream.baking.model.Recipe;
-
-// Java Imports
-import java.util.List;
-
-/**
- * This ViewModel is used to cache the list of Recipe objects wrapped in a LiveData object and
- * modify data passed into it.
- */
-public class RecipeViewModel extends ViewModel {
-
-    // Hold a reference to the repository
-    private RecipeRepository mRepository;
-
-    /**
-     * Constructor to instantiate repository reference.
-     */
-    public RecipeViewModel() {
-        this.mRepository = new RecipeRepository();
-    }
-
-    /**
-     * RecipeRepository getter method for retrieving a LiveData object of a list of Recipe objects
-     * that hides the implementation from the UI.
-     *
-     * @return A LiveData object of a list of Recipe objects.
-     */
-    public LiveData<List<Recipe>> getRecipes() {
-        return mRepository.getRecipes();
-    }
-
+public class RecipeDetailFragment extends Fragment {
 
 }

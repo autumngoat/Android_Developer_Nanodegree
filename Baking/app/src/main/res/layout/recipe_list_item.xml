@@ -61,6 +61,17 @@
         <variable
             name="recipe"
             type="com.example.full_dream.baking.model.Recipe"/>
+
+        <!-- To bind a click event, use the <variable> tag as before with a path to the event
+         handler class with the necessary callback method(s)
+          type:"pathToInterface"
+           Whether that be a separate class or an inner class
+
+         Comment Source:
+          https://www.androidhive.info/android-working-with-databinding/ -->
+        <variable
+            name="callback"
+            type="com.example.full_dream.baking.adapter.RecipeAdapter.RecipeAdapterOnClickHandler"/>
     </data>
 
     <!-- CardView is a ViewGroup
@@ -70,6 +81,7 @@
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:onClick="@{() -> callback.onClickShowRecipeDetail(recipe)}"
         card_view:cardCornerRadius="8dp"
         card_view:cardBackgroundColor="@color/cardview_light_background">
 

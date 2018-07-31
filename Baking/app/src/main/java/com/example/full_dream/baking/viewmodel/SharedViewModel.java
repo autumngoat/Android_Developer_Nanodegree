@@ -45,43 +45,30 @@
 
 package com.example.full_dream.baking.viewmodel;
 
-// Android Imports
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
-import android.util.Log;
 
-// 3rd Party Imports - com - Baking
-import com.example.full_dream.baking.data.RecipeRepository;
 import com.example.full_dream.baking.model.Recipe;
 
-// Java Imports
-import java.util.List;
-
 /**
- * This ViewModel is used to cache the list of Recipe objects wrapped in a LiveData object and
- * modify data passed into it.
+ * Share data between two Fragments using a ViewModel object using their common Activity
+ * (MainActivity) to handle this communication.
+ *
+ * Source:
+ * https://developer.android.com/topic/libraries/architecture/viewmodel#sharing
  */
-public class RecipeViewModel extends ViewModel {
+public class SharedViewModel extends ViewModel {
+    // LiveData which publicly exposes setValue(Movie) and postValue(Movie) methods, if available
+    private final MutableLiveData<Recipe> selectedRecipe = new MutableLiveData<>();
 
-    // Hold a reference to the repository
-    private RecipeRepository mRepository;
-
-    /**
-     * Constructor to instantiate repository reference.
-     */
-    public RecipeViewModel() {
-        this.mRepository = new RecipeRepository();
+    // Sets the value to the selected Movie
+    public void setSelectedRecipe(Recipe recipe){
+        selectedRecipe.setValue(recipe);
     }
 
-    /**
-     * RecipeRepository getter method for retrieving a LiveData object of a list of Recipe objects
-     * that hides the implementation from the UI.
-     *
-     * @return A LiveData object of a list of Recipe objects.
-     */
-    public LiveData<List<Recipe>> getRecipes() {
-        return mRepository.getRecipes();
+    // Returns the selected Movie
+    public LiveData<Recipe> getSelectedRecipe(){
+        return selectedRecipe;
     }
-
-
 }

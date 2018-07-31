@@ -83,6 +83,10 @@ dependencies {
 
     // Support Library
     implementation "com.android.support:appcompat-v7:$support_library"
+    implementation "com.android.support:exifinterface:$support_library"
+
+    // Design Support Library - AppBarLayout
+    implementation "com.android.support:design:$support_library"
 
     // Android Architecture Components - Live Data and View Model
     implementation "android.arch.lifecycle:extensions:$livedata_and_viewmodel"

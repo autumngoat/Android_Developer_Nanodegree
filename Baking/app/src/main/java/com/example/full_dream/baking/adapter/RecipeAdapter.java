@@ -50,7 +50,6 @@ import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -67,44 +66,72 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeViewHolder> {
 
     // Cached copy of list of Recipe objects
     private List<Recipe> mRecipeData;
-
-    // Empty Constructor
-    public RecipeAdapter(){}
+    //
+    private RecipeAdapterOnClickHandler mClickHandler;
 
     /**
-     * Creates ViewHolders by inflating the recipe_list_item view.
+     * RecipeAdapter constructor.
      *
-     * @param parent
-     * @param viewType
+     * @param clickHandler An object that implements the RecipeAdapterOnClickHandler interface.
+     */
+    public RecipeAdapter(RecipeAdapterOnClickHandler clickHandler){
+        mClickHandler = clickHandler;
+    }
+
+    /**
+     * The interface that defines what the method signature of onClickShowRecipeDetail() in
+     * RecipeFragment.
+     *  Only reason to make this it's own stand alone class...
+     */
+    public interface RecipeAdapterOnClickHandler {
+        void onClickShowRecipeDetail(Recipe recipe);
+    }
+
+    /**
+     * Creates ViewHolders by inflating the recipe_list_item View.
      *
-     * @return
+     * @param parent The ViewGroup into which the new View will be added after it is bound to an
+     *               adapter position.
+     * @param viewType The view type of the new View.
+     *
+     * @return New RecipeViewHolder.
      */
     @NonNull
     @Override
     public RecipeViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-
-        Log.e("rabbit", "RecipeAdapter onCreateViewHolder");
+//        // Does not work
+//        //  Leads to: "error: incompatible types: View cannot be converted to RecipeListItemBinding"
+//        RecipeListItemBinding binding = LayoutInflater
+//                .from(parent.getContext())
+//                .inflate(R.layout.recipe_list_item,
+//                        parent,
+//                        false);
 
         // Local variables
         Context context = parent.getContext();
         int layoutIdForListItem = R.layout.recipe_list_item;
         LayoutInflater inflater = LayoutInflater.from(context);
 
-        //
+        // Create a new View
         RecipeListItemBinding binding = DataBindingUtil.inflate(
                 inflater,
                 layoutIdForListItem,
                 parent,
                 false);
 
+        binding.setCallback(mClickHandler);
+
+        // Set the View's layout parameters
         return new RecipeViewHolder(binding);
     }
 
     /**
-     * Fills/refills the ViewHolders by binding the data to the UI components.
+     * This is where the data is bound to each RecipeViewHolder.
+     *  This method is called at least once and will be called each time the adapter is notified
+     *  that the data set has changed.
      *
-     * @param holder
-     * @param position
+     * @param holder The RecipeViewHolder.
+     * @param position The position in the collection of data.
      */
     @Override
     public void onBindViewHolder(@NonNull RecipeViewHolder holder, int position) {
@@ -113,7 +140,9 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeViewHolder> {
     }
 
     /**
-     * Total number of ViewHolders by returning the list size.
+     * Gets the size of the collection of items in the list.
+     *
+     * @return An integer representing the size of the collection that will be displayed.
      */
     @Override
     public int getItemCount() {
