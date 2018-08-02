@@ -44,33 +44,45 @@
   ~  SOFTWARE.
   -->
 <layout
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <data>
-
-        <!--  -->
-        <!--<variable-->
-            <!--name="callback"-->
-            <!--type=""-->
-    </data>
-
-    <!-- Left Panel of 2nd Screen on Tablet || 2nd Screen on Phone -->
-    <android.support.constraint.ConstraintLayout
+    <!-- Added to avoid recyclerview_detail_step screen cut off-->
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/colorPrimaryDark">
+        android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/tv_detail_ingredients"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recyclerview_detail_step"
+        <!-- Left Panel of 2nd Screen on Tablet || 2nd Screen on Phone -->
+        <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimaryDark">
 
-        </android.support.v7.widget.RecyclerView>
+            <TextView
+                android:id="@+id/tv_detail_ingredients_label"
+                style="@style/RecipeDetailLabel"
+                android:text="@string/ingredient_label"/>
 
-    </android.support.constraint.ConstraintLayout>
+            <TextView
+                android:id="@+id/tv_detail_ingredients"
+                style="@style/RecipeDetailIngredient"
+                app:layout_constraintTop_toBottomOf="@id/tv_detail_ingredients_label"
+                app:layout_constraintStart_toStartOf="parent"/>
+
+            <TextView
+                android:id="@+id/tv_detail_steps_label"
+                style="@style/RecipeDetailLabel"
+                android:text="@string/step_label"
+                app:layout_constraintTop_toBottomOf="@id/tv_detail_ingredients"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerview_detail_step"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/tv_detail_steps_label"
+                app:layout_constraintStart_toStartOf="parent">
+
+            </android.support.v7.widget.RecyclerView>
+        </android.support.constraint.ConstraintLayout>
+    </android.support.v4.widget.NestedScrollView>
 </layout>

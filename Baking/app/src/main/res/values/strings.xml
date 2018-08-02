@@ -45,4 +45,8 @@
 
 <resources>
     <string name="app_name">Baking</string>
+
+    <!-- Labels -->
+    <string name="ingredient_label">Ingredients: </string>
+    <string name="step_label">Steps: </string>
 </resources>

@@ -44,26 +44,43 @@
   ~  SOFTWARE.
   -->
 
-<resources>
-    <!-- Recipe CardView -->
-    <dimen name="recipe_card_margin">8dp</dimen>
-    <dimen name="recipe_card_corner_radius">16dp</dimen>
-    <dimen name="recipe_text_size">24sp</dimen>
-    <dimen name="recipe_text_width">0dp</dimen>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto">
 
-    <!-- Recipe Detail Label TextView -->
-    <dimen name="recipe_detail_label_text_size">24sp</dimen>
+    <data>
+        <variable
+            name="step"
+            type="com.example.full_dream.baking.model.Step"/>
 
-    <!-- Recipe Detail Ingredient TextView -->
-    <dimen name="recipe_detail_ingredient_padding_left">16dp</dimen>
+        <variable
+            name="stepDetail"
+            type="com.example.full_dream.baking.adapter.StepAdapter.StepAdapterOnClickHandler"/>
+    </data>
 
-    <!-- Step CardView -->
-    <dimen name="step_card_margin">8dp</dimen>
-    <dimen name="step_card_elevation">4dp</dimen>
+    <android.support.v7.widget.CardView
+        style="@style/StepCardView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="@{() -> stepDetail.onClickShowStepDetail(step)}"
+        card_view:cardElevation="@dimen/step_card_elevation"
+        card_view:cardBackgroundColor="@color/colorAccent">
 
-    <!-- Step Short Description TextView -->
-    <dimen name="step_short_description_text_size">20sp</dimen>
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <!-- Step Long Description TextView -->
-    <dimen name="step_long_description_text_size">12sp</dimen>
-</resources>
+            <TextView
+                android:id="@+id/tv_step_short_description"
+                style="@style/StepShortDescriptionTextView"
+                android:text="@{step.shortDescription}" />
+
+            <TextView
+                android:id="@+id/tv_step_long_description"
+                style="@style/StepLongDescriptionTextView"
+                android:text="@{step.description}"
+                app:layout_constraintTop_toBottomOf="@id/tv_step_short_description"/>
+        </android.support.constraint.ConstraintLayout>
+    </android.support.v7.widget.CardView>
+</layout>

@@ -56,22 +56,23 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 // 3rd Party Imports - com - Baking
 import com.example.full_dream.baking.R;
+import com.example.full_dream.baking.adapter.StepAdapter;
 import com.example.full_dream.baking.databinding.FragmentRecipeDetailBinding;
 import com.example.full_dream.baking.model.Ingredient;
-import com.example.full_dream.baking.viewmodel.RecipeDetailViewModel;
+import com.example.full_dream.baking.model.Step;
 import com.example.full_dream.baking.viewmodel.SharedViewModel;
 
 /**
  * Sets up the UI as a list of Ingredients and then a list of individual Steps with descriptions,
  * which
  */
-public class RecipeDetailFragment extends Fragment {
+public class RecipeDetailFragment extends Fragment implements StepAdapter.StepAdapterOnClickHandler{
 
     // ViewModel(s)
-    private RecipeDetailViewModel mRecipeViewModel;
     private SharedViewModel mSharedViewModel;
 
     /**
@@ -87,10 +88,6 @@ public class RecipeDetailFragment extends Fragment {
         // Use ViewModelProviders to associate an instance of SharedViewModel scoped with the
         // lifecycle of the UIController MainActivity
         mSharedViewModel = ViewModelProviders.of(getActivity()).get(SharedViewModel.class);
-
-        // Use ViewModelProviders to associate an instance of RecipeDetailViewModel scoped with the
-        // lifecycle of the UIController RecipeDetailFragment
-        mRecipeViewModel = ViewModelProviders.of(this).get(RecipeDetailViewModel.class);
     }
 
     /**
@@ -122,8 +119,20 @@ public class RecipeDetailFragment extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         binding.recyclerviewDetailStep.setLayoutManager(linearLayoutManager);
         binding.recyclerviewDetailStep.setHasFixedSize(true);
-
+        StepAdapter stepAdapter = new StepAdapter(this);
+        stepAdapter.setStepData(mSharedViewModel.getSelectedRecipe().getSteps());
+        binding.recyclerviewDetailStep.setAdapter(stepAdapter);
 
         return binding.getRoot();
+    }
+
+    /**
+     * Handle StepAdapter clicks events by replacing the current RecipeDetailFragment with a
+     * StepDetailFragment.
+     *
+     * @param step The Step object associated with the clicked upon StepAdapter item.
+     */
+    public void onClickShowStepDetail(Step step){
+        Toast.makeText(getContext(), step.getVideoURL(), Toast.LENGTH_SHORT).show();
     }
 }

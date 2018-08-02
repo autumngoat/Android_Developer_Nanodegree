@@ -57,7 +57,7 @@
     <style name="RecipeCardView">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginTop">@dimen/recipe_card_margin</item>
+        <item name="android:layout_margin">@dimen/recipe_card_margin</item>
     </style>
 
     <!-- Recipe Name and Servings TextViews -->
@@ -67,5 +67,48 @@
         <item name="android:textSize">@dimen/recipe_text_size</item>
         <item name="android:textColor">@color/colorPrimaryDark</item>
         <item name="android:textStyle">bold</item>
+    </style>
+
+    <!-- Recipe Detail Label TextViews -->
+    <style name="RecipeDetailLabel">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/recipe_detail_label_text_size</item>
+        <item name="android:textColor">@color/colorPrimaryDark</item>
+        <item name="android:background">@color/colorAccent</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <!-- Recipe Detail Ingredients TextView -->
+    <style name="RecipeDetailIngredient">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingLeft">@dimen/recipe_detail_ingredient_padding_left</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/colorPrimaryDark</item>
+        <item name="android:background">@color/colorAccent</item>
+    </style>
+
+    <!-- Step CardView -->
+    <style name="StepCardView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_margin">@dimen/step_card_margin</item>
+    </style>
+
+    <!-- Step Short Description TextView -->
+    <style name="StepShortDescriptionTextView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textStyle">italic</item>
+        <item name="android:textSize">@dimen/step_short_description_text_size</item>
+    </style>
+
+    <!-- Step Long Description TextView -->
+    <style name="StepLongDescriptionTextView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">@dimen/step_long_description_text_size</item>
     </style>
 </resources>
