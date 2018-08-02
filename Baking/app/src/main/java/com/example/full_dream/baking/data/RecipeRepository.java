@@ -51,7 +51,9 @@ import android.arch.lifecycle.MutableLiveData;
 import android.util.Log;
 
 // 3rd Party Imports - com - Baking
+import com.example.full_dream.baking.model.Ingredient;
 import com.example.full_dream.baking.model.Recipe;
+import com.example.full_dream.baking.model.Step;
 import com.example.full_dream.baking.network.BakingService;
 import com.example.full_dream.baking.network.RetrofitClient;
 
@@ -59,6 +61,9 @@ import com.example.full_dream.baking.network.RetrofitClient;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+// 3rd Party Imports - Timber
+import timber.log.Timber;
 
 // Java Imports
 import java.io.IOException;
@@ -137,9 +142,18 @@ public class RecipeRepository {
                 if(response.isSuccessful()){
                     // Set the value and dispatch the value to all the active observers
                     mRecipes.setValue(response.body());
-                    Log.e("rabbit", "size: " + response.body().size());
+
+                    for(Recipe recipe : response.body()){
+                        Log.e("rabbit","Recipe ID: " + recipe.getId());
+                        for(Ingredient ingredient : recipe.getIngredients()){
+                            Log.e("rabbit","    " + "Get Ingredients: " + ingredient.getIngredient());
+                        }
+                        for(Step step : recipe.getSteps()){
+                            Log.e("rabbit","    " + "Step ID: " + step.getId());
+                        }
+                    }
                 } else {
-                    Log.e("rabbit", "RecipeRepository getRecipes Response ERROR");
+                    Timber.e("RecipeRepository getRecipes Response ERROR");
                 }
             }
 
@@ -149,10 +163,10 @@ public class RecipeRepository {
             public void onFailure(Call<List<Recipe>> call, Throwable t) {
                 //
                 if(t instanceof IOException){
-                    //TODO Toast
-                    Log.e("rabbit", "Actual Network failure: Inform user and possibly retry");
+                    //TODO Toast (maybe?)
+                    Timber.e("Actual Network failure: Inform user and possibly retry");
                 } else {
-                    Log.e("rabbit", "Conversion error");
+                    Timber.e("Conversion error");
                 }
             }
         });

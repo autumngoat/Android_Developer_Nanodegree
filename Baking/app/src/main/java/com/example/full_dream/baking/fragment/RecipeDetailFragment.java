@@ -45,7 +45,24 @@
 
 package com.example.full_dream.baking.fragment;
 
+// Android Imports
+import android.arch.lifecycle.ViewModelProviders;
+import android.databinding.DataBindingUtil;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+// 3rd Party Imports - com - Baking
+import com.example.full_dream.baking.R;
+import com.example.full_dream.baking.databinding.FragmentRecipeDetailBinding;
+import com.example.full_dream.baking.model.Ingredient;
+import com.example.full_dream.baking.viewmodel.RecipeDetailViewModel;
+import com.example.full_dream.baking.viewmodel.SharedViewModel;
 
 /**
  * Sets up the UI as a list of Ingredients and then a list of individual Steps with descriptions,
@@ -53,4 +70,60 @@ import android.support.v4.app.Fragment;
  */
 public class RecipeDetailFragment extends Fragment {
 
+    // ViewModel(s)
+    private RecipeDetailViewModel mRecipeViewModel;
+    private SharedViewModel mSharedViewModel;
+
+    /**
+     * Called to do the initial creation of the fragment.
+     *
+     * @param savedInstanceState If the fragment is being re-created from a previous
+     *                           saved state, this is the state.
+     */
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        // Use ViewModelProviders to associate an instance of SharedViewModel scoped with the
+        // lifecycle of the UIController MainActivity
+        mSharedViewModel = ViewModelProviders.of(getActivity()).get(SharedViewModel.class);
+
+        // Use ViewModelProviders to associate an instance of RecipeDetailViewModel scoped with the
+        // lifecycle of the UIController RecipeDetailFragment
+        mRecipeViewModel = ViewModelProviders.of(this).get(RecipeDetailViewModel.class);
+    }
+
+    /**
+     * Creates and returns the view hierarchy associated with the fragment.
+     *
+     * @param inflater The Layoutinflater object that can be used to inflate any views
+     *                 in the fragment.
+     * @param container If not null, this is the parent view that the fragment's UI
+     *                  should be attached to.
+     * @param savedInstanceState If not null, this fragment is being re-constructed from
+     *                           a previous saved state as given here.
+     * @return Return the view for the fragment's UI, or null.
+     */
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
+        FragmentRecipeDetailBinding binding = DataBindingUtil.inflate(inflater,
+                R.layout.fragment_recipe_detail,
+                container,
+                false);
+
+        // Setup Ingredients TextView
+        for(Ingredient ingredient : mSharedViewModel.getSelectedRecipe().getIngredients()){
+            binding.tvDetailIngredients.append(ingredient.toString());
+        }
+
+        // Setup Step Description RecyclerView
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        binding.recyclerviewDetailStep.setLayoutManager(linearLayoutManager);
+        binding.recyclerviewDetailStep.setHasFixedSize(true);
+
+
+        return binding.getRoot();
+    }
 }

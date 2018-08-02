@@ -49,10 +49,11 @@ package com.example.full_dream.baking.network;
 import com.example.full_dream.baking.model.Recipe;
 
 // 3rd Party Imports - Retrofit2
-import java.util.List;
-
 import retrofit2.Call;
 import retrofit2.http.GET;
+
+// Java Imports
+import java.util.List;
 
 /**
  * API Service that specifics and defines each API endpoint to indicate how a HTTP request will be

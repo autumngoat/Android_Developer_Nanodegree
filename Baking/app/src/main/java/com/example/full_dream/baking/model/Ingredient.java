@@ -82,4 +82,10 @@ public class Ingredient {
     public void setIngredient(String ingredient) {
         this.ingredient = ingredient;
     }
+
+    // Used for printing Ingredient(s) to RecipeDetailFragment TextView
+    @Override
+    public String toString() {
+        return getQuantity() + " " + getMeasure() + " " + getIngredient() + "\n";
+    }
 }

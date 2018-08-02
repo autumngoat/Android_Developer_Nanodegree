@@ -54,6 +54,9 @@ import android.os.Bundle;
 import com.example.full_dream.baking.databinding.ActivityMainBinding;
 import com.example.full_dream.baking.fragment.RecipeFragment;
 
+/**
+ *
+ */
 public class MainActivity extends AppCompatActivity {
     public static final String FRAGMENT_KEY = "fragment";
 

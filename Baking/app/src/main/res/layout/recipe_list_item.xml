@@ -131,13 +131,10 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/tv_recipe_servings"/>
 
-            <!-- Avoid Resources$NotFoundException by using String.valueOf(integer)
-             Comment Source:
-              https://stackoverflow.com/questions/32837455/data-binding-resourcesnotfoundexception-when-attribute-of-object-is-int -->
             <TextView
                 android:id="@+id/tv_recipe_servings"
                 style="@style/RecipeTextView"
-                android:text="@{String.valueOf(recipe.servings)}"
+                android:text="@{recipe.servings}"
                 android:layout_marginRight="@dimen/recipe_card_margin"
                 android:layout_marginEnd="@dimen/recipe_card_margin"
                 app:layout_constraintTop_toBottomOf="@id/iv_recipe_image"

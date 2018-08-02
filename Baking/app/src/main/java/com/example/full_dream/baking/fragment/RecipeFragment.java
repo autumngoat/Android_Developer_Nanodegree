@@ -54,7 +54,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,6 +66,10 @@ import com.example.full_dream.baking.model.Recipe;
 import com.example.full_dream.baking.viewmodel.RecipeViewModel;
 import com.example.full_dream.baking.viewmodel.SharedViewModel;
 
+// 3rd Party Imports - Timber
+import timber.log.Timber;
+
+// Java Imports
 import java.util.List;
 
 /**
@@ -81,11 +84,6 @@ public class RecipeFragment extends Fragment implements RecipeAdapter.RecipeAdap
 
     // Adapter(s)
     private RecipeAdapter mRecipeAdapter;
-
-//    /**
-//     * Mandatory empty constructor for the Fragment Manager to instantiate the fragment.
-//     */
-//    public  RecipeFragment(){}
 
     /**
      * Called to do the initial creation of the fragment.
@@ -152,7 +150,7 @@ public class RecipeFragment extends Fragment implements RecipeAdapter.RecipeAdap
         mRecipeViewModel.getRecipes().observe(this, new Observer<List<Recipe>>() {
             @Override
             public void onChanged(@Nullable List<Recipe> recipes) {
-                Log.e("rabbit", "onChanged");
+                Timber.e("onChanged");
                 mRecipeAdapter.setRecipeData(recipes);
             }
         });

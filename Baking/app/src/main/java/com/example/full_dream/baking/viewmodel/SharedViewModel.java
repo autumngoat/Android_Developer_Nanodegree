@@ -45,10 +45,11 @@
 
 package com.example.full_dream.baking.viewmodel;
 
-import android.arch.lifecycle.LiveData;
+// Android Imports
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 
+// 3rd Party Imports - com - Baking
 import com.example.full_dream.baking.model.Recipe;
 
 /**
@@ -59,16 +60,16 @@ import com.example.full_dream.baking.model.Recipe;
  * https://developer.android.com/topic/libraries/architecture/viewmodel#sharing
  */
 public class SharedViewModel extends ViewModel {
-    // LiveData which publicly exposes setValue(Movie) and postValue(Movie) methods, if available
+    // LiveData which publicly exposes setValue(Recipe) and postValue(Recipe) methods, if available
     private final MutableLiveData<Recipe> selectedRecipe = new MutableLiveData<>();
 
-    // Sets the value to the selected Movie
+    // Sets the value to the selected Recipe
     public void setSelectedRecipe(Recipe recipe){
         selectedRecipe.setValue(recipe);
     }
 
-    // Returns the selected Movie
-    public LiveData<Recipe> getSelectedRecipe(){
-        return selectedRecipe;
+    // Returns the selected Recipe
+    public Recipe getSelectedRecipe(){
+        return selectedRecipe.getValue();
     }
 }

@@ -106,8 +106,9 @@ public class Recipe{
         this.steps = steps;
     }
 
-    public Integer getServings() {
-        return servings;
+    // Format servings to make UI clearer
+    public String getServings() {
+        return "Servings: " + servings;
     }
 
     public void setServings(Integer servings) {
