@@ -61,13 +61,14 @@ import android.view.ViewGroup;
 import com.example.full_dream.baking.R;
 import com.example.full_dream.baking.databinding.FragmentStepDetailBinding;
 import com.example.full_dream.baking.viewmodel.SharedViewModel;
+
+// 3rd Party Imports - com - ExoPlayer2
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.Timeline;
-import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
@@ -183,8 +184,8 @@ public class StepDetailFragment extends Fragment {
 
         mExoPlayer.setPlayWhenReady(mShouldAutoPlay);
 
-//        String blah = mSharedViewModel.getSelectedRecipe().getSteps().getId;
-        String blah="https://d17h27t6h515a5.cloudfront.net/topher/2017/April/58ffd9a6_2-mix-sugar-crackers-creampie/2-mix-sugar-crackers-creampie.mp4";
+//        String blah="https://d17h27t6h515a5.cloudfront.net/topher/2017/April/58ffd9a6_2-mix-sugar-crackers-creampie/2-mix-sugar-crackers-creampie.mp4";
+        String blah = mSharedViewModel.getSelectedStep().getVideoURL();
         MediaSource mediaSource = new ExtractorMediaSource
                 .Factory(mMediaDataSourceFactory)
                 .createMediaSource(Uri.parse(blah));

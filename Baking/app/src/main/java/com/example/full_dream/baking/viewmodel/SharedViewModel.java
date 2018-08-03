@@ -51,6 +51,7 @@ import android.arch.lifecycle.ViewModel;
 
 // 3rd Party Imports - com - Baking
 import com.example.full_dream.baking.model.Recipe;
+import com.example.full_dream.baking.model.Step;
 
 /**
  * Share data between two Fragments using a ViewModel object using their common Activity
@@ -62,6 +63,8 @@ import com.example.full_dream.baking.model.Recipe;
 public class SharedViewModel extends ViewModel {
     // LiveData which publicly exposes setValue(Recipe) and postValue(Recipe) methods, if available
     private final MutableLiveData<Recipe> selectedRecipe = new MutableLiveData<>();
+    // LiveData which publicly exposes setValue(Step) and postValue(Step) methods, if available
+    private final MutableLiveData<Step> selectedStep = new MutableLiveData<>();
 
     // Sets the value to the selected Recipe
     public void setSelectedRecipe(Recipe recipe){
@@ -71,5 +74,15 @@ public class SharedViewModel extends ViewModel {
     // Returns the selected Recipe
     public Recipe getSelectedRecipe(){
         return selectedRecipe.getValue();
+    }
+
+    // Sets the value to the selected Step
+    public void setSelectedStep(Step step){
+        selectedStep.setValue(step);
+    }
+
+    // Returns the selected Step
+    public Step getSelectedStep(){
+        return selectedStep.getValue();
     }
 }

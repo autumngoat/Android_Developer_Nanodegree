@@ -133,6 +133,12 @@ public class RecipeDetailFragment extends Fragment implements StepAdapter.StepAd
      */
     public void onClickShowStepDetail(Step step){
 
+        // Set Step object in SharedViewModel to transfer that data from RecipeDetailFragment to
+        // StepDetailFragment (instead of Parcelable or other methods)
+        //  This is done b/c unable to access Step.id from Recipe.getSteps()
+        //   Recipe.getSteps.get(int index).getId() defeats the purpose of getting the Step.getId()
+        mSharedViewModel.setSelectedStep(step);
+
         // Entering fragment from exiting fragment
         StepDetailFragment stepDetailFragment = new StepDetailFragment();
 
