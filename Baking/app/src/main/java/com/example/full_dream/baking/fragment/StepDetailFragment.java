@@ -47,29 +47,22 @@ package com.example.full_dream.baking.fragment;
 
 // Android Imports
 import android.arch.lifecycle.ViewModelProviders;
-import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 // 3rd Party Imports - com - Baking
-import com.example.full_dream.baking.R;
-import com.example.full_dream.baking.adapter.StepAdapter;
-import com.example.full_dream.baking.databinding.FragmentRecipeDetailBinding;
-import com.example.full_dream.baking.model.Ingredient;
-import com.example.full_dream.baking.model.Step;
 import com.example.full_dream.baking.viewmodel.SharedViewModel;
 
 /**
- * Sets up the UI as a list of Ingredients and then a list of individual Steps with descriptions,
- * that once clicked launches StepDetailFragment.
+ * Sets up the UI as a MediaPlayer/ExoPlayer of Step.videoUrl, the recipe's step instructions a.k.a.
+ * Step.description, and navigational buttons for 'previous' and 'next' Step.
  */
-public class RecipeDetailFragment extends Fragment implements StepAdapter.StepAdapterOnClickHandler{
+public class StepDetailFragment extends Fragment {
 
     // ViewModel(s)
     private SharedViewModel mSharedViewModel;
@@ -103,43 +96,8 @@ public class RecipeDetailFragment extends Fragment implements StepAdapter.StepAd
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
-        FragmentRecipeDetailBinding binding = DataBindingUtil.inflate(inflater,
-                R.layout.fragment_recipe_detail,
-                container,
-                false);
-
-        // Setup Ingredients TextView
-        for(Ingredient ingredient : mSharedViewModel.getSelectedRecipe().getIngredients()){
-            binding.tvDetailIngredients.append(ingredient.toString());
-        }
-
-        // Setup Step Description RecyclerView
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        binding.recyclerviewDetailStep.setLayoutManager(linearLayoutManager);
-        binding.recyclerviewDetailStep.setHasFixedSize(true);
-        StepAdapter stepAdapter = new StepAdapter(this);
-        stepAdapter.setStepData(mSharedViewModel.getSelectedRecipe().getSteps());
-        binding.recyclerviewDetailStep.setAdapter(stepAdapter);
-
-        return binding.getRoot();
+        return super.onCreateView(inflater, container, savedInstanceState);
     }
 
-    /**
-     * Handle StepAdapter clicks events by replacing the current RecipeDetailFragment with a
-     * StepDetailFragment.
-     *
-     * @param step The Step object associated with the clicked upon StepAdapter item.
-     */
-    public void onClickShowStepDetail(Step step){
 
-        // Entering fragment from exiting fragment
-        StepDetailFragment stepDetailFragment = new StepDetailFragment();
-
-        getFragmentManager()
-                .beginTransaction()
-                .addToBackStack("stepDetail")
-                .replace(R.id.fragment_container, stepDetailFragment)
-                .commit();
-    }
 }
