@@ -176,7 +176,11 @@ public class StepDetailFragment extends Fragment {
                 container,
                 false);
 
-        mBinding.playerview.requestFocus();
+        //
+//        mBinding.playerview.requestFocus();
+
+        // Bind Step data to fragment_step_detail.xml
+        mBinding.setStep(mSharedViewModel.getSelectedStep());
 
         return mBinding.getRoot();
     }

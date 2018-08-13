@@ -52,6 +52,7 @@ import com.squareup.moshi.Json;
  * Provides a data model to represent a recipe's Step POJO to hold parsed JSON data.
  */
 public class Step {
+    // Step id starts at 0 and enumerates upward
     @Json(name = "id")
     private Integer id;
     @Json(name = "shortDescription")

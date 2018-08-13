@@ -49,4 +49,8 @@
     <!-- Labels -->
     <string name="ingredient_label">Ingredients: </string>
     <string name="step_label">Steps: </string>
+
+    <!-- Buttons -->
+    <string name="prev_button">Previous</string>
+    <string name="next_button">Next</string>
 </resources>
