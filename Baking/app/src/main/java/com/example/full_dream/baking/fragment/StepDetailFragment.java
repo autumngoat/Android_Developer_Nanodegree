@@ -46,6 +46,7 @@
 package com.example.full_dream.baking.fragment;
 
 // Android Imports
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
@@ -53,10 +54,12 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 // 3rd Party Imports - com - Baking
 import com.example.full_dream.baking.R;
@@ -67,7 +70,6 @@ import com.example.full_dream.baking.viewmodel.SharedViewModel;
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
-import com.google.android.exoplayer2.Timeline;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
@@ -79,6 +81,7 @@ import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.upstream.TransferListener;
 import com.google.android.exoplayer2.util.Util;
+import com.squareup.picasso.Picasso;
 
 /**
  * Sets up the UI as a MediaPlayer/ExoPlayer of Step.videoUrl, the recipe's step instructions a.k.a.
@@ -87,7 +90,11 @@ import com.google.android.exoplayer2.util.Util;
 public class StepDetailFragment extends Fragment {
 
     private static final String KEY_PLAY_WHEN_READY = "play_when_ready";
-    private static final String KEY_WINDOW = "window";
+    // Realized window is always 0 in a track list of 1 so it is better to track Step ID number
+//    private static final String KEY_WINDOW = "window";
+    // But then I realized there is no need to keep track of this since I have SharedViewModel for
+    // that very purpose
+//    private static final String KEY_STEP_ID = "step_id";
     private static final String KEY_POSITION = "position";
 
     // Databinding View access so I can access the player view outside of onCreateView
@@ -100,7 +107,7 @@ public class StepDetailFragment extends Fragment {
     private SimpleExoPlayer mExoPlayer;
 
     // Player and MediaSource setup variables
-    private Timeline.Window mWindow;
+//    private Timeline.Window mWindow;
     private DataSource.Factory mMediaDataSourceFactory;
     private DefaultTrackSelector mTrackSelector;
     private boolean mShouldAutoPlay;
@@ -109,6 +116,7 @@ public class StepDetailFragment extends Fragment {
     // Playback variables
     private boolean mPlayWhenReady;
     private int mCurrentWindow;
+//    private int mStepId;
     private long mPlaybackPosition;
 
     /**
@@ -133,14 +141,15 @@ public class StepDetailFragment extends Fragment {
         if(savedInstanceState == null){
             mPlayWhenReady = true;
             mCurrentWindow = 0;
+//            mStepId = mSharedViewModel.getStepId().getValue();
             mPlaybackPosition = 0;
         }
         // If there is save state, then load the saved playback values
         else {
             mPlayWhenReady = savedInstanceState.getBoolean(KEY_PLAY_WHEN_READY);
-            mCurrentWindow = savedInstanceState.getInt(KEY_WINDOW);
+//            mCurrentWindow = savedInstanceState.getInt(KEY_WINDOW);
+//            mStepId = savedInstanceState.getInt(KEY_STEP_ID);
             mPlaybackPosition = savedInstanceState.getLong(KEY_POSITION);
-            Log.e("horse", "baratheon");
         }
 
         // Play media on true and pause media on false
@@ -154,7 +163,7 @@ public class StepDetailFragment extends Fragment {
                 Util.getUserAgent(getContext(), "baking"),    // Context, Application Name
                 (TransferListener<? super DataSource>) mBandwidthMeter);
         //
-        mWindow = new Timeline.Window();
+//        mWindow = new Timeline.Window();
     }
 
     /**
@@ -162,14 +171,15 @@ public class StepDetailFragment extends Fragment {
      * statement.
      *
      * @param outState Bundle to hold play state (paused or play), video play position (timestamp),
-     *                 and current window (track number).
+     *                 and step ID (for the sake of which video to play, if there is a video).
      */
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
 
         outState.putBoolean(KEY_PLAY_WHEN_READY, mPlayWhenReady);
-        outState.putInt(KEY_WINDOW, mCurrentWindow);
+//        outState.putInt(KEY_WINDOW, mCurrentWindow);
+//        outState.putInt(KEY_STEP_ID, mStepId);
         outState.putLong(KEY_POSITION, mPlaybackPosition);
     }
 
@@ -199,8 +209,32 @@ public class StepDetailFragment extends Fragment {
 
         // Bind Step data to fragment_step_detail.xml
         mBinding.setStep(mSharedViewModel.getSelectedStep());
+        // Bind Callbacks (playPrevious() and playNext()) to this fragment to
+        // fragment_step_detail.xml
+        //  Source: https://stackoverflow.com/questions/41938671/databinding-button-onclick-not-working
+        mBinding.setCallback(this);
 
         return mBinding.getRoot();
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        mSharedViewModel.getStepId().observe(this, new Observer<Integer>() {
+            @Override
+            public void onChanged(@Nullable Integer id) {
+                Toast.makeText(getContext(),
+                        "int: " + id +
+                        "step: " + mSharedViewModel.getSelectedStep().getShortDescription(),
+                        Toast.LENGTH_SHORT)
+                        .show();
+                // Update UI - Step's Description, Step's Short Description,
+                mBinding.setStep(mSharedViewModel.getSelectedStep());
+                // Update UI - Step's videoURL or thumbnailURL
+                initializePlayer();
+            }
+        });
     }
 
     /**
@@ -282,7 +316,9 @@ public class StepDetailFragment extends Fragment {
     }
 
     /**
-     * Create a new instance of SimpleExoPlayer to set to the player View.
+     * Create a new instance of SimpleExoPlayer if SimpleExoPlayer is null, else setup the ExoPlayer.
+     *  If videoURl is empty, then replace PlayerView with ImageView of thumbnail URL.
+     *   If thumbnail URL is empty, then replace with placeholder image.
      *
      * Comment Source:
      *  https://google.github.io/ExoPlayer/guide.html
@@ -309,17 +345,40 @@ public class StepDetailFragment extends Fragment {
             //  newSimpleInstance(Context, TrackSelector) returns a SimpleExoPlayer which extends
             //  ExoPlayer to add additional high level player functionality
             mExoPlayer = ExoPlayerFactory.newSimpleInstance(getContext(), mTrackSelector);
+        }
 
-            // Starts and pauses playback
-            mExoPlayer.setPlayWhenReady(mShouldAutoPlay);
-            boolean haveStartPosition = mCurrentWindow != C.INDEX_UNSET;
-            if(haveStartPosition){
-                // Seek within the MediaSource
-                mExoPlayer.seekTo(mCurrentWindow, mPlaybackPosition);
+        // Starts and pauses playback
+        mExoPlayer.setPlayWhenReady(mShouldAutoPlay);
+        boolean haveStartPosition = mCurrentWindow != C.INDEX_UNSET;
+        if(haveStartPosition){
+            // Seek within the MediaSource
+            mExoPlayer.seekTo(mCurrentWindow, mPlaybackPosition);
+        }
+
+        // Grab and prepare the MediaSource
+        Log.e("horse", "hey");
+        String videoUrl = mSharedViewModel.getSelectedStep().getVideoURL();
+        Log.e("horse", videoUrl);
+        // If the URL is empty, then hide ExoPlayer and display the thumbnail or a placeholder
+        if(videoUrl.isEmpty()){
+            // Hide the ExoPlayer
+            mBinding.playerview.setVisibility(View.GONE);
+            // Make ImageView available for viewing
+            mBinding.ivThumbnail.setVisibility(View.VISIBLE);
+            // If the thumbnail URL is not empty, then load it in place of the video player
+            if(!TextUtils.isEmpty(mSharedViewModel.getSelectedStep().getThumbnailURL())){
+                Picasso.get()
+                        .load(mSharedViewModel.getSelectedStep().getThumbnailURL())
+                        .placeholder(R.drawable.ic_cookie)
+                        .into(mBinding.ivThumbnail);
+            } else {
+                mBinding.ivThumbnail.setImageResource(R.drawable.ic_cookie);
             }
-
-            // Grab and prepare the MediaSource
-            String videoUrl = mSharedViewModel.getSelectedStep().getVideoURL();
+        } else {
+            // Hide the ImageView
+            mBinding.ivThumbnail.setVisibility(View.GONE);
+            // Make the ExoPlayer available for viewing
+            mBinding.playerview.setVisibility(View.VISIBLE);
             // Prepare the player with the source
             mExoPlayer.prepare(buildMediaSource(videoUrl), !haveStartPosition, false);
         }
@@ -375,5 +434,25 @@ public class StepDetailFragment extends Fragment {
             mExoPlayer = null;
             mTrackSelector = null;
         }
+    }
+
+    /**
+     * Increment the selected Step's ID, reset the next video to start at the beginning, and start
+     * video.
+     */
+    public void playNext(){
+        mSharedViewModel.incrementStepId();
+        mPlaybackPosition = 0;
+        mPlayWhenReady = true;
+    }
+
+    /**
+     * Decrement the selected Step's ID, reset the next video to start at the beginning, and start
+     * video.
+     */
+    public void playPrevious(){
+        mSharedViewModel.decrementStepId();
+        mPlaybackPosition = 0;
+        mPlayWhenReady = true;
     }
 }

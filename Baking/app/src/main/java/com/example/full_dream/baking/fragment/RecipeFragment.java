@@ -66,9 +66,6 @@ import com.example.full_dream.baking.model.Recipe;
 import com.example.full_dream.baking.viewmodel.RecipeViewModel;
 import com.example.full_dream.baking.viewmodel.SharedViewModel;
 
-// 3rd Party Imports - Timber
-import timber.log.Timber;
-
 // Java Imports
 import java.util.List;
 
@@ -150,7 +147,7 @@ public class RecipeFragment extends Fragment implements RecipeAdapter.RecipeAdap
         mRecipeViewModel.getRecipes().observe(this, new Observer<List<Recipe>>() {
             @Override
             public void onChanged(@Nullable List<Recipe> recipes) {
-                Timber.e("onChanged");
+//                Timber.e("onChanged");
                 mRecipeAdapter.setRecipeData(recipes);
             }
         });

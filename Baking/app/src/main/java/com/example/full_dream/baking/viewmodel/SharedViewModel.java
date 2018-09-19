@@ -46,6 +46,7 @@
 package com.example.full_dream.baking.viewmodel;
 
 // Android Imports
+import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 
@@ -65,24 +66,54 @@ public class SharedViewModel extends ViewModel {
     private final MutableLiveData<Recipe> selectedRecipe = new MutableLiveData<>();
     // LiveData which publicly exposes setValue(Step) and postValue(Step) methods, if available
     private final MutableLiveData<Step> selectedStep = new MutableLiveData<>();
+    // LiveData which publicly exposes setValue(Integer) and postValue(Integer), if available
+    private final MutableLiveData<Integer> selectedStepId = new MutableLiveData<>();
 
     // Sets the value to the selected Recipe
-    public void setSelectedRecipe(Recipe recipe){
-        selectedRecipe.setValue(recipe);
-    }
+    public void setSelectedRecipe(Recipe recipe){ selectedRecipe.setValue(recipe); }
 
     // Returns the selected Recipe
     public Recipe getSelectedRecipe(){
         return selectedRecipe.getValue();
     }
 
-    // Sets the value to the selected Step
+    // Sets the value to the selected Step and it's ID
     public void setSelectedStep(Step step){
         selectedStep.setValue(step);
+        // Initialize 'selectedStepId' to avoid NPE
+        setSelectedStepId();
     }
 
     // Returns the selected Step
     public Step getSelectedStep(){
         return selectedStep.getValue();
+    }
+
+    // Sets the value of the selected Step's ID
+    private void setSelectedStepId(){ selectedStepId.setValue(selectedStep.getValue().getId()); }
+
+    // Returns the selected Step's ID
+    private Integer getSelectedStepId(){ return selectedStepId.getValue(); }
+
+    // Increment the value of the Step's ID by 1 and set the selected Step to the next Step
+    public void incrementStepId(){
+        selectedStepId.setValue(getSelectedStepId() + 1);
+        setSelectedStep(selectedRecipe.getValue().getSteps().get(selectedStepId.getValue()));
+    }
+
+    // Decrement the value of the Step's ID by 1 and set the selected Step to the previous Step
+    public void decrementStepId(){
+        selectedStepId.setValue(getSelectedStepId() - 1);
+        setSelectedStep(selectedRecipe.getValue().getSteps().get(selectedStepId.getValue()));
+    }
+
+    /**
+     * Used in StepDetailFragment to observe changes to the Step's ID so as to change the UI in
+     * response.
+     *
+     * @return A LiveData object of the Step's ID as an Integer.
+     */
+    public LiveData<Integer> getStepId(){
+        return selectedStepId;
     }
 }

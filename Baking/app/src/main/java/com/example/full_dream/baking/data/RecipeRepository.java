@@ -62,9 +62,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-// 3rd Party Imports - Timber
-import timber.log.Timber;
-
 // Java Imports
 import java.io.IOException;
 import java.util.List;
@@ -153,7 +150,7 @@ public class RecipeRepository {
                         }
                     }
                 } else {
-                    Timber.e("RecipeRepository getRecipes Response ERROR");
+//                    Timber.e("RecipeRepository getRecipes Response ERROR");
                 }
             }
 
@@ -164,9 +161,9 @@ public class RecipeRepository {
                 //
                 if(t instanceof IOException){
                     //TODO Toast (maybe?)
-                    Timber.e("Actual Network failure: Inform user and possibly retry");
+//                    Timber.e("Actual Network failure: Inform user and possibly retry");
                 } else {
-                    Timber.e("Conversion error");
+//                    Timber.e("Conversion error");
                 }
             }
         });

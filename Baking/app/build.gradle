@@ -76,7 +76,7 @@ dependencies {
     def moshi = "1.5.0"
     def exoplayer = "2.7.3"
     def livedata_and_viewmodel = "1.1.1"
-    def timber = "4.7.1"
+//    def timber = "4.7.1"
     def picasso = "2.71828"
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -109,8 +109,8 @@ dependencies {
     implementation "com.google.android.exoplayer:exoplayer-core:$exoplayer"
     // Utility - Application-level Media-player - ExoPlayer - UI Components and resources
     implementation "com.google.android.exoplayer:exoplayer-ui:$exoplayer"
-    // Utility - Logging - Timber
-    implementation "com.jakewharton.timber:timber:$timber"
+//    // Utility - Logging - Timber
+//    implementation "com.jakewharton.timber:timber:$timber"
     // Utility - Image handling - Picasso
     implementation "com.squareup.picasso:picasso:$picasso"
 
