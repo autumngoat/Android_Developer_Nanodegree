@@ -53,6 +53,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -139,6 +140,7 @@ public class StepDetailFragment extends Fragment {
             mPlayWhenReady = savedInstanceState.getBoolean(KEY_PLAY_WHEN_READY);
             mCurrentWindow = savedInstanceState.getInt(KEY_WINDOW);
             mPlaybackPosition = savedInstanceState.getLong(KEY_POSITION);
+            Log.e("horse", "baratheon");
         }
 
         // Play media on true and pause media on false
@@ -153,6 +155,22 @@ public class StepDetailFragment extends Fragment {
                 (TransferListener<? super DataSource>) mBandwidthMeter);
         //
         mWindow = new Timeline.Window();
+    }
+
+    /**
+     * Save state so that there is a state to restore on screen orientation change in onCreate ELSE
+     * statement.
+     *
+     * @param outState Bundle to hold play state (paused or play), video play position (timestamp),
+     *                 and current window (track number).
+     */
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putBoolean(KEY_PLAY_WHEN_READY, mPlayWhenReady);
+        outState.putInt(KEY_WINDOW, mCurrentWindow);
+        outState.putLong(KEY_POSITION, mPlaybackPosition);
     }
 
     /**
